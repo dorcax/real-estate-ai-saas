@@ -15,9 +15,11 @@ let AuthOtpTokenModule = class AuthOtpTokenModule {
 };
 exports.AuthOtpTokenModule = AuthOtpTokenModule;
 exports.AuthOtpTokenModule = AuthOtpTokenModule = __decorate([
+    (0, common_1.Global)(),
     (0, common_1.Module)({
         controllers: [auth_otp_token_controller_1.AuthOtpTokenController],
         providers: [auth_otp_token_service_1.AuthOtpTokenService, prisma_service_1.PrismaService],
+        exports: [auth_otp_token_service_1.AuthOtpTokenService]
     })
 ], AuthOtpTokenModule);
 //# sourceMappingURL=auth-otp-token.module.js.map

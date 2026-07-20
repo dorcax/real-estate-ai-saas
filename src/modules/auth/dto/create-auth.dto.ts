@@ -22,3 +22,10 @@ export class LoginUserDto{
     @IsString()
     password: string;
 }
+
+
+export class ForgotPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}

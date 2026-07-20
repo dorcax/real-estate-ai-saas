@@ -7,5 +7,6 @@ import  {PrismaService} from "src/services/prisma/prisma.service"
 @Module({
   controllers: [AuthOtpTokenController],
   providers: [AuthOtpTokenService, PrismaService],
+  exports:[AuthOtpTokenService]
 })
 export class AuthOtpTokenModule {}

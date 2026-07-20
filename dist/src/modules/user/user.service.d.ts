@@ -13,13 +13,13 @@ export declare class UserService {
     login(LoginDto: LoginUserDto): Promise<void>;
     findUser(where: Prisma.UserWhereUniqueInput): Promise<{
         fullName: string;
-        email: string;
         password: string;
+        email: string;
         id: string;
-        role: import("@prisma/client").$Enums.Role;
-        isVerified: boolean;
         createdAt: Date;
         updatedAt: Date;
+        role: import("@prisma/client").$Enums.Role;
+        isVerified: boolean;
     } | null>;
     findAll(): string;
     findOne(id: number): string;

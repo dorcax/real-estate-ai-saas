@@ -17,7 +17,7 @@ export class AuthOtpTokenController {
 
   @Post()
   create(@Body() createAuthOtpTokenDto: CreateAuthOtpTokenDto) {
-    return this.authOtpTokenService.create(createAuthOtpTokenDto);
+    return this.authOtpTokenService.verificationOtpEmail(createAuthOtpTokenDto);
   }
 
   @Post('verify')

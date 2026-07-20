@@ -5,10 +5,35 @@ import { PrismaModule } from './services/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthOtpTokenModule } from './services/auth-otp-token/auth-otp-token.module';
-
+import { MailModule } from './services/mail/mail.module';
+import { EventModule } from './services/event/event.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
-  imports: [PrismaModule, UserModule, AuthModule, AuthOtpTokenModule],
+  imports: [
+    PrismaModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('REDIS_HOST'),
+          port: config.get<number>('REDIS_PORT'),
+          username: config.get<string>('REDIS_USERNAME'),
+          password: config.get<string>('REDIS_PASSWORD'),
+          tls: {},
+        },
+      }),
+    }),
+    UserModule,
+    AuthModule,
+    AuthOtpTokenModule,
+    MailModule,
+    EventModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -9,10 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateAuthOtpTokenDto = void 0;
+exports.VerifyOtpDto = exports.CreateAuthOtpTokenDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateAuthOtpTokenDto {
     email;
+    name;
     userId;
 }
 exports.CreateAuthOtpTokenDto = CreateAuthOtpTokenDto;
@@ -22,8 +23,28 @@ __decorate([
     __metadata("design:type", String)
 ], CreateAuthOtpTokenDto.prototype, "email", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAuthOtpTokenDto.prototype, "name", void 0);
+__decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateAuthOtpTokenDto.prototype, "userId", void 0);
+class VerifyOtpDto {
+    email;
+    code;
+}
+exports.VerifyOtpDto = VerifyOtpDto;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], VerifyOtpDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], VerifyOtpDto.prototype, "code", void 0);
 //# sourceMappingURL=create-auth-otp-token.dto.js.map

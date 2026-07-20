@@ -40,3 +40,4 @@ model Otp {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+

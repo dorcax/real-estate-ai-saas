@@ -1,41 +1,50 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { addMinutes, isAfter } from 'date-fns';
-import { UserService } from 'src/modules/user/user.service';
 import { generateOtp } from 'src/utils/generateOtp';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAuthOtpTokenDto, VerifyOtpDto } from './dto/create-auth-otp-token.dto';
+import { MailService } from '../mail/mail.service';
+
+import { OtpEmail } from '../mail/template/OtpEmail';
+import{React} from "react"
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { ForgotPasswordDto } from 'src/modules/auth/dto/create-auth.dto';
 
 @Injectable()
 export class AuthOtpTokenService {
   constructor(
-    private readonly userService: UserService,
+    @InjectQueue('mail')
+    private readonly mailQueue: Queue,
     private readonly prisma: PrismaService,
+    private readonly mailService: MailService
   ) {}
-  async create(createAuthOtpTokenDto: CreateAuthOtpTokenDto) {
-    // check if the email exist
-    const { email, userId } = createAuthOtpTokenDto;
 
-    // create the otp code
-    const otp = generateOtp();
-    const hashedOtp = await argon2.hash(otp);
-    const otpToken = await this.prisma.otp.create({
-      data: {
-        email: email,
-        code: hashedOtp,
-        expiresAt: addMinutes(new Date(), 5),
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    });
-    // send otp to user
+  async verificationOtpEmail(dto:CreateAuthOtpTokenDto) {
+    const otpData=await this.generateAndStore(dto,5)
+
+    await this.mailQueue.add("send-verification-email",{
+      email: otpData.email,
+      name: otpData.name,
+      userId: otpData.userId
+    })
+   
+    
     return {
       message: 'OTP sent successfully',
     };
   }
+  
+
+async sendForgotPasswordEmail(dto:ForgotPasswordDto) {
+ const otpData =await this.generateAndStore(dto,10)
+  await this.mailQueue.add("send-reset-password-email", {
+    email: otpData.email,
+    name: otpData.name,
+    userId: otpData.userId
+  });
+}
 
   findCode(email: string) {
     return this.prisma.otp.findFirst({
@@ -79,5 +88,33 @@ export class AuthOtpTokenService {
         id
       },
     });
+  }
+
+  // generate otp
+  private async generateAndStore(dto, ExpiresInMinute: number) {
+    const { email, userId, name } = dto
+
+    // create the otp code
+    const otp = generateOtp();
+    const hashedOtp = await argon2.hash(otp);
+    const otpToken = await this.prisma.otp.create({
+      data: {
+        email: email,
+      
+        code: hashedOtp,
+        expiresAt: addMinutes(new Date(), ExpiresInMinute),
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+    return{
+      email,
+      name,
+      userId
+    };
+
   }
 }

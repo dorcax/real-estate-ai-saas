@@ -8,5 +8,8 @@ export declare class AuthController {
         fullName: string;
         email: string;
     }>;
-    login(loginDto: LoginUserDto): Promise<void>;
+    login(loginDto: LoginUserDto): Promise<{
+        message: string;
+        token: string;
+    }>;
 }

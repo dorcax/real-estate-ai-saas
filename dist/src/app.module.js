@@ -14,12 +14,38 @@ const prisma_module_1 = require("./services/prisma/prisma.module");
 const auth_module_1 = require("./modules/auth/auth.module");
 const user_module_1 = require("./modules/user/user.module");
 const auth_otp_token_module_1 = require("./services/auth-otp-token/auth-otp-token.module");
+const mail_module_1 = require("./services/mail/mail.module");
+const event_module_1 = require("./services/event/event.module");
+const config_1 = require("@nestjs/config");
+const bullmq_1 = require("@nestjs/bullmq");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, user_module_1.UserModule, auth_module_1.AuthModule, auth_otp_token_module_1.AuthOtpTokenModule],
+        imports: [
+            prisma_module_1.PrismaModule,
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            bullmq_1.BullModule.forRootAsync({
+                inject: [config_1.ConfigService],
+                useFactory: (config) => ({
+                    connection: {
+                        host: config.get('REDIS_HOST'),
+                        port: config.get('REDIS_PORT'),
+                        username: config.get('REDIS_USERNAME'),
+                        password: config.get('REDIS_PASSWORD'),
+                        tls: {},
+                    },
+                }),
+            }),
+            user_module_1.UserModule,
+            auth_module_1.AuthModule,
+            auth_otp_token_module_1.AuthOtpTokenModule,
+            mail_module_1.MailModule,
+            event_module_1.EventModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

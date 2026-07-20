@@ -47,12 +47,15 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const argon2 = __importStar(require("argon2"));
 const prisma_service_1 = require("../../services/prisma/prisma.service");
+const auth_otp_token_service_1 = require("../../services/auth-otp-token/auth-otp-token.service");
 let AuthService = class AuthService {
     prisma;
     jwtService;
-    constructor(prisma, jwtService) {
+    authOtpTokenService;
+    constructor(prisma, jwtService, authOtpTokenService) {
         this.prisma = prisma;
         this.jwtService = jwtService;
+        this.authOtpTokenService = authOtpTokenService;
     }
     async create(createAuthDto) {
         const { fullName, email, password } = createAuthDto;
@@ -67,6 +70,11 @@ let AuthService = class AuthService {
                 password: await argon2.hash(password),
             },
         });
+        await this.authOtpTokenService.verificationOtpEmail({
+            email: user.email,
+            userId: user.id,
+            name: user.fullName,
+        });
         return {
             message: 'User is successfully created',
             fullName: user.fullName,
@@ -79,6 +87,8 @@ let AuthService = class AuthService {
         if (!existingUser) {
             throw new common_1.BadRequestException('invalid email or password ');
         }
+        if (!existingUser.isVerified)
+            throw new common_1.BadRequestException('User is not verified');
         const isPasswordValid = await argon2.verify(existingUser.password, password);
         if (!isPasswordValid) {
             throw new common_1.BadRequestException('invalid email or password ');
@@ -88,6 +98,19 @@ let AuthService = class AuthService {
             email: existingUser.email,
         };
         const token = await this.jwtService.signAsync(payload);
+        return {
+            message: 'user logged in successfully',
+            token,
+        };
+    }
+    async forgotPassword(dto) {
+        const { email } = dto;
+        const user = await this.findUser({ email });
+        if (!user)
+            throw new common_1.BadRequestException('User not found');
+        await this.authOtpTokenService.sendForgotPasswordEmail({
+            email: user.email,
+        });
     }
     async findUser(where) {
         return this.prisma.user.findUnique({
@@ -99,6 +122,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        auth_otp_token_service_1.AuthOtpTokenService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

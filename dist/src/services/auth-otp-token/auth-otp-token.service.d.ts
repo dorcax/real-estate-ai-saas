@@ -1,28 +1,35 @@
-import { CreateAuthOtpTokenDto } from './dto/create-auth-otp-token.dto';
-import { UserService } from "../../modules/user/user.service";
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateAuthOtpTokenDto, VerifyOtpDto } from './dto/create-auth-otp-token.dto';
+import { MailService } from '../mail/mail.service';
+import { Queue } from 'bullmq';
+import { ForgotPasswordDto } from "../../modules/auth/dto/create-auth.dto";
 export declare class AuthOtpTokenService {
-    private readonly userService;
+    private readonly mailQueue;
     private readonly prisma;
-    constructor(userService: UserService, prisma: PrismaService);
-    create(createAuthOtpTokenDto: CreateAuthOtpTokenDto): Promise<{
-        id: string;
-        email: string;
-        code: string;
-        expiresAt: Date;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
+    private readonly mailService;
+    constructor(mailQueue: Queue, prisma: PrismaService, mailService: MailService);
+    verificationOtpEmail(dto: CreateAuthOtpTokenDto): Promise<{
+        message: string;
     }>;
-    findCode(code: string): import("@prisma/client").Prisma.Prisma__OtpClient<{
+    sendForgotPasswordEmail(dto: ForgotPasswordDto): Promise<void>;
+    findCode(email: string): import("@prisma/client").Prisma.Prisma__OtpClient<{
         id: string;
         email: string;
         code: string;
         expiresAt: Date;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
-    verifyOtp(code: string): Promise<void>;
-    remove(id: number): string;
+    verifyOtp(verifyOtpDto: VerifyOtpDto): Promise<string>;
+    deleteOtp(id: string): import("@prisma/client").Prisma.Prisma__OtpClient<{
+        id: string;
+        email: string;
+        code: string;
+        expiresAt: Date;
+        userId: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+    private generateAndStore;
 }

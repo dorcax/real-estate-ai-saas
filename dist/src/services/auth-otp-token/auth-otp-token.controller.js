@@ -22,10 +22,13 @@ let AuthOtpTokenController = class AuthOtpTokenController {
         this.authOtpTokenService = authOtpTokenService;
     }
     create(createAuthOtpTokenDto) {
-        return this.authOtpTokenService.create(createAuthOtpTokenDto);
+        return this.authOtpTokenService.verificationOtpEmail(createAuthOtpTokenDto);
+    }
+    verify(dto) {
+        return this.authOtpTokenService.verifyOtp(dto);
     }
     remove(id) {
-        return this.authOtpTokenService.remove(+id);
+        return this.authOtpTokenService.deleteOtp(id);
     }
 };
 exports.AuthOtpTokenController = AuthOtpTokenController;
@@ -37,7 +40,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthOtpTokenController.prototype, "create", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Post)('verify'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_auth_otp_token_dto_1.VerifyOtpDto]),
+    __metadata("design:returntype", void 0)
+], AuthOtpTokenController.prototype, "verify", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
