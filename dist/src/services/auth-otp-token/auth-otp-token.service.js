@@ -50,8 +50,8 @@ const common_1 = require("@nestjs/common");
 const argon2 = __importStar(require("argon2"));
 const date_fns_1 = require("date-fns");
 const generateOtp_1 = require("../../utils/generateOtp");
-const prisma_service_1 = require("../prisma/prisma.service");
 const mail_service_1 = require("../mail/mail.service");
+const prisma_service_1 = require("../prisma/prisma.service");
 const bullmq_1 = require("@nestjs/bullmq");
 const bullmq_2 = require("bullmq");
 let AuthOtpTokenService = class AuthOtpTokenService {
@@ -68,7 +68,8 @@ let AuthOtpTokenService = class AuthOtpTokenService {
         await this.mailQueue.add("send-verification-email", {
             email: otpData.email,
             name: otpData.name,
-            userId: otpData.userId
+            userId: otpData.userId,
+            code: otpData.code
         });
         return {
             message: 'OTP sent successfully',
@@ -79,19 +80,24 @@ let AuthOtpTokenService = class AuthOtpTokenService {
         await this.mailQueue.add("send-reset-password-email", {
             email: otpData.email,
             name: otpData.name,
-            userId: otpData.userId
+            userId: otpData.userId,
+            expiresAt: otpData.ExpiresInMinute,
+            code: otpData.code
         });
     }
-    findCode(email) {
+    findOtpByEmail(email) {
         return this.prisma.otp.findFirst({
             where: {
                 email,
             },
+            orderBy: {
+                createdAt: "desc"
+            }
         });
     }
     async verifyOtp(verifyOtpDto) {
         const { email, code } = verifyOtpDto;
-        const otp = await this.findCode(email);
+        const otp = await this.findOtpByEmail(email);
         if (!otp)
             throw new common_1.BadRequestException('invalid otp');
         const isExpired = (0, date_fns_1.isAfter)(new Date(), otp.expiresAt);
@@ -120,6 +126,11 @@ let AuthOtpTokenService = class AuthOtpTokenService {
     }
     async generateAndStore(dto, ExpiresInMinute) {
         const { email, userId, name } = dto;
+        await this.prisma.otp.deleteMany({
+            where: {
+                email
+            }
+        });
         const otp = (0, generateOtp_1.generateOtp)();
         const hashedOtp = await argon2.hash(otp);
         const otpToken = await this.prisma.otp.create({
@@ -137,7 +148,9 @@ let AuthOtpTokenService = class AuthOtpTokenService {
         return {
             email,
             name,
-            userId
+            userId,
+            code: otp,
+            ExpiresInMinute
         };
     }
 };

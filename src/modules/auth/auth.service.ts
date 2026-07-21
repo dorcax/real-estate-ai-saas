@@ -11,9 +11,12 @@ import {
   CreateAuthDto,
   ForgotPasswordDto,
   LoginUserDto,
+  ResendOtpDto,
+  ResetPasswordDto,
 } from './dto/create-auth.dto';
 import { AuthOtpTokenService } from 'src/services/auth-otp-token/auth-otp-token.service';
 import { MailJob } from 'src/services/event/entities/event.entity';
+import { isAfter } from 'date-fns';
 
 @Injectable()
 export class AuthService {
@@ -86,16 +89,71 @@ export class AuthService {
     if (!user) throw new BadRequestException('User not found');
     // send mail  link
     await this.authOtpTokenService.sendForgotPasswordEmail({
-      // name: user.fullName,
       email: user.email,
-      // userId:user.id
+      userId: user.id,
+      name: user.fullName,
     });
   }
 
-
   // resend otp
-  // reset password
-  
+  async resendOtp(dto: ResendOtpDto) {
+    const { email } = dto;
+    const user = await this.findUser({ email });
+    if (!user) throw new BadRequestException('user not found ');
+
+    // check if email is already verified
+    if (user.isVerified)
+      throw new ConflictException('User is already verified');
+
+    // check if the otp have not expired
+    const otp = await this.authOtpTokenService.findOtpByEmail(user.email);
+
+    if (otp) {
+      const secondsSinceCreation =
+        (Date.now() - otp.createdAt.getTime()) / 1000;
+
+      if (secondsSinceCreation < 60) {
+        throw new BadRequestException(
+          'Please wait before requesting another OTP.',
+        );
+      }
+   const data = await this.authOtpTokenService.verificationOtpEmail({
+        email: user.email,
+        userId: user.id,
+        name: user.fullName,
+      });
+
+      console.log("resending code",data)
+
+      return {
+        message: 'OTP resent successfully',
+      };
+    }
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const { email, password, code } = dto;
+
+    const user = await this.findUser({ email });
+    if (!user) throw new BadRequestException('User not found');
+
+    // call the verify otp
+    const verifyOtp = await this.authOtpTokenService.verifyOtp({ email, code });
+    if (!verifyOtp) throw new BadRequestException('Invalid OTP');
+
+    // update the user password
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        password: await argon2.hash(password),
+      },
+    });
+    return {
+      message: 'Password reset successfully',
+    };
+  }
 
   private async findUser(where: Prisma.UserWhereUniqueInput) {
     return this.prisma.user.findUnique({

@@ -10,3 +10,11 @@ export declare class LoginUserDto {
 export declare class ForgotPasswordDto {
     email: string;
 }
+export declare class ResetPasswordDto {
+    email: string;
+    code: string;
+    password: string;
+}
+export declare class ResendOtpDto {
+    email: string;
+}

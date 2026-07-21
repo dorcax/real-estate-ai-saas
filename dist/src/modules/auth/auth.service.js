@@ -110,7 +110,53 @@ let AuthService = class AuthService {
             throw new common_1.BadRequestException('User not found');
         await this.authOtpTokenService.sendForgotPasswordEmail({
             email: user.email,
+            userId: user.id,
+            name: user.fullName,
         });
+    }
+    async resendOtp(dto) {
+        const { email } = dto;
+        const user = await this.findUser({ email });
+        if (!user)
+            throw new common_1.BadRequestException('user not found ');
+        if (user.isVerified)
+            throw new common_1.ConflictException('User is already verified');
+        const otp = await this.authOtpTokenService.findOtpByEmail(user.email);
+        if (otp) {
+            const secondsSinceCreation = (Date.now() - otp.createdAt.getTime()) / 1000;
+            if (secondsSinceCreation < 60) {
+                throw new common_1.BadRequestException('Please wait before requesting another OTP.');
+            }
+            const data = await this.authOtpTokenService.verificationOtpEmail({
+                email: user.email,
+                userId: user.id,
+                name: user.fullName,
+            });
+            console.log("resending code", data);
+            return {
+                message: 'OTP resent successfully',
+            };
+        }
+    }
+    async resetPassword(dto) {
+        const { email, password, code } = dto;
+        const user = await this.findUser({ email });
+        if (!user)
+            throw new common_1.BadRequestException('User not found');
+        const verifyOtp = await this.authOtpTokenService.verifyOtp({ email, code });
+        if (!verifyOtp)
+            throw new common_1.BadRequestException('Invalid OTP');
+        await this.prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                password: await argon2.hash(password),
+            },
+        });
+        return {
+            message: 'Password reset successfully',
+        };
     }
     async findUser(where) {
         return this.prisma.user.findUnique({

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMailDto } from './dto/create-mail.dto';
-import { UpdateMailDto } from './dto/update-mail.dto';
-import {Resend} from "resend"
 import { ConfigService } from '@nestjs/config';
-import {ReactElement } from "react"
+import * as React from "react"
+import { Resend } from "resend";
+import type { ReactElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+// import { render } from "@react-email/render";
+
 
 
 @Injectable()
@@ -13,17 +15,35 @@ export class MailService {
     this.resend  =new Resend(this.configService.get<string>("RESEND_API_KEY"))
 }
  
-async sendEmail(to:string,
+async sendEmail(
+  to:string,
   subject:string,
-  template:ReactElement
+   react:ReactElement
 ){
-return this.resend.emails.send({
-  from: this.configService.get<string>("RESEND_FROM_EMAIL"),
-  to,
-  subject,
-   template
-})
+  // const html=await render (email)
+  //  const html = renderToStaticMarkup(React.createElement(react));
+  const html = renderToStaticMarkup(react);
+
+  try {
+    const response =await this.resend.emails.send({
+      from:'onboarding@resend.dev',
+//  this.configService.get<string>("RESEND_FROM_EMAIL"),
+
+      to,
+      subject,
+      html
+    });
+ 
+
+    console.log('testing Resend response:', response);
+    return response;
+  } catch (error) {
+    console.error("Error sending email:", error);
+     throw error;
+  }
+
 }
 
   
 }
+

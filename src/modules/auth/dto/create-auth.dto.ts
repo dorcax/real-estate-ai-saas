@@ -29,3 +29,30 @@ export class ForgotPasswordDto {
   @IsEmail()
   email: string;
 }
+
+
+export class ResetPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  
+
+
+  @IsNotEmpty()
+  @IsString()
+  code:string
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+}
+
+
+export class ResendOtpDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  
+}

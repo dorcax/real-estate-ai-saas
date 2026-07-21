@@ -26,18 +26,21 @@ let MailProcessor = class MailProcessor extends bullmq_1.WorkerHost {
         this.mailService = mailService;
     }
     async process(job) {
+        console.log("Processing email job...");
+        console.log(job.data);
         switch (job.name) {
             case event_entity_1.MailJob.VERIFY_EMAIL:
                 await this.mailService.sendEmail(job.data.email, "Verify Your Email", react_1.default.createElement(OtpEmail_1.OtpEmail, {
                     name: job.data.name,
-                    code: job.data.otp,
+                    code: job.data.code,
                     year: new Date().getFullYear(),
                 }));
                 break;
             case event_entity_1.MailJob.RESET_PASSWORD:
                 await this.mailService.sendEmail(job.data.email, "Reset Your Password ", react_1.default.createElement(ForgotPassword_1.ForgotPasswordEmail, {
                     name: job.data.name,
-                    code: job.data.otp,
+                    code: job.data.code,
+                    expiresAt: job.data.expiresAt,
                     year: new Date().getFullYear(),
                 }));
                 break;

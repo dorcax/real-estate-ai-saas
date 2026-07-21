@@ -21,6 +21,8 @@ export class MailProcessor extends WorkerHost {
   }
 
   async process(job: Job<any>) {
+    console.log("Processing email job...");
+    console.log(job.data);
     switch (job.name) {
       case MailJob.VERIFY_EMAIL:
         await this.mailService.sendEmail(
@@ -28,10 +30,15 @@ export class MailProcessor extends WorkerHost {
           "Verify Your Email",
           React.createElement(OtpEmail, {
             name: job.data.name,
-            code: job.data.otp,
+            code: job.data.code,
             year: new Date().getFullYear(),
           }),
         );
+  //        <OtpEmail
+  //   name={job.data.name}
+  //   code={job.data.code}
+  //   year={new Date().getFullYear()}
+  // />)
         break;
 
         case MailJob.RESET_PASSWORD:
@@ -40,7 +47,8 @@ export class MailProcessor extends WorkerHost {
             "Reset Your Password ",
             React.createElement(ForgotPasswordEmail, {
               name: job.data.name,
-              code: job.data.otp,
+              code: job.data.code,
+              expiresAt: job.data.expiresAt,
               year: new Date().getFullYear(),
             }),
           );

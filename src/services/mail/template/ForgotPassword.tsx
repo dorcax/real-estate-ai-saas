@@ -3,12 +3,14 @@ import React from "react";
 interface ForgotPasswordEmailProps {
   name: string;
   code: string;
+  expiresAt:number ;
   year: number;
 }
 
 export const ForgotPasswordEmail = ({
   name,
   code,
+  expiresAt,
   year,
 }: ForgotPasswordEmailProps) => (
   <div className="bg-gray-100 min-h-screen py-8 px-4">
@@ -32,7 +34,7 @@ export const ForgotPasswordEmail = ({
         <p className="text-gray-700 mb-6">
           Use the One-Time Password (OTP) below to continue with resetting your
           password. This code is valid for{" "}
-          <span className="font-semibold text-red-600">10 minutes</span>.
+          <span className="font-semibold text-red-600">{expiresAt} minutes</span>.
         </p>
 
         {/* OTP */}

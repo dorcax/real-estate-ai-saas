@@ -12,6 +12,11 @@ export class CreateAuthOtpTokenDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
+
+
+//   @IsNotEmpty()
+//   @IsString()
+//   code: string;
 }
 
 export class VerifyOtpDto {

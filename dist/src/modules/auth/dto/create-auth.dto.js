@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ForgotPasswordDto = exports.LoginUserDto = exports.CreateAuthDto = void 0;
+exports.ResendOtpDto = exports.ResetPasswordDto = exports.ForgotPasswordDto = exports.LoginUserDto = exports.CreateAuthDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateAuthDto {
     fullName;
@@ -56,4 +56,34 @@ __decorate([
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], ForgotPasswordDto.prototype, "email", void 0);
+class ResetPasswordDto {
+    email;
+    code;
+    password;
+}
+exports.ResetPasswordDto = ResetPasswordDto;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], ResetPasswordDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ResetPasswordDto.prototype, "code", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ResetPasswordDto.prototype, "password", void 0);
+class ResendOtpDto {
+    email;
+}
+exports.ResendOtpDto = ResendOtpDto;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], ResendOtpDto.prototype, "email", void 0);
 //# sourceMappingURL=create-auth.dto.js.map
