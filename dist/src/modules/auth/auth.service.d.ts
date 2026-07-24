@@ -1,7 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
+import { AuthOtpTokenService } from "../../services/auth-otp-token/auth-otp-token.service";
 import { PrismaService } from "../../services/prisma/prisma.service";
 import { CreateAuthDto, ForgotPasswordDto, LoginUserDto, ResendOtpDto, ResetPasswordDto } from './dto/create-auth.dto';
-import { AuthOtpTokenService } from "../../services/auth-otp-token/auth-otp-token.service";
 export declare class AuthService {
     private readonly prisma;
     private readonly jwtService;
@@ -19,7 +19,7 @@ export declare class AuthService {
     forgotPassword(dto: ForgotPasswordDto): Promise<void>;
     resendOtp(dto: ResendOtpDto): Promise<{
         message: string;
-    } | undefined>;
+    }>;
     resetPassword(dto: ResetPasswordDto): Promise<{
         message: string;
     }>;

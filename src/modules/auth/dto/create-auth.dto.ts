@@ -1,9 +1,10 @@
+import { Role } from '@prisma/client';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateAuthDto {
   @IsNotEmpty()
   @IsString()
-  fullName: string;
+  fullName!: string;
   @IsNotEmpty()
   @IsString()
   password: string;
@@ -13,14 +14,14 @@ export class CreateAuthDto {
 }
 
 
-export class LoginUserDto{
-    @IsNotEmpty()
-    @IsEmail()
-    email: string;
+export class LoginUserDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
-    @IsNotEmpty()
-    @IsString()
-    password: string;
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 }
 
 
@@ -36,12 +37,12 @@ export class ResetPasswordDto {
   @IsEmail()
   email: string;
 
-  
+
 
 
   @IsNotEmpty()
   @IsString()
-  code:string
+  code: string
 
   @IsNotEmpty()
   @IsString()
@@ -54,5 +55,10 @@ export class ResendOtpDto {
   @IsEmail()
   email: string;
 
-  
+
+}
+
+export class userEntity {
+  id:string
+  role :Role
 }

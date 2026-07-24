@@ -9,6 +9,7 @@ import { MailModule } from './services/mail/mail.module';
 import { EventModule } from './services/event/event.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
+import { CompanyModule } from './modules/company/company.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { BullModule } from '@nestjs/bullmq';
     AuthOtpTokenModule,
     MailModule,
     EventModule,
+    CompanyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

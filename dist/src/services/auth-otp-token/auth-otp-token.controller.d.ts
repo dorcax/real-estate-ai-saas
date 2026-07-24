@@ -9,8 +9,8 @@ export declare class AuthOtpTokenController {
     verify(dto: VerifyOtpDto): Promise<string>;
     remove(id: string): import("@prisma/client").Prisma.Prisma__OtpClient<{
         email: string;
-        code: string;
         userId: string;
+        code: string;
         id: string;
         expiresAt: Date;
         createdAt: Date;

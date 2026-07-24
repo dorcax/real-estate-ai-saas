@@ -15,7 +15,7 @@ export declare class AuthController {
     forgotPassword(dto: ForgotPasswordDto): Promise<void>;
     resendOtp(dto: ResendOtpDto): Promise<{
         message: string;
-    } | undefined>;
+    }>;
     resetPassword(dto: ResetPasswordDto): Promise<{
         message: string;
     }>;

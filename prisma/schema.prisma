@@ -18,16 +18,80 @@ enum Role {
   ADMIN
 }
 
+enum PropertyType {
+  HOUSE
+  LAND
+  APARTMENT
+  OFFICE
+  SHOP
+}
+
+enum PropertyPurpose {
+  RENT
+  SELL
+  LEASE
+}
+
+enum PropertyStatus {
+  SOLD
+  AVAILABLE
+  PENDING
+  RENTED
+}
+
+enum leadStatus {
+  NEW
+  QUALIFIED
+  CONTACTED
+  CLOSED
+  APPOINTED_BOOKED
+}
+
+enum AppointmentStatus {
+  PENDING
+  CANCELLED
+  CONFIRMED
+  COMPLETED
+}
+
+enum LeadStatus {
+  NEW
+  QUALIFIED
+  CONTACTED
+  APPOINTMENT_BOOKED
+  CLOSED
+  LOST
+}
+
+enum AIAgentType {
+  BUY
+  SELL
+  RENT
+  RECEPTIONIST
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
 model User {
-  id         String   @id @default(uuid())
-  fullName   String
-  password   String
-  email      String   @unique
-  role       Role     @default(AGENT)
-  isVerified Boolean  @default(false)
-  otp        Otp[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            String         @id @default(uuid())
+  fullName      String
+  password      String
+  email         String         @unique
+  role          Role           @default(AGENT)
+  isVerified    Boolean        @default(false)
+  otp           Otp[]
+  company       Company        @relation(fields: [companyId], references: [id])
+  companyId     String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  leads         Lead[]
+  appointsments Appointment[]
+  notifications Notification[]
 }
 
 model Otp {
@@ -42,12 +106,249 @@ model Otp {
 }
 
 model Company {
-  id          String @id @default(uuid())
-  name        String
-  email       String @unique
-  phoneNumber String
-  address     String
-  description String
-  createdAt   String
-  updatedAt   String
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  phoneNumber   String
+  address       String?
+  website       String?
+  // logo          String?
+  logoImage     PropertyImage?
+  description   String
+  users         User[]
+  properties    Property[]
+  customers     Customer[]
+  AiAgents      AIAgent[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime @default(now())
+  subscriptions Subscription[]
+}
+
+model Property {
+  id              String          @id @default(uuid())
+  title           String
+  description     String
+  price           Int
+  address         String
+  state           String
+  country         String
+  propertyType    PropertyType    @default(APARTMENT)
+  propertyPurpose PropertyPurpose @default(SELL)
+  propertyStatus  PropertyStatus
+  company         Company         @relation(fields: [companyId], references: [id])
+  companyId       String
+  bedrooms        Int?
+  bathrooms       Int?
+  parkingSpace    Int
+  propertyImages  PropertyImage[]
+  leads           Lead[]
+  appointments    Appointment[]
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  name       String
+  publicUrl  String
+  createdAt  String
+  company    Company  @relation(fields: [companyId], references: [id])
+  companyId  String   @unique
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model Customer {
+  id            String         @id @default(uuid())
+  fullName      String
+  email         String
+  phone         String
+  company       Company        @relation(fields: [companyId], references: [id])
+  companyId     String
+  leads         Lead[]
+  appointments  Appointment[]
+  calls         Call[]
+  conversations Conversation[]
+}
+
+model Lead {
+  id     String   @id @default(cuid())
+  budget Decimal? @db.Decimal(12, 2)
+
+  notes String?
+
+  status LeadStatus @default(NEW)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id])
+
+  assignedAgentId String?
+  assignedAgent   User?   @relation(fields: [assignedAgentId], references: [id])
+
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Appointment {
+  id String  @id @default(uuid())
+
+  appointmentDate DateTime
+
+  status AppointmentStatus @default(PENDING)
+
+  notes String?
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model AIAgent {
+  id String @id @default(cuid())
+
+  name String
+
+  type AIAgentType
+
+  voiceId String?
+
+  prompt String
+
+  isActive Boolean @default(true)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  conversations Conversation[]
+  calls         Call[]
+
+  createdAt DateTime @default(now())
+}
+
+model Call {
+  id String @id @default(cuid())
+
+  phone String
+
+  duration Int?
+
+  recordingUrl String?
+
+  startedAt DateTime
+
+  endedAt DateTime?
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  agentId String
+  agent   AIAgent @relation(fields: [agentId], references: [id])
+
+  conversation Conversation?
+
+  createdAt DateTime @default(now())
+}
+
+model Conversation {
+  id String @id @default(cuid())
+
+  transcript String
+
+  summary String?
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  callId String @unique
+  call   Call   @relation(fields: [callId], references: [id])
+
+  agentId String
+  agent   AIAgent @relation(fields: [agentId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Plan {
+  id String @id @default(cuid())
+
+  name String
+
+  price Decimal @db.Decimal(10, 2)
+
+  maxAgents Int
+
+  maxProperties Int
+
+  maxCalls Int
+
+  maxAiAgents Int
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id String @id @default(cuid())
+
+  status SubscriptionStatus
+
+  stripeCustomerId String
+
+  stripeSubscriptionId String
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  payments Payment[]
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  amount Decimal @db.Decimal(10, 2)
+
+  currency String
+
+  status String
+
+  stripePaymentIntent String
+
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id String @id @default(cuid())
+
+  title String
+
+  message String
+
+  isRead Boolean @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }

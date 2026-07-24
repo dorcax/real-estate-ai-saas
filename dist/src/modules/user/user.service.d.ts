@@ -12,15 +12,15 @@ export declare class UserService {
     }>;
     login(LoginDto: LoginUserDto): Promise<void>;
     findUser(where: Prisma.UserWhereUniqueInput): Promise<{
+        email: string;
         fullName: string;
         password: string;
-        email: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         role: import("@prisma/client").$Enums.Role;
         isVerified: boolean;
-    } | null>;
+    }>;
     findAll(): string;
     findOne(id: number): string;
     update(id: number, updateUserDto: UpdateUserDto): string;

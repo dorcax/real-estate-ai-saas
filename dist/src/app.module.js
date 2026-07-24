@@ -18,6 +18,7 @@ const mail_module_1 = require("./services/mail/mail.module");
 const event_module_1 = require("./services/event/event.module");
 const config_1 = require("@nestjs/config");
 const bullmq_1 = require("@nestjs/bullmq");
+const company_module_1 = require("./modules/company/company.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -45,6 +46,7 @@ exports.AppModule = AppModule = __decorate([
             auth_otp_token_module_1.AuthOtpTokenModule,
             mail_module_1.MailModule,
             event_module_1.EventModule,
+            company_module_1.CompanyModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

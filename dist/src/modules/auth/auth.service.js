@@ -46,8 +46,8 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const argon2 = __importStar(require("argon2"));
-const prisma_service_1 = require("../../services/prisma/prisma.service");
 const auth_otp_token_service_1 = require("../../services/auth-otp-token/auth-otp-token.service");
+const prisma_service_1 = require("../../services/prisma/prisma.service");
 let AuthService = class AuthService {
     prisma;
     jwtService;

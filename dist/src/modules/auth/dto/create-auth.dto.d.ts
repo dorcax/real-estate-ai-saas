@@ -1,3 +1,4 @@
+import { Role } from '@prisma/client';
 export declare class CreateAuthDto {
     fullName: string;
     password: string;
@@ -17,4 +18,8 @@ export declare class ResetPasswordDto {
 }
 export declare class ResendOtpDto {
     email: string;
+}
+export declare class userEntity {
+    id: string;
+    role: Role;
 }

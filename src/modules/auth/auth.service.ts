@@ -6,6 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import * as argon2 from 'argon2';
+import { AuthOtpTokenService } from 'src/services/auth-otp-token/auth-otp-token.service';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import {
   CreateAuthDto,
@@ -14,9 +15,6 @@ import {
   ResendOtpDto,
   ResetPasswordDto,
 } from './dto/create-auth.dto';
-import { AuthOtpTokenService } from 'src/services/auth-otp-token/auth-otp-token.service';
-import { MailJob } from 'src/services/event/entities/event.entity';
-import { isAfter } from 'date-fns';
 
 @Injectable()
 export class AuthService {
