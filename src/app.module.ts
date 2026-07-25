@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { CompanyModule } from './modules/company/company.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { PropertyModule } from './modules/property/property.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { UploadModule } from './modules/upload/upload.module';
     EventModule,
     CompanyModule,
     UploadModule,
+    PropertyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
