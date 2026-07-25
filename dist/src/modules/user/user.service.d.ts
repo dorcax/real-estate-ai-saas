@@ -20,6 +20,7 @@ export declare class UserService {
         updatedAt: Date;
         role: import("@prisma/client").$Enums.Role;
         isVerified: boolean;
+        companyId: string | null;
     }>;
     findAll(): string;
     findOne(id: number): string;

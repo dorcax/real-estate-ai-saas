@@ -9,40 +9,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CompanyService = void 0;
+exports.UploadService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../services/prisma/prisma.service");
-let CompanyService = class CompanyService {
+const cloudinary_config_1 = require("../config/cloudinary.config");
+let UploadService = class UploadService {
     prismaService;
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    async create(createCompanyDto, currentUser) {
-        const { name, description, address, email, phoneNumber, logoId } = createCompanyDto;
-        const existingCompany = await this.prismaService.company.findFirst({
+    async create(file, currentUser) {
+        const uploadResult = await (0, cloudinary_config_1.handleUpload)(file.buffer);
+        const lastUpload = await this.prismaService.upload.findFirst({
             where: {
-                OR: [
-                    { email },
-                    { name }
-                ]
-            }
+                userId: currentUser.id,
+            },
+            orderBy: {
+                order: 'desc',
+            },
+            select: {
+                order: true,
+            },
         });
-        if (existingCompany) {
-            throw new common_1.ConflictException('Company with this email or name already exists');
-        }
-        const createCompany = await this.prismaService.company.create({
+        const nextOrder = lastUpload ? lastUpload.order + 1 : 1;
+        const data = await this.prismaService.upload.create({
             data: {
-                name,
-                description,
-                address,
-                email,
-                phoneNumber,
-                logo: {
-                    connect: {
-                        id: logoId
-                    }
-                },
-                users: {
+                name: file.filename,
+                url: uploadResult.secure_url,
+                publicId: uploadResult.public_id,
+                type: file.mimetype,
+                order: nextOrder,
+                user: {
                     connect: {
                         id: currentUser.id
                     }
@@ -50,26 +47,25 @@ let CompanyService = class CompanyService {
             }
         });
         return {
-            message: "company corrected created ",
-            data: createCompany
+            message: 'company successfully created'
         };
     }
     findAll() {
-        return `This action returns all company`;
+        return `This action returns all upload`;
     }
     findOne(id) {
-        return `This action returns a #${id} company`;
+        return `This action returns a #${id} upload`;
     }
-    update(id, updateCompanyDto) {
-        return `This action updates a #${id} company`;
+    update(id, updateUploadDto) {
+        return `This action updates a #${id} upload`;
     }
     remove(id) {
-        return `This action removes a #${id} company`;
+        return `This action removes a #${id} upload`;
     }
 };
-exports.CompanyService = CompanyService;
-exports.CompanyService = CompanyService = __decorate([
+exports.UploadService = UploadService;
+exports.UploadService = UploadService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], CompanyService);
-//# sourceMappingURL=company.service.js.map
+], UploadService);
+//# sourceMappingURL=upload.service.js.map

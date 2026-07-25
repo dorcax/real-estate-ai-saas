@@ -7,6 +7,18 @@ export declare class CompanyService {
     constructor(prismaService: PrismaService);
     create(createCompanyDto: CreateCompanyDto, currentUser: userEntity): Promise<{
         message: string;
+        data: {
+            id: string;
+            name: string;
+            email: string;
+            phoneNumber: string;
+            address: string | null;
+            website: string | null;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            logoId: string;
+        };
     }>;
     findAll(): string;
     findOne(id: number): string;

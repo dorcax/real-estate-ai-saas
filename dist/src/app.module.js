@@ -19,6 +19,7 @@ const event_module_1 = require("./services/event/event.module");
 const config_1 = require("@nestjs/config");
 const bullmq_1 = require("@nestjs/bullmq");
 const company_module_1 = require("./modules/company/company.module");
+const upload_module_1 = require("./modules/upload/upload.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -47,6 +48,7 @@ exports.AppModule = AppModule = __decorate([
             mail_module_1.MailModule,
             event_module_1.EventModule,
             company_module_1.CompanyModule,
+            upload_module_1.UploadModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

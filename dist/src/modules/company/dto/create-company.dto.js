@@ -17,6 +17,7 @@ class CreateCompanyDto {
     phoneNumber;
     description;
     address;
+    logoId;
 }
 exports.CreateCompanyDto = CreateCompanyDto;
 __decorate([
@@ -44,4 +45,9 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "address", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "logoId", void 0);
 //# sourceMappingURL=create-company.dto.js.map

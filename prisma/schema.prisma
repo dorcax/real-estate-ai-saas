@@ -39,14 +39,6 @@ enum PropertyStatus {
   RENTED
 }
 
-enum leadStatus {
-  NEW
-  QUALIFIED
-  CONTACTED
-  CLOSED
-  APPOINTED_BOOKED
-}
-
 enum AppointmentStatus {
   PENDING
   CANCELLED
@@ -85,13 +77,14 @@ model User {
   role          Role           @default(AGENT)
   isVerified    Boolean        @default(false)
   otp           Otp[]
-  company       Company        @relation(fields: [companyId], references: [id])
-  companyId     String
+  company       Company?        @relation(fields: [companyId], references: [id])
+  companyId     String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   leads         Lead[]
   appointsments Appointment[]
   notifications Notification[]
+  uploads       Upload[]
 }
 
 model Otp {
@@ -112,15 +105,15 @@ model Company {
   phoneNumber   String
   address       String?
   website       String?
-  // logo          String?
-  logoImage     PropertyImage?
+  logo          Upload         @relation(fields: [logoId], references: [id])
+  logoId        String         @unique
   description   String
   users         User[]
   properties    Property[]
   customers     Customer[]
   AiAgents      AIAgent[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime @default(now())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt()
   subscriptions Subscription[]
 }
 
@@ -140,20 +133,44 @@ model Property {
   bedrooms        Int?
   bathrooms       Int?
   parkingSpace    Int
-  propertyImages  PropertyImage[]
-  leads           Lead[]
-  appointments    Appointment[]
+
+  leads         Lead[]
+  appointments  Appointment[]
+  attachment    Attachments   @relation(fields: [attachmentsId], references: [id])
+  attachmentsId String        @unique
+  createdAt DateTime @default(now())
 }
 
-model PropertyImage {
-  id         String   @id @default(uuid())
-  name       String
-  publicUrl  String
-  createdAt  String
-  company    Company  @relation(fields: [companyId], references: [id])
-  companyId  String   @unique
-  property   Property @relation(fields: [propertyId], references: [id])
-  propertyId String
+model Upload {
+  id       String @id @default(uuid())
+  name     String
+  type     String
+  publicId String
+  url      String
+
+  order         Int
+  user          User         @relation(fields: [userId], references: [id])
+  userId        String
+  company       Company?
+  attachment    Attachments? @relation(fields: [attachmentsId], references: [id])
+  attachmentsId String?
+  createdAt     DateTime     @default(now())
+}
+
+model Attachments {
+  id            String         @id @default(uuid())
+  uploads       Upload[]
+  properties    Property[]
+  leads         Lead[]
+  appointments  Appointment[]
+  calls         Call[]
+  conversations Conversation[]
+  payments      Payment[]
+
+  notifications Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Customer {
@@ -186,14 +203,16 @@ model Lead {
   assignedAgentId String?
   assignedAgent   User?   @relation(fields: [assignedAgentId], references: [id])
 
-  appointments Appointment[]
+  appointments  Appointment[]
+  attachment    Attachments   @relation(fields: [attachmentsId], references: [id])
+  attachmentsId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Appointment {
-  id String  @id @default(uuid())
+  id String @id @default(uuid())
 
   appointmentDate DateTime
 
@@ -210,8 +229,10 @@ model Appointment {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  leadId String?
-  lead   Lead?   @relation(fields: [leadId], references: [id])
+  leadId        String?
+  lead          Lead?        @relation(fields: [leadId], references: [id])
+  attachment    Attachments? @relation(fields: [attachmentsId], references: [id])
+  attachmentsId String?
 
   createdAt DateTime @default(now())
 }
@@ -254,8 +275,10 @@ model Call {
   customerId String?
   customer   Customer? @relation(fields: [customerId], references: [id])
 
-  agentId String
-  agent   AIAgent @relation(fields: [agentId], references: [id])
+  agentId       String
+  agent         AIAgent     @relation(fields: [agentId], references: [id])
+  attachment    Attachments @relation(fields: [attachmentsId], references: [id])
+  attachmentsId String
 
   conversation Conversation?
 
@@ -275,8 +298,10 @@ model Conversation {
   callId String @unique
   call   Call   @relation(fields: [callId], references: [id])
 
-  agentId String
-  agent   AIAgent @relation(fields: [agentId], references: [id])
+  agentId       String
+  agent         AIAgent     @relation(fields: [agentId], references: [id])
+  attachment    Attachments @relation(fields: [attachmentsId], references: [id])
+  attachmentsId String
 
   createdAt DateTime @default(now())
 }
@@ -334,6 +359,8 @@ model Payment {
 
   subscriptionId String
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  attachment     Attachments  @relation(fields: [attachmentsId], references: [id])
+  attachmentsId  String
 
   createdAt DateTime @default(now())
 }
@@ -347,8 +374,10 @@ model Notification {
 
   isRead Boolean @default(false)
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  attachment    Attachments @relation(fields: [attachmentsId], references: [id])
+  attachmentsId String
 
   createdAt DateTime @default(now())
 }

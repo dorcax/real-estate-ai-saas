@@ -8,7 +8,7 @@ import { userEntity } from '../auth/dto/create-auth.dto';
 export class CompanyService {
   constructor(private readonly prismaService: PrismaService) { }
   async create(createCompanyDto: CreateCompanyDto, currentUser: userEntity) {
-    const { name, description, address, email, phoneNumber } = createCompanyDto
+    const { name, description, address, email, phoneNumber, logoId } = createCompanyDto
     // check if company already exist  
     const existingCompany = await this.prismaService.company.findFirst({
       where: {
@@ -22,29 +22,32 @@ export class CompanyService {
     if (existingCompany) {
       throw new ConflictException('Company with this email or name already exists');
     }
-    
+
     const createCompany = await this.prismaService.company.create({
       data: {
         name,
+        
         description,
         address,
         email,
         phoneNumber,
-        logoImage: {
+        logo: {
           connect: {
-            id: currentUser.id
+            id: logoId
           }
 
         },
-        user: {
+        users: {
           connect: {
             id: currentUser.id
           }
         }
+
       }
     })
     return {
-      message: "company corrected created "
+      message: "company corrected created ",
+      data:createCompany
     }
   }
 
