@@ -10,12 +10,9 @@ export class CompanyService {
   async create(createCompanyDto: CreateCompanyDto, currentUser: userEntity) {
     const { name, description, address, email, phoneNumber, logoId } = createCompanyDto
     // check if company already exist  
-    const existingCompany = await this.prismaService.company.findFirst({
+    const existingCompany = await this.prismaService.company.findUnique({
       where: {
-        OR: [
-          { email },
-          { name }
-        ]
+        email
       }
     });
 
@@ -26,20 +23,22 @@ export class CompanyService {
     const createCompany = await this.prismaService.company.create({
       data: {
         name,
-        
         description,
         address,
         email,
         phoneNumber,
-        logo: {
-          connect: {
-            id: logoId
-          }
+        ...(logoId && {
+          logo: {
+            connect: {
+              id: logoId
+            }
 
-        },
+          }
+        }),
         users: {
           connect: {
             id: currentUser.id
+
           }
         }
 
@@ -47,7 +46,7 @@ export class CompanyService {
     })
     return {
       message: "company corrected created ",
-      data:createCompany
+      data: createCompany
     }
   }
 

@@ -4,7 +4,10 @@ import { UpdatePropertyDto } from './dto/update-property.dto';
 
 @Injectable()
 export class PropertyService {
-  create(createPropertyDto: CreatePropertyDto) {
+  create(dto: CreatePropertyDto) {
+    const {title,description,price ,address,country} =dto
+    // find the company exist aand user 
+    
     return 'This action adds a new property';
   }
 

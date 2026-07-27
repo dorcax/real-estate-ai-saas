@@ -70,9 +70,11 @@ export class AuthService {
     }
 
     // create a jwt session
+    
     const payload = {
       id: existingUser.id,
       email: existingUser.email,
+      role:existingUser.role
     };
     const token = await this.jwtService.signAsync(payload);
     return {

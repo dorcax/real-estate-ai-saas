@@ -27,7 +27,7 @@ export class UploadService {
     const nextOrder = lastUpload ? lastUpload.order + 1 : 1;
     const data = await this.prismaService.upload.create({
       data: {
-        name: file.filename,
+        name: file.originalname,
         url: uploadResult.secure_url,
         publicId: uploadResult.public_id,
         type: file.mimetype,
@@ -39,10 +39,11 @@ export class UploadService {
         }
       }
 
+
     })
   
     return {
-      message:'company successfully created'
+      message:'upload successfully created'
     }
 
   }

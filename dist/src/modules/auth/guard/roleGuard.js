@@ -21,13 +21,15 @@ let RoleGuard = class RoleGuard {
     canActivate(context) {
         const requiredRole = this.reflector.getAllAndOverride(roles_decorator_1.Role_key, [
             context.getHandler(),
-            context.getClass()
+            context.getClass(),
         ]);
         if (!requiredRole) {
             return true;
         }
         const { user } = context.switchToHttp().getRequest();
-        return requiredRole.some((role) => user.role.includes(role));
+        console.log('Authenticated user:', user.role);
+        console.log('Required roles:', requiredRole);
+        return requiredRole.includes(user.role);
     }
 };
 exports.RoleGuard = RoleGuard;

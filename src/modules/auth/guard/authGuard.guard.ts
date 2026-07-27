@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate{
 
    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest()
-        const token =request.ExtractFromHeader(request)
+        const token =this.ExtractFromHeader(request)
 
         if(!token){
             throw new UnauthorizedException()
@@ -32,8 +32,9 @@ export class AuthGuard implements CanActivate{
                 throw new UnauthorizedException()
             }
         request.user =decode
+        console.log("Request user set:", request.user);
         } catch (error) {
-        throw new error
+        throw error
         }
         
          return true 

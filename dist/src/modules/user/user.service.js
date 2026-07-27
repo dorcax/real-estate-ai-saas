@@ -100,8 +100,12 @@ let UserService = class UserService {
     update(id, updateUserDto) {
         return `This action updates a #${id} user`;
     }
-    remove(id) {
-        return `This action removes a #${id} user`;
+    async remove(id) {
+        return await this.prisma.user.delete({
+            where: {
+                id
+            }
+        });
     }
 };
 exports.UserService = UserService;

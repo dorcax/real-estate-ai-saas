@@ -12,5 +12,15 @@ export declare class UserController {
     findAll(): string;
     findOne(id: string): string;
     update(id: string, updateUserDto: UpdateUserDto): string;
-    remove(id: string): string;
+    remove(id: string): Promise<{
+        email: string;
+        fullName: string;
+        password: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        role: import("@prisma/client").$Enums.Role;
+        isVerified: boolean;
+        companyId: string | null;
+    }>;
 }

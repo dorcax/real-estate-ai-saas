@@ -22,7 +22,7 @@ let AuthGuard = class AuthGuard {
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
-        const token = request.ExtractFromHeader(request);
+        const token = this.ExtractFromHeader(request);
         if (!token) {
             throw new common_1.UnauthorizedException();
         }
@@ -39,9 +39,10 @@ let AuthGuard = class AuthGuard {
                 throw new common_1.UnauthorizedException();
             }
             request.user = decode;
+            console.log("Request user set:", request.user);
         }
         catch (error) {
-            throw new error;
+            throw error;
         }
         return true;
     }

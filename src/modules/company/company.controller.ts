@@ -9,7 +9,7 @@ import { userEntity } from '../auth/dto/create-auth.dto';
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 
-  @Auth(["OWNER"])
+  @Auth(["AGENT"])
   @Post()
   create(@Body() createCompanyDto: CreateCompanyDto, @AuthUser() currentUser:userEntity) {
     return this.companyService.create(createCompanyDto,currentUser);

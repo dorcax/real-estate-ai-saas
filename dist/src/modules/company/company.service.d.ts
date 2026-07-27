@@ -8,16 +8,16 @@ export declare class CompanyService {
     create(createCompanyDto: CreateCompanyDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
-            id: string;
-            name: string;
             email: string;
-            phoneNumber: string;
-            address: string | null;
-            website: string | null;
-            description: string;
+            name: string;
+            id: string;
             createdAt: Date;
             updatedAt: Date;
+            phoneNumber: string;
+            description: string;
+            address: string | null;
             logoId: string;
+            website: string | null;
         };
     }>;
     findAll(): string;

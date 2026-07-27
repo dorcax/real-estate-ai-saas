@@ -9,7 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PropertyService = void 0;
 const common_1 = require("@nestjs/common");
 let PropertyService = class PropertyService {
-    create(createPropertyDto) {
+    create(dto) {
+        const { title, description, price, address, country } = dto;
         return 'This action adds a new property';
     }
     findAll() {
