@@ -62,6 +62,13 @@ enum AIAgentType {
   RECEPTIONIST
 }
 
+enum InvitationStatus {
+  PENDING
+  CANCELLED
+  EXPIRED
+  ACCEPTED
+}
+
 enum SubscriptionStatus {
   TRIAL
   ACTIVE
@@ -77,7 +84,7 @@ model User {
   role          Role           @default(AGENT)
   isVerified    Boolean        @default(false)
   otp           Otp[]
-  company       Company?        @relation(fields: [companyId], references: [id])
+  company       Company?       @relation(fields: [companyId], references: [id])
   companyId     String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -92,29 +99,30 @@ model Otp {
   email     String
   code      String   @unique
   expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id],onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Company {
-  id            String         @id @default(uuid())
-  name          String
-  email         String         @unique
-  phoneNumber   String
-  address       String?
-  website       String?
-  logo          Upload         @relation(fields: [logoId], references: [id])
-  logoId        String         @unique
-  description   String
-  users         User[]
-  properties    Property[]
-  customers     Customer[]
-  AiAgents      AIAgent[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt()
-  subscriptions Subscription[]
+  id                 String              @id @default(uuid())
+  name               String
+  email              String              @unique
+  phoneNumber        String
+  address            String?
+  website            String?
+  logo               Upload              @relation(fields: [logoId], references: [id])
+  logoId             String              @unique
+  description        String
+  users              User[]
+  properties         Property[]
+  customers          Customer[]
+  AiAgents           AIAgent[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt()
+  subscriptions      Subscription[]
+  companyInvitations CompanyInvitation[]
 }
 
 model Property {
@@ -138,7 +146,7 @@ model Property {
   appointments  Appointment[]
   attachment    Attachments   @relation(fields: [attachmentsId], references: [id])
   attachmentsId String        @unique
-  createdAt DateTime @default(now())
+  createdAt     DateTime      @default(now())
 }
 
 model Upload {
@@ -209,6 +217,19 @@ model Lead {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model CompanyInvitation {
+  id        String           @id @default(uuid())
+  email     String
+  role      Role             @default(AGENT)
+  token     String
+  status    InvitationStatus @default(PENDING)
+  expiresAt DateTime
+  company   Company          @relation(fields: [companyId], references: [id])
+  companyId String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 }
 
 model Appointment {
