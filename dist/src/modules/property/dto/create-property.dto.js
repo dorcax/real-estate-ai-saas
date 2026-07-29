@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreatePropertyDto = void 0;
+const client_1 = require("@prisma/client");
 const class_validator_1 = require("class-validator");
 class CreatePropertyDto {
     title;
@@ -17,6 +18,14 @@ class CreatePropertyDto {
     price;
     address;
     country;
+    state;
+    attachmentsId;
+    propertyType;
+    propertyPurpose;
+    propertyStatus;
+    bedrooms;
+    bathrooms;
+    parkingSpace;
 }
 exports.CreatePropertyDto = CreatePropertyDto;
 __decorate([
@@ -44,4 +53,43 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreatePropertyDto.prototype, "country", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreatePropertyDto.prototype, "state", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], CreatePropertyDto.prototype, "attachmentsId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEnum)(client_1.PropertyType),
+    __metadata("design:type", String)
+], CreatePropertyDto.prototype, "propertyType", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEnum)(client_1.PropertyPurpose),
+    __metadata("design:type", String)
+], CreatePropertyDto.prototype, "propertyPurpose", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEnum)(client_1.PropertyStatus),
+    __metadata("design:type", String)
+], CreatePropertyDto.prototype, "propertyStatus", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreatePropertyDto.prototype, "bedrooms", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreatePropertyDto.prototype, "bathrooms", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreatePropertyDto.prototype, "parkingSpace", void 0);
 //# sourceMappingURL=create-property.dto.js.map

@@ -96,7 +96,7 @@ let AuthService = class AuthService {
         const payload = {
             id: existingUser.id,
             email: existingUser.email,
-            role: existingUser.role
+            role: existingUser.role,
         };
         const token = await this.jwtService.signAsync(payload);
         return {
@@ -133,7 +133,7 @@ let AuthService = class AuthService {
                 userId: user.id,
                 name: user.fullName,
             });
-            console.log("resending code", data);
+            console.log('resending code', data);
             return {
                 message: 'OTP resent successfully',
             };

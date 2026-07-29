@@ -17,13 +17,15 @@ const common_1 = require("@nestjs/common");
 const property_service_1 = require("./property.service");
 const create_property_dto_1 = require("./dto/create-property.dto");
 const update_property_dto_1 = require("./dto/update-property.dto");
+const create_auth_dto_1 = require("../auth/dto/create-auth.dto");
+const auth_decorator_1 = require("../auth/decorator/auth.decorator");
 let PropertyController = class PropertyController {
     propertyService;
     constructor(propertyService) {
         this.propertyService = propertyService;
     }
-    create(createPropertyDto) {
-        return this.propertyService.create(createPropertyDto);
+    create(createPropertyDto, currentUser) {
+        return this.propertyService.create(createPropertyDto, currentUser);
     }
     findAll() {
         return this.propertyService.findAll();
@@ -40,10 +42,12 @@ let PropertyController = class PropertyController {
 };
 exports.PropertyController = PropertyController;
 __decorate([
+    (0, auth_decorator_1.Auth)(['AGENT']),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, auth_decorator_1.AuthUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_property_dto_1.CreatePropertyDto]),
+    __metadata("design:paramtypes", [create_property_dto_1.CreatePropertyDto, create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], PropertyController.prototype, "create", null);
 __decorate([

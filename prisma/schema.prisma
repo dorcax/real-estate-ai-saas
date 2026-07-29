@@ -1,7 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
   provider = "prisma-client-js"
@@ -77,21 +74,24 @@ enum SubscriptionStatus {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  fullName      String
-  password      String
-  email         String         @unique
-  role          Role           @default(AGENT)
-  isVerified    Boolean        @default(false)
-  otp           Otp[]
-  company       Company?       @relation(fields: [companyId], references: [id])
-  companyId     String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  leads         Lead[]
-  appointsments Appointment[]
-  notifications Notification[]
-  uploads       Upload[]
+  id                 String              @id @default(uuid())
+  fullName           String
+  password           String
+  email              String              @unique
+  role               Role                @default(AGENT)
+  isVerified         Boolean             @default(false)
+  otp                Otp[]
+  company            Company?            @relation(fields: [companyId], references: [id])
+  companyId          String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  leads              Lead[]
+  appointsments      Appointment[]
+  notifications      Notification[]
+  uploads            Upload[]
+  propertyAgents PropertyAgent[]
+  invitionsSent      CompanyInvitation[] @relation("InvitationsSent")
+  
 }
 
 model Otp {
@@ -144,6 +144,7 @@ model Property {
 
   leads         Lead[]
   appointments  Appointment[]
+  assignedAgents PropertyAgent[]
   attachment    Attachments   @relation(fields: [attachmentsId], references: [id])
   attachmentsId String        @unique
   createdAt     DateTime      @default(now())
@@ -220,16 +221,19 @@ model Lead {
 }
 
 model CompanyInvitation {
-  id        String           @id @default(uuid())
-  email     String
-  role      Role             @default(AGENT)
-  token     String
-  status    InvitationStatus @default(PENDING)
-  expiresAt DateTime
-  company   Company          @relation(fields: [companyId], references: [id])
-  companyId String
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id          String           @id @default(uuid())
+  email       String
+  role        Role             @default(AGENT)
+  token       String
+  status      InvitationStatus @default(PENDING)
+  expiresAt   DateTime
+  company     Company          @relation(fields: [companyId], references: [id])
+  companyId   String
+  invitedById String
+  invitedBy   User             @relation("InvitationsSent", fields: [invitedById], references: [id])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  
 }
 
 model Appointment {
@@ -256,6 +260,22 @@ model Appointment {
   attachmentsId String?
 
   createdAt DateTime @default(now())
+}
+
+model PropertyAgent {
+  id String @id @default(cuid())
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  agentId String
+  agent   User @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  isPrimary Boolean @default(false)
+  assignedAt DateTime @default(now())
+
+  @@unique([propertyId, agentId])
+  @@index([agentId])
 }
 
 model AIAgent {

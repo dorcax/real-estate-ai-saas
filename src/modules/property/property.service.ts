@@ -1,14 +1,72 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { userEntity } from '../auth/dto/create-auth.dto';
 
 @Injectable()
 export class PropertyService {
-  create(dto: CreatePropertyDto) {
-    const {title,description,price ,address,country} =dto
-    // find the company exist aand user 
-    
-    return 'This action adds a new property';
+  constructor(private readonly PrismaService: PrismaService) {}
+  async create(dto: CreatePropertyDto, currentUser: userEntity) {
+    const {
+      title,
+      description,
+      price,
+      address,
+      country,
+      state,
+      attachmentsId,
+      propertyPurpose,
+      propertyType,
+      propertyStatus,
+      bedrooms,
+      parkingSpace,
+      bathrooms,
+    } = dto;
+    // find the company exist aand user
+    const existingCompany = await this.PrismaService.company.findFirst({
+      where: {
+        id: currentUser.companyId,
+      },
+    });
+
+    if (!existingCompany) throw new NotFoundException('company not found ');
+    // create property
+    const property = await this.PrismaService.property.create({
+      data: {
+        title,
+        description,
+        price,
+        address,
+        country,
+        state,
+        propertyStatus,
+        propertyType,
+        propertyPurpose,
+        bedrooms,
+        bathrooms,
+        parkingSpace,
+        company: {
+          connect: {
+            id: existingCompany.id,
+          },
+        },
+        ...(attachmentsId && {
+          attachment: {
+            create: {
+              uploads: {
+                connect: attachmentsId.map((id) => ({ id })),
+                
+              },
+            },
+          },
+        }),
+      },
+    });
+    return {
+      message: 'Property created successfully',
+      property,
+    };
   }
 
   findAll() {

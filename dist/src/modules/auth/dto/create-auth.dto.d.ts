@@ -22,4 +22,5 @@ export declare class ResendOtpDto {
 export declare class userEntity {
     id: string;
     role: Role;
+    companyId: string;
 }

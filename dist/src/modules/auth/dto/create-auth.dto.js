@@ -89,6 +89,7 @@ __decorate([
 class userEntity {
     id;
     role;
+    companyId;
 }
 exports.userEntity = userEntity;
 //# sourceMappingURL=create-auth.dto.js.map

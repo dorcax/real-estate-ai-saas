@@ -33,6 +33,13 @@ let AuthGuard = class AuthGuard {
             const user = await this.prismaService.user.findUnique({
                 where: {
                     id: decode.id
+                },
+                include: {
+                    company: {
+                        select: {
+                            id: true
+                        }
+                    }
                 }
             });
             if (!user) {

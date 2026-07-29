@@ -10,13 +10,14 @@ exports.PropertyModule = void 0;
 const common_1 = require("@nestjs/common");
 const property_service_1 = require("./property.service");
 const property_controller_1 = require("./property.controller");
+const prisma_service_1 = require("../../services/prisma/prisma.service");
 let PropertyModule = class PropertyModule {
 };
 exports.PropertyModule = PropertyModule;
 exports.PropertyModule = PropertyModule = __decorate([
     (0, common_1.Module)({
         controllers: [property_controller_1.PropertyController],
-        providers: [property_service_1.PropertyService],
+        providers: [property_service_1.PropertyService, prisma_service_1.PrismaService],
     })
 ], PropertyModule);
 //# sourceMappingURL=property.module.js.map

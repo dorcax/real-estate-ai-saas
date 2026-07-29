@@ -61,4 +61,5 @@ export class ResendOtpDto {
 export class userEntity {
   id:string
   role :Role
+  companyId:string 
 }

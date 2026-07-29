@@ -26,6 +26,14 @@ export class AuthGuard implements CanActivate{
             const user =await this.prismaService.user.findUnique({
                 where:{
                     id:decode.id
+                },
+                include:{
+                    
+                    company:{
+                        select:{
+                            id:true
+                        }
+                    }
                 }
             })
             if(!user){
@@ -36,6 +44,7 @@ export class AuthGuard implements CanActivate{
         } catch (error) {
         throw error
         }
+        
         
          return true 
     }

@@ -70,11 +70,11 @@ export class AuthService {
     }
 
     // create a jwt session
-    
+
     const payload = {
       id: existingUser.id,
       email: existingUser.email,
-      role:existingUser.role
+      role: existingUser.role,
     };
     const token = await this.jwtService.signAsync(payload);
     return {
@@ -117,13 +117,13 @@ export class AuthService {
           'Please wait before requesting another OTP.',
         );
       }
-   const data = await this.authOtpTokenService.verificationOtpEmail({
+      const data = await this.authOtpTokenService.verificationOtpEmail({
         email: user.email,
         userId: user.id,
         name: user.fullName,
       });
 
-      console.log("resending code",data)
+      console.log('resending code', data);
 
       return {
         message: 'OTP resent successfully',
