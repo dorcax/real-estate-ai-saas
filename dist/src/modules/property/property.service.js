@@ -18,7 +18,7 @@ let PropertyService = class PropertyService {
         this.PrismaService = PrismaService;
     }
     async create(dto, currentUser) {
-        const { title, description, price, address, country, state, attachmentsId, propertyPurpose, propertyType, propertyStatus, bedrooms, parkingSpace, bathrooms, } = dto;
+        const { title, description, price, address, country, state, currency, city, attachmentsId, amenities, propertyPurpose, propertyType, propertyStatus, bedrooms, parkingSpace, bathrooms, } = dto;
         const existingCompany = await this.PrismaService.company.findFirst({
             where: {
                 id: currentUser.companyId,
@@ -33,17 +33,25 @@ let PropertyService = class PropertyService {
                 price,
                 address,
                 country,
+                currency,
+                city,
                 state,
                 propertyStatus,
                 propertyType,
                 propertyPurpose,
                 bedrooms,
                 bathrooms,
+                amenities,
                 parkingSpace,
                 company: {
                     connect: {
                         id: existingCompany.id,
                     },
+                },
+                createdBy: {
+                    connect: {
+                        id: currentUser.id
+                    }
                 },
                 ...(attachmentsId && {
                     attachment: {

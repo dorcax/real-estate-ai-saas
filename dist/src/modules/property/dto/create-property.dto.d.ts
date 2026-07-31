@@ -6,7 +6,10 @@ export declare class CreatePropertyDto {
     address: string;
     country: string;
     state: string;
+    currency: string;
+    city: string;
     attachmentsId: string[];
+    amenities: string[];
     propertyType: PropertyType;
     propertyPurpose: PropertyPurpose;
     propertyStatus: PropertyStatus;

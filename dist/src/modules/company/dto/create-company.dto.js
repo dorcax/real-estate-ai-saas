@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateCompanyDto = void 0;
+exports.AcceptCompanyInvitationDto = exports.CreateCompanyInvitation = exports.CreateCompanyDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateCompanyDto {
     name;
@@ -50,4 +50,22 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "logoId", void 0);
+class CreateCompanyInvitation {
+    email;
+}
+exports.CreateCompanyInvitation = CreateCompanyInvitation;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyInvitation.prototype, "email", void 0);
+class AcceptCompanyInvitationDto {
+    token;
+}
+exports.AcceptCompanyInvitationDto = AcceptCompanyInvitationDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], AcceptCompanyInvitationDto.prototype, "token", void 0);
 //# sourceMappingURL=create-company.dto.js.map

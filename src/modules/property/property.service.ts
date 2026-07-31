@@ -15,7 +15,10 @@ export class PropertyService {
       address,
       country,
       state,
+      currency,
+      city,
       attachmentsId,
+      amenities,
       propertyPurpose,
       propertyType,
       propertyStatus,
@@ -39,17 +42,26 @@ export class PropertyService {
         price,
         address,
         country,
+        currency,
+        city,
         state,
         propertyStatus,
         propertyType,
         propertyPurpose,
         bedrooms,
         bathrooms,
+        amenities,
         parkingSpace,
         company: {
           connect: {
             id: existingCompany.id,
           },
+        },
+        createdBy:{
+          connect:{
+            id:currentUser.id
+          }
+
         },
         ...(attachmentsId && {
           attachment: {

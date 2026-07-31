@@ -13,6 +13,7 @@ exports.UploadService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../services/prisma/prisma.service");
 const cloudinary_config_1 = require("../config/cloudinary.config");
+const client_1 = require("@prisma/client");
 let UploadService = class UploadService {
     prismaService;
     constructor(prismaService) {
@@ -22,7 +23,7 @@ let UploadService = class UploadService {
         const uploadResult = await (0, cloudinary_config_1.handleUpload)(file.buffer);
         const lastUpload = await this.prismaService.upload.findFirst({
             where: {
-                userId: currentUser.id,
+                uploadedById: currentUser.id,
             },
             orderBy: {
                 order: 'desc',
@@ -37,11 +38,16 @@ let UploadService = class UploadService {
                 name: file.originalname,
                 url: uploadResult.secure_url,
                 publicId: uploadResult.public_id,
-                type: file.mimetype,
+                type: client_1.MediaType.IMAGE,
                 order: nextOrder,
-                user: {
+                uploadedBy: {
                     connect: {
                         id: currentUser.id
+                    }
+                },
+                company: {
+                    connect: {
+                        id: currentUser.companyId
                     }
                 }
             }

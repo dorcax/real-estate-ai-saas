@@ -25,3 +25,17 @@ export class CreateCompanyDto {
     @IsString()
     logoId: string
 }
+
+
+export class CreateCompanyInvitation {
+      @IsNotEmpty()
+    @IsString()
+    email:string 
+}
+
+
+export class AcceptCompanyInvitationDto {
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+}

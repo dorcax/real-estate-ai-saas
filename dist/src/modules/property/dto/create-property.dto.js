@@ -19,7 +19,10 @@ class CreatePropertyDto {
     address;
     country;
     state;
+    currency;
+    city;
     attachmentsId;
+    amenities;
     propertyType;
     propertyPurpose;
     propertyStatus;
@@ -59,9 +62,23 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePropertyDto.prototype, "state", void 0);
 __decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreatePropertyDto.prototype, "currency", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreatePropertyDto.prototype, "city", void 0);
+__decorate([
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
 ], CreatePropertyDto.prototype, "attachmentsId", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], CreatePropertyDto.prototype, "amenities", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsEnum)(client_1.PropertyType),

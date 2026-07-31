@@ -5,6 +5,7 @@ import { PrismaService } from 'src/services/prisma/prisma.service';
 import { Express } from 'express';
 import { handleUpload } from '../config/cloudinary.config';
 import { userEntity } from '../auth/dto/create-auth.dto';
+import { MediaType } from '@prisma/client';
 @Injectable()
 export class UploadService {
   constructor(private readonly prismaService: PrismaService) { }
@@ -14,7 +15,7 @@ export class UploadService {
     // Get the last upload order for this user
     const lastUpload = await this.prismaService.upload.findFirst({
       where: {
-        userId: currentUser.id,
+        uploadedById: currentUser.id,
       },
       orderBy: {
         order: 'desc',
@@ -30,11 +31,16 @@ export class UploadService {
         name: file.originalname,
         url: uploadResult.secure_url,
         publicId: uploadResult.public_id,
-        type: file.mimetype,
+        type: MediaType.IMAGE,
         order: nextOrder,
-        user: {
+        uploadedBy: {
           connect: {
             id: currentUser.id
+          }
+        },
+        company:{
+          connect:{
+            id:currentUser.companyId
           }
         }
       }

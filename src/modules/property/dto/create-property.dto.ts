@@ -33,8 +33,19 @@ export class CreatePropertyDto {
   @IsString()
   state: string;
 
+  @IsNotEmpty()
+  @IsString()
+  currency: string;
+
+  @IsNotEmpty()
+  @IsString()
+  city: string;
+
   @IsArray()
   attachmentsId: string[];
+  
+  @IsArray()
+  amenities : string[];
 
   @IsNotEmpty()
   @IsEnum(PropertyType)
