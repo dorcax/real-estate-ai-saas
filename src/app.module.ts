@@ -12,6 +12,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { CompanyModule } from './modules/company/company.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { PropertyModule } from './modules/property/property.module';
+import { CompanyInvitationModule } from './modules/company-invitation/company-invitation.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PropertyModule } from './modules/property/property.module';
     CompanyModule,
     UploadModule,
     PropertyModule,
+    CompanyInvitationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

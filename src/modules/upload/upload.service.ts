@@ -32,7 +32,7 @@ export class UploadService {
         url: uploadResult.secure_url,
         publicId: uploadResult.public_id,
         type: MediaType.IMAGE,
-        order: nextOrder,
+        order:nextOrder,
         uploadedBy: {
           connect: {
             id: currentUser.id
