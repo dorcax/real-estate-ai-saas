@@ -21,6 +21,7 @@ const bullmq_1 = require("@nestjs/bullmq");
 const company_module_1 = require("./modules/company/company.module");
 const upload_module_1 = require("./modules/upload/upload.module");
 const property_module_1 = require("./modules/property/property.module");
+const company_invitation_module_1 = require("./modules/company-invitation/company-invitation.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -51,6 +52,7 @@ exports.AppModule = AppModule = __decorate([
             company_module_1.CompanyModule,
             upload_module_1.UploadModule,
             property_module_1.PropertyModule,
+            company_invitation_module_1.CompanyInvitationModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

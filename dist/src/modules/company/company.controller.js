@@ -42,7 +42,7 @@ let CompanyController = class CompanyController {
 };
 exports.CompanyController = CompanyController;
 __decorate([
-    (0, auth_decorator_1.Auth)(["AGENT"]),
+    (0, auth_decorator_1.Auth)(["OWNER"]),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, auth_decorator_1.AuthUser)()),

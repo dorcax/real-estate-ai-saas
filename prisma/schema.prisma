@@ -220,6 +220,7 @@ model User {
 
   companyId String?
   company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer Customer?
 
   otps                Otp[]
   createdProperties   Property[]          @relation("PropertyCreator")
@@ -471,6 +472,8 @@ model Customer {
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
 
   leads         Lead[]
   appointments  Appointment[]

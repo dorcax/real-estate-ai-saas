@@ -9,14 +9,17 @@ export declare class PropertyService {
         message: string;
         property: {
             id: string;
-            title: string;
-            description: string;
-            price: import("@prisma/client/runtime/client").Decimal;
-            currency: string;
+            createdAt: Date;
+            updatedAt: Date;
+            companyId: string;
             address: string;
             city: string | null;
             state: string;
             country: string;
+            description: string;
+            currency: string;
+            title: string;
+            price: import("@prisma/client/runtime/client").Decimal;
             postalCode: string | null;
             latitude: import("@prisma/client/runtime/client").Decimal | null;
             longitude: import("@prisma/client/runtime/client").Decimal | null;
@@ -33,9 +36,6 @@ export declare class PropertyService {
             amenities: string[];
             isFeatured: boolean;
             publishedAt: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
-            companyId: string;
             createdById: string;
             attachmentsId: string | null;
         };

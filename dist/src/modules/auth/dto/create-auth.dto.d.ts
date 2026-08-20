@@ -23,4 +23,5 @@ export declare class userEntity {
     id: string;
     role: Role;
     companyId: string;
+    email: string;
 }

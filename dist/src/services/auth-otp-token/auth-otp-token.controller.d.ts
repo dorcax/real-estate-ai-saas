@@ -12,9 +12,9 @@ export declare class AuthOtpTokenController {
         code: string;
         id: string;
         expiresAt: Date;
-        usedAt: Date | null;
-        userId: string;
         createdAt: Date;
         updatedAt: Date;
+        usedAt: Date | null;
+        userId: string;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
 }

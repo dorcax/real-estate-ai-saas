@@ -9,45 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateCompanyDto = void 0;
+exports.CompanyInvitationDto = exports.CreateCompanyInvitation = void 0;
 const class_validator_1 = require("class-validator");
-class CreateCompanyDto {
-    name;
+class CreateCompanyInvitation {
     email;
-    phoneNumber;
-    description;
-    address;
-    logoId;
 }
-exports.CreateCompanyDto = CreateCompanyDto;
+exports.CreateCompanyInvitation = CreateCompanyInvitation;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCompanyDto.prototype, "name", void 0);
+], CreateCompanyInvitation.prototype, "email", void 0);
+class CompanyInvitationDto {
+    token;
+}
+exports.CompanyInvitationDto = CompanyInvitationDto;
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "phoneNumber", void 0);
-__decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCompanyDto.prototype, "description", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "address", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "logoId", void 0);
-//# sourceMappingURL=create-company.dto.js.map
+], CompanyInvitationDto.prototype, "token", void 0);
+//# sourceMappingURL=create-companyInvitationDto.js.map

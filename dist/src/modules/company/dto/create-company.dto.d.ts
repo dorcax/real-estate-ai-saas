@@ -6,9 +6,3 @@ export declare class CreateCompanyDto {
     address: string;
     logoId: string;
 }
-export declare class CreateCompanyInvitation {
-    email: string;
-}
-export declare class AcceptCompanyInvitationDto {
-    token: string;
-}

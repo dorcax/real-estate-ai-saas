@@ -11,19 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploadService = void 0;
 const common_1 = require("@nestjs/common");
+const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../../services/prisma/prisma.service");
 const cloudinary_config_1 = require("../config/cloudinary.config");
-const client_1 = require("@prisma/client");
 let UploadService = class UploadService {
     prismaService;
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    async create(file, currentUser) {
+    async create(file, currentUser, attachmentId) {
         const uploadResult = await (0, cloudinary_config_1.handleUpload)(file.buffer);
         const lastUpload = await this.prismaService.upload.findFirst({
             where: {
-                uploadedById: currentUser.id,
+                attachmentsId: attachmentId
             },
             orderBy: {
                 order: 'desc',
@@ -55,18 +55,6 @@ let UploadService = class UploadService {
         return {
             message: 'upload successfully created'
         };
-    }
-    findAll() {
-        return `This action returns all upload`;
-    }
-    findOne(id) {
-        return `This action returns a #${id} upload`;
-    }
-    update(id, updateUploadDto) {
-        return `This action updates a #${id} upload`;
-    }
-    remove(id) {
-        return `This action removes a #${id} upload`;
     }
 };
 exports.UploadService = UploadService;

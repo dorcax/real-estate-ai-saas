@@ -156,6 +156,8 @@ export class AuthService {
     };
   }
 
+  
+
   private async findUser(where: Prisma.UserWhereUniqueInput) {
     return this.prisma.user.findUnique({
       where,

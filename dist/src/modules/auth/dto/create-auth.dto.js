@@ -90,6 +90,7 @@ class userEntity {
     id;
     role;
     companyId;
+    email;
 }
 exports.userEntity = userEntity;
 //# sourceMappingURL=create-auth.dto.js.map

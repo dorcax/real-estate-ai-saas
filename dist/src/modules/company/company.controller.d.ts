@@ -8,9 +8,13 @@ export declare class CompanyController {
     create(createCompanyDto: CreateCompanyDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
-            id: string;
-            name: string;
             email: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            stripeCustomerId: string | null;
+            logoId: string | null;
+            name: string;
             phoneNumber: string | null;
             address: string | null;
             city: string | null;
@@ -22,10 +26,6 @@ export declare class CompanyController {
             currency: string | null;
             isActive: boolean;
             settings: import("@prisma/client/runtime/client").JsonValue | null;
-            stripeCustomerId: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-            logoId: string | null;
         };
     }>;
     findAll(): string;

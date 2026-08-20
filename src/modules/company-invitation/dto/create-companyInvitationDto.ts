@@ -6,7 +6,7 @@ export class CreateCompanyInvitation {
   email: string;
 }
 
-export class AcceptCompanyInvitationDto {
+export class CompanyInvitationDto {
   @IsString()
   @IsNotEmpty()
   token: string;

@@ -9,16 +9,15 @@ export declare class PropertyController {
         message: string;
         property: {
             id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            companyId: string;
             address: string;
             city: string | null;
             state: string;
             country: string;
             description: string;
             currency: string;
-            createdAt: Date;
-            updatedAt: Date;
-            companyId: string;
-            attachmentsId: string | null;
             title: string;
             price: import("@prisma/client/runtime/client").Decimal;
             postalCode: string | null;
@@ -38,6 +37,7 @@ export declare class PropertyController {
             isFeatured: boolean;
             publishedAt: Date | null;
             createdById: string;
+            attachmentsId: string | null;
         };
     }>;
     findAll(): string;
