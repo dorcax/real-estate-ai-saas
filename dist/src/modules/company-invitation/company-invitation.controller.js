@@ -14,10 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyInvitationController = void 0;
 const common_1 = require("@nestjs/common");
-const company_invitation_service_1 = require("./company-invitation.service");
 const auth_decorator_1 = require("../auth/decorator/auth.decorator");
-const create_companyInvitationDto_1 = require("../company-invitation/dto/create-companyInvitationDto");
 const create_auth_dto_1 = require("../auth/dto/create-auth.dto");
+const create_companyInvitationDto_1 = require("../company-invitation/dto/create-companyInvitationDto");
+const company_invitation_service_1 = require("./company-invitation.service");
 const getQuery_dto_1 = require("./dto/getQuery.dto");
 let CompanyInvitationController = class CompanyInvitationController {
     companyInvitationService;
@@ -39,7 +39,7 @@ let CompanyInvitationController = class CompanyInvitationController {
 };
 exports.CompanyInvitationController = CompanyInvitationController;
 __decorate([
-    (0, auth_decorator_1.Auth)(['OWNER', 'ADMIN']),
+    (0, auth_decorator_1.Auth)(['OWNER']),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, auth_decorator_1.AuthUser)()),
@@ -68,12 +68,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CompanyInvitationController.prototype, "rejectCompanyInvitation", null);
 __decorate([
-    (0, auth_decorator_1.Auth)(['ADMIN', 'OWNER']),
+    (0, auth_decorator_1.Auth)(['ADMIN']),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
     __param(1, (0, auth_decorator_1.AuthUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [getQuery_dto_1.GetInvitationQueryDto, create_auth_dto_1.userEntity]),
+    __metadata("design:paramtypes", [getQuery_dto_1.GetQueryDto, create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], CompanyInvitationController.prototype, "getCompanyInvitation", null);
 exports.CompanyInvitationController = CompanyInvitationController = __decorate([

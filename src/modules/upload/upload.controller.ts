@@ -11,10 +11,10 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @Auth()
-  @Post(':attachmentId')
+  @Post()
   @UseInterceptors(FileInterceptor('file'))
-  create(@UploadedFile() file:Express.Multer.File,@AuthUser() currentUser:userEntity, @Param('attachmentId') attachmentId:string) {
-    return this.uploadService.create(file,currentUser,attachmentId);
+  create(@UploadedFile() file:Express.Multer.File,@AuthUser() currentUser:userEntity) {
+    return this.uploadService.create(file,currentUser);
   }
 
  

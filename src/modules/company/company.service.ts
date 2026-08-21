@@ -15,7 +15,9 @@ export class CompanyService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createCompanyDto: CreateCompanyDto, currentUser: userEntity) {
     const { name, description, address, email, phoneNumber, logoId } =
+   
       createCompanyDto;
+       console.log('current user' ,currentUser)
     // check if company already exist
     const existingCompany = await this.prismaService.company.findUnique({
       where: {
@@ -48,10 +50,16 @@ export class CompanyService {
             id: currentUser.id,
           },
         },
+
       },
     });
+    console.log('current userb',currentUser.companyId)
+    console.log('current userb',currentUser.role)
+    console.log('current userb',currentUser.id)
+
+    
     return {
-      message: 'company corrected created ',
+      message: 'company successfully created ',
       data: createCompany,
     };
   }

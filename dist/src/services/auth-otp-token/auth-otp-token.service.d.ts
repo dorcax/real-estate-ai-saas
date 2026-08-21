@@ -16,10 +16,10 @@ export declare class AuthOtpTokenService {
         code: string;
         id: string;
         expiresAt: Date;
-        createdAt: Date;
-        updatedAt: Date;
         usedAt: Date | null;
         userId: string;
+        createdAt: Date;
+        updatedAt: Date;
     }, null, import("@prisma/client/runtime/client").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
     verifyOtp(verifyOtpDto: VerifyOtpDto): Promise<string>;
     deleteOtp(id: string): import("@prisma/client").Prisma.Prisma__OtpClient<{
@@ -27,10 +27,10 @@ export declare class AuthOtpTokenService {
         code: string;
         id: string;
         expiresAt: Date;
-        createdAt: Date;
-        updatedAt: Date;
         usedAt: Date | null;
         userId: string;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
     private generateAndStore;
 }

@@ -24,7 +24,7 @@ export class AuthService {
     private readonly authOtpTokenService: AuthOtpTokenService,
   ) {}
   async create(createAuthDto: CreateAuthDto) {
-    const { fullName, email, password } = createAuthDto;
+    const { fullName, email, password,role } = createAuthDto;
     // find if user exist
     const existingUser = await this.findUser({ email });
 
@@ -36,6 +36,7 @@ export class AuthService {
         fullName,
         email,
         password: await argon2.hash(password),
+        role
       },
     });
     await this.authOtpTokenService.verificationOtpEmail({
@@ -49,6 +50,7 @@ export class AuthService {
       email: user.email,
     };
   }
+
 
   async login(LoginDto: LoginUserDto) {
     const { email, password } = LoginDto;
@@ -142,6 +144,7 @@ export class AuthService {
     const verifyOtp = await this.authOtpTokenService.verifyOtp({ email, code });
     if (!verifyOtp) throw new BadRequestException('Invalid OTP');
 
+
     // update the user password
     await this.prisma.user.update({
       where: {
@@ -156,11 +159,18 @@ export class AuthService {
     };
   }
 
-  
+
 
   private async findUser(where: Prisma.UserWhereUniqueInput) {
     return this.prisma.user.findUnique({
       where,
+      include:{
+        company:{
+          select:{
+            id:true
+          }
+        }
+      }
     });
   }
 }

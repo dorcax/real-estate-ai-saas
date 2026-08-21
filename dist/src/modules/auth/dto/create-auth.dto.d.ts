@@ -3,6 +3,7 @@ export declare class CreateAuthDto {
     fullName: string;
     password: string;
     email: string;
+    role?: Role;
 }
 export declare class LoginUserDto {
     email: string;

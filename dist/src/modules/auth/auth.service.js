@@ -58,7 +58,7 @@ let AuthService = class AuthService {
         this.authOtpTokenService = authOtpTokenService;
     }
     async create(createAuthDto) {
-        const { fullName, email, password } = createAuthDto;
+        const { fullName, email, password, role } = createAuthDto;
         const existingUser = await this.findUser({ email });
         if (existingUser) {
             throw new common_1.ConflictException('User already exists');
@@ -68,6 +68,7 @@ let AuthService = class AuthService {
                 fullName,
                 email,
                 password: await argon2.hash(password),
+                role
             },
         });
         await this.authOtpTokenService.verificationOtpEmail({
@@ -163,6 +164,13 @@ let AuthService = class AuthService {
     async findUser(where) {
         return this.prisma.user.findUnique({
             where,
+            include: {
+                company: {
+                    select: {
+                        id: true
+                    }
+                }
+            }
         });
     }
 };

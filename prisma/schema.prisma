@@ -10,6 +10,7 @@ enum Role {
   OWNER
   AGENT
   ADMIN
+  CUSTOMER
 }
 
 enum PropertyType {
@@ -218,18 +219,20 @@ model User {
   isVerified Boolean @default(false)
   isActive   Boolean @default(true)
 
-  companyId String?
-  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer Customer?
+  companyId String?   @unique
+  company   Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer  Customer?
 
-  otps                Otp[]
-  createdProperties   Property[]          @relation("PropertyCreator")
-  assignedLeads       Lead[]              @relation("LeadAssignedAgent")
-  appointments        Appointment[]       @relation("AppointmentAgent")
-  notifications       Notification[]
-  uploads             Upload[]            @relation("UploadedBy")
-  propertyAssignments PropertyAgent[]     @relation("AssignedPropertyAgent")
-  invitationsSent     CompanyInvitation[] @relation("InvitationsSent")
+  otps                 Otp[]
+  createdProperties    Property[]          @relation("PropertyCreator")
+  assignedLeads        Lead[]              @relation("LeadAssignedAgent")
+  appointments         Appointment[]       @relation("AppointmentAgent")
+  notifications        Notification[]
+  uploads              Upload[]            @relation("UploadedBy")
+  propertyAssignments  PropertyAgent[]     @relation("AssignedPropertyAgent")
+  propertyAgentCreated PropertyAgent[]     @relation("CreatedBy")
+  invitationsSent      CompanyInvitation[] @relation("InvitationsSent")
+
   invitationsAccepted CompanyInvitation[] @relation("InvitationsAccepted")
   availabilities      Availability[]
   blockedTimes        BlockedTime[]
@@ -284,26 +287,27 @@ model Company {
   logoId String? @unique
   logo   Upload? @relation("CompanyLogo", fields: [logoId], references: [id], onDelete: SetNull)
 
-  users              User[]
-  properties         Property[]
-  customers          Customer[]
-  leads              Lead[]
-  aiAgents           AIAgent[]
-  phoneNumbers       PhoneNumber[]
-  calls              Call[]
-  conversations      Conversation[]
-  appointments       Appointment[]
-  uploads            Upload[]            @relation("CompanyUploads")
-  subscriptions      Subscription[]
-  payments           Payment[]
-  notifications      Notification[]
-  companyInvitations CompanyInvitation[]
-  knowledgeDocuments KnowledgeDocument[]
-  availabilities     Availability[]
-  blockedTimes       BlockedTime[]
-  usageRecords       UsageRecord[]
-  followUps          FollowUpTask[]
-  auditLogs          AuditLog[]
+  users                  User?
+  properties             Property[]
+  customers              Customer[]
+  leads                  Lead[]
+  aiAgents               AIAgent[]
+  phoneNumbers           PhoneNumber[]
+  calls                  Call[]
+  conversations          Conversation[]
+  appointments           Appointment[]
+  uploads                Upload[]             @relation("CompanyUploads")
+  customerInvitationSent CustomerInvitation[]
+  subscriptions          Subscription[]
+  payments               Payment[]
+  notifications          Notification[]
+  companyInvitations     CompanyInvitation[]
+  knowledgeDocuments     KnowledgeDocument[]
+  availabilities         Availability[]
+  blockedTimes           BlockedTime[]
+  usageRecords           UsageRecord[]
+  followUps              FollowUpTask[]
+  auditLogs              AuditLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -337,6 +341,25 @@ model CompanyInvitation {
   @@index([companyId, email])
   @@index([email])
   @@index([expiresAt])
+}
+
+model CustomerInvitation {
+  id        String           @id @default(uuid())
+  email     String
+  role      Role             @default(CUSTOMER)
+  token     String           @unique
+  status    InvitationStatus @default(PENDING)
+  expireAt  DateTime
+  companyId String
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  acceptedById String?
+
+  acceptedBy Customer? @relation(fields: [acceptedById], references: [id])
+  expiresAt  DateTime
+
+  createdAt DateTime @default(now())
 }
 
 model Property {
@@ -385,6 +408,7 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([id, companyId])
   @@index([companyId])
   @@index([companyId, propertyStatus])
   @@index([companyId, propertyPurpose])
@@ -403,6 +427,9 @@ model PropertyAgent {
   agentId String
   agent   User   @relation("AssignedPropertyAgent", fields: [agentId], references: [id], onDelete: Cascade)
 
+  createdBy   User   @relation("CreatedBy", fields: [createdById], references: [id])
+  createdById String
+
   isPrimary  Boolean   @default(false)
   assignedAt DateTime  @default(now())
   removedAt  DateTime?
@@ -418,11 +445,11 @@ model Upload {
   type     MediaType
   publicId String    @unique
   url      String
-  order    Int       @default(0)
+  order    Int?      @default(0)
   size     Int?
 
-  companyId String
-  company   Company @relation("CompanyUploads", fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String?
+  company   Company? @relation("CompanyUploads", fields: [companyId], references: [id], onDelete: Cascade)
 
   uploadedById String?
   uploadedBy   User?   @relation("UploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
@@ -470,10 +497,11 @@ model Customer {
   notes    String?
   source   String?
 
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id])
+  companyId                  String
+  company                    Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userId                     String?              @unique
+  user                       User?                @relation(fields: [userId], references: [id])
+  customerInvitationAccepted CustomerInvitation[]
 
   leads         Lead[]
   appointments  Appointment[]

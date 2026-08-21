@@ -1,14 +1,12 @@
-import { Body, Controller, Patch, Post,Get, Query } from '@nestjs/common';
-import { CompanyInvitationService } from './company-invitation.service';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { Auth, AuthUser } from '../auth/decorator/auth.decorator';
+import { userEntity } from '../auth/dto/create-auth.dto';
 import {
-
   CompanyInvitationDto,
   CreateCompanyInvitation,
 } from '../company-invitation/dto/create-companyInvitationDto';
-import { userEntity } from '../auth/dto/create-auth.dto';
-import { InvitationStatus } from '@prisma/client';
-import { GetInvitationQueryDto } from './dto/getQuery.dto';
+import { CompanyInvitationService } from './company-invitation.service';
+import { GetQueryDto } from './dto/getQuery.dto';
 
 @Controller('company-invitation')
 export class CompanyInvitationController {
@@ -16,7 +14,7 @@ export class CompanyInvitationController {
     private readonly companyInvitationService: CompanyInvitationService,
   ) {}
 
-  @Auth(['OWNER', 'ADMIN'])
+  @Auth(['OWNER'])
   @Post()
   create(
     @Body() createCompanyInvitationDto: CreateCompanyInvitation,
@@ -27,6 +25,7 @@ export class CompanyInvitationController {
       currentUser,
     );
   }
+
 
   @Auth(['AGENT'])
   @Patch('accept-invitation')
@@ -41,10 +40,9 @@ export class CompanyInvitationController {
   }
 
 
-
   // reject company invite  
 
-   @Auth(['AGENT'])
+  @Auth(['AGENT'])
   @Patch('reject-invititation')
   rejectCompanyInvitation(
     @AuthUser() currentUser: userEntity, @Body() rejectCompanyInvitationDto: CompanyInvitationDto,
@@ -56,9 +54,9 @@ export class CompanyInvitationController {
   }
 
   // get company invitation 
-  @Auth(['ADMIN','OWNER'])
+  @Auth(['ADMIN'])
   @Get()
-  getCompanyInvitation(@Query() query:GetInvitationQueryDto,@AuthUser() currentUser:userEntity){
+  getCompanyInvitation(@Query() query:GetQueryDto,@AuthUser() currentUser:userEntity){
     return this.companyInvitationService.getCompanyInvitation(currentUser,query)
   }
 

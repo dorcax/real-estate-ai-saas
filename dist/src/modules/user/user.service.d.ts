@@ -12,34 +12,34 @@ export declare class UserService {
     }>;
     login(LoginDto: LoginUserDto): Promise<void>;
     findUser(where: Prisma.UserWhereUniqueInput): Promise<{
-        email: string;
         fullName: string;
         password: string;
+        email: string;
+        role: import("@prisma/client").$Enums.Role;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        companyId: string | null;
         phone: string | null;
         avatarUrl: string | null;
-        role: import("@prisma/client").$Enums.Role;
         isVerified: boolean;
         isActive: boolean;
-        companyId: string | null;
     }>;
     findAll(): string;
     findOne(id: number): string;
     update(id: number, updateUserDto: UpdateUserDto): string;
     remove(id: string): Promise<{
-        email: string;
         fullName: string;
         password: string;
+        email: string;
+        role: import("@prisma/client").$Enums.Role;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        companyId: string | null;
         phone: string | null;
         avatarUrl: string | null;
-        role: import("@prisma/client").$Enums.Role;
         isVerified: boolean;
         isActive: boolean;
-        companyId: string | null;
     }>;
 }

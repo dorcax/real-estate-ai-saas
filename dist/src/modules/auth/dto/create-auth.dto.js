@@ -10,11 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userEntity = exports.ResendOtpDto = exports.ResetPasswordDto = exports.ForgotPasswordDto = exports.LoginUserDto = exports.CreateAuthDto = void 0;
+const client_1 = require("@prisma/client");
 const class_validator_1 = require("class-validator");
 class CreateAuthDto {
     fullName;
     password;
     email;
+    role;
 }
 exports.CreateAuthDto = CreateAuthDto;
 __decorate([
@@ -32,6 +34,10 @@ __decorate([
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], CreateAuthDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateAuthDto.prototype, "role", void 0);
 class LoginUserDto {
     email;
     password;

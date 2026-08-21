@@ -33,4 +33,4 @@ __decorate([
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
 ], GetQueryDto.prototype, "limit", void 0);
-//# sourceMappingURL=getQuery.dto.js.map
+//# sourceMappingURL=get-query.dto.js.map

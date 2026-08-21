@@ -23,20 +23,19 @@ let UploadController = class UploadController {
     constructor(uploadService) {
         this.uploadService = uploadService;
     }
-    create(file, currentUser, attachmentId) {
-        return this.uploadService.create(file, currentUser, attachmentId);
+    create(file, currentUser) {
+        return this.uploadService.create(file, currentUser);
     }
 };
 exports.UploadController = UploadController;
 __decorate([
     (0, auth_decorator_1.Auth)(),
-    (0, common_1.Post)(':attachmentId'),
+    (0, common_1.Post)(),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, auth_decorator_1.AuthUser)()),
-    __param(2, (0, common_1.Param)('attachmentId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, create_auth_dto_1.userEntity, String]),
+    __metadata("design:paramtypes", [Object, create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], UploadController.prototype, "create", null);
 exports.UploadController = UploadController = __decorate([

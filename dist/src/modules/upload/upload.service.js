@@ -19,35 +19,17 @@ let UploadService = class UploadService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    async create(file, currentUser, attachmentId) {
+    async create(file, currentUser) {
         const uploadResult = await (0, cloudinary_config_1.handleUpload)(file.buffer);
-        const lastUpload = await this.prismaService.upload.findFirst({
-            where: {
-                attachmentsId: attachmentId
-            },
-            orderBy: {
-                order: 'desc',
-            },
-            select: {
-                order: true,
-            },
-        });
-        const nextOrder = lastUpload ? lastUpload.order + 1 : 1;
         const data = await this.prismaService.upload.create({
             data: {
                 name: file.originalname,
                 url: uploadResult.secure_url,
                 publicId: uploadResult.public_id,
                 type: client_1.MediaType.IMAGE,
-                order: nextOrder,
                 uploadedBy: {
                     connect: {
                         id: currentUser.id
-                    }
-                },
-                company: {
-                    connect: {
-                        id: currentUser.companyId
                     }
                 }
             }

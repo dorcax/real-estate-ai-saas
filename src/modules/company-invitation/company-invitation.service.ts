@@ -15,8 +15,7 @@ import {
   CompanyInvitationDto,
   CreateCompanyInvitation
 } from '../company-invitation/dto/create-companyInvitationDto';
-import { GetInvitationQueryDto } from './dto/getQuery.dto';
-import { promiseHooks } from 'v8';
+import { GetQueryDto } from './dto/getQuery.dto';
 
 @Injectable()
 export class CompanyInvitationService {
@@ -210,7 +209,7 @@ export class CompanyInvitationService {
     }
   }
 
- async getCompanyInvitation(currentUser:userEntity,query:GetInvitationQueryDto){
+ async getCompanyInvitation(currentUser:userEntity,query:GetQueryDto){
   const {status,page,limit} =query
   const skip =(page-1)*limit 
   const [data,total] = await Promise.all([

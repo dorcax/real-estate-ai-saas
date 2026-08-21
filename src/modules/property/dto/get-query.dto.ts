@@ -1,11 +1,11 @@
-import { InvitationStatus } from "@prisma/client";
+import { PropertyType } from "@prisma/client";
 import { Type } from "class-transformer";
 import { IsOptional } from "class-validator";
 
 export class GetQueryDto {
 
   @IsOptional()
-  status?: InvitationStatus;
+  status?: PropertyType;
 
 
   @IsOptional()
