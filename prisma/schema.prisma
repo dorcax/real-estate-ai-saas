@@ -80,21 +80,21 @@ enum LeadTemperature {
   COLD
 }
 
-enum AIAgentType {
-  BUY
-  SELL
-  RENT
-  RECEPTIONIST
-  APPOINTMENT
-  FOLLOW_UP
-}
+// enum AIAgentType {
+//   BUY
+//   SELL
+//   RENT
+//   RECEPTIONIST
+//   APPOINTMENT
+//   FOLLOW_UP
+// }
 
-enum AIAgentStatus {
-  DRAFT
-  ACTIVE
-  PAUSED
-  DISABLED
-}
+// enum AIAgentStatus {
+//   DRAFT
+//   ACTIVE
+//   PAUSED
+//   DISABLED
+// }
 
 enum InvitationStatus {
   PENDING
@@ -124,28 +124,7 @@ enum PaymentStatus {
   REFUNDED
 }
 
-enum CallDirection {
-  INBOUND
-  OUTBOUND
-}
 
-enum CallStatus {
-  QUEUED
-  RINGING
-  IN_PROGRESS
-  COMPLETED
-  FAILED
-  BUSY
-  NO_ANSWER
-  CANCELLED
-}
-
-enum CallSpeaker {
-  CUSTOMER
-  AI_AGENT
-  HUMAN_AGENT
-  SYSTEM
-}
 
 enum NotificationType {
   GENERAL
@@ -168,13 +147,7 @@ enum NotificationChannel {
   PUSH
 }
 
-enum KnowledgeSourceType {
-  TEXT
-  FILE
-  WEBSITE
-  FAQ
-  PROPERTY
-}
+
 
 enum UsageType {
   AI_CALL
@@ -291,10 +264,9 @@ model Company {
   properties             Property[]
   customers              Customer[]
   leads                  Lead[]
-  aiAgents               AIAgent[]
+
   phoneNumbers           PhoneNumber[]
-  calls                  Call[]
-  conversations          Conversation[]
+  
   appointments           Appointment[]
   uploads                Upload[]             @relation("CompanyUploads")
   customerInvitationSent CustomerInvitation[]
@@ -302,7 +274,7 @@ model Company {
   payments               Payment[]
   notifications          Notification[]
   companyInvitations     CompanyInvitation[]
-  knowledgeDocuments     KnowledgeDocument[]
+
   availabilities         Availability[]
   blockedTimes           BlockedTime[]
   usageRecords           UsageRecord[]
@@ -475,11 +447,10 @@ model Attachments {
   property          Property?          @relation("PropertyAttachments")
   lead              Lead?              @relation("LeadAttachments")
   appointment       Appointment?       @relation("AppointmentAttachments")
-  call              Call?              @relation("CallAttachments")
-  conversation      Conversation?      @relation("ConversationAttachments")
+ 
   payment           Payment?           @relation("PaymentAttachments")
   notification      Notification?      @relation("NotificationAttachments")
-  knowledgeDocument KnowledgeDocument? @relation("KnowledgeDocumentAttachments")
+  
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -505,8 +476,7 @@ model Customer {
 
   leads         Lead[]
   appointments  Appointment[]
-  calls         Call[]
-  conversations Conversation[]
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -586,14 +556,12 @@ model Lead {
   assignedAgentId String?
   assignedAgent   User?   @relation("LeadAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
 
-  aiAgentId String?
-  aiAgent   AIAgent? @relation(fields: [aiAgentId], references: [id], onDelete: SetNull)
-
+ 
   attachmentsId String?      @unique
   attachment    Attachments? @relation("LeadAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
 
   appointments Appointment[]
-  calls        Call[]
+
   followUps    FollowUpTask[]
 
   createdAt DateTime @default(now())
@@ -605,7 +573,7 @@ model Lead {
   @@index([customerId])
   @@index([propertyId])
   @@index([assignedAgentId])
-  @@index([aiAgentId])
+ 
 }
 
 model Appointment {
@@ -645,8 +613,7 @@ model Appointment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  aiagent   AIAgent? @relation(fields: [aIAgentId], references: [id])
-  aIAgentId String?
+ 
 
   @@index([companyId, startAt])
   @@index([agentId, startAt])
@@ -708,8 +675,7 @@ model PhoneNumber {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  aiAgent AIAgent? @relation("AIAgentPhoneNumber")
-  calls   Call[]
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -717,168 +683,6 @@ model PhoneNumber {
   @@index([companyId])
 }
 
-model AIAgent {
-  id          String        @id @default(cuid())
-  name        String
-  description String?
-  type        AIAgentType
-  status      AIAgentStatus @default(DRAFT)
-
-  provider        String
-  providerAgentId String? @unique
-  voiceId         String?
-  model           String?
-  language        String  @default("en")
-
-  prompt          String
-  greetingMessage String?
-  fallbackMessage String?
-  workingHours    Json?
-  settings        Json?
-
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  phoneNumberId String?      @unique
-  phoneNumber   PhoneNumber? @relation("AIAgentPhoneNumber", fields: [phoneNumberId], references: [id], onDelete: SetNull)
-
-  conversations      Conversation[]
-  calls              Call[]
-  appointments       Appointment[]
-  leads              Lead[]
-  knowledgeDocuments KnowledgeDocument[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([companyId])
-  @@index([companyId, type])
-  @@index([companyId, status])
-}
-
-model KnowledgeDocument {
-  id              String              @id @default(cuid())
-  title           String
-  sourceType      KnowledgeSourceType
-  content         String?
-  fileUrl         String?
-  websiteUrl      String?
-  metadata        Json?
-  isProcessed     Boolean             @default(false)
-  processingError String?
-
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  aiAgentId String?
-  aiAgent   AIAgent? @relation(fields: [aiAgentId], references: [id], onDelete: SetNull)
-
-  attachmentsId String?      @unique
-  attachment    Attachments? @relation("KnowledgeDocumentAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([companyId])
-  @@index([aiAgentId])
-  @@index([isProcessed])
-}
-
-model Call {
-  id             String        @id @default(cuid())
-  provider       String
-  externalCallId String?       @unique
-  direction      CallDirection
-  status         CallStatus    @default(QUEUED)
-  fromNumber     String
-  toNumber       String
-
-  durationSeconds Int?
-  recordingUrl    String?
-  cost            Decimal? @db.Decimal(12, 4)
-  currency        String   @default("USD")
-
-  startedAt  DateTime?
-  answeredAt DateTime?
-  endedAt    DateTime?
-
-  summary   String?
-  sentiment String?
-  outcome   String?
-  metadata  Json?
-
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  phoneNumberId String?
-  phoneNumber   PhoneNumber? @relation(fields: [phoneNumberId], references: [id], onDelete: SetNull)
-
-  customerId String?
-  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
-
-  leadId String?
-  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
-
-  aiAgentId String?
-  aiAgent   AIAgent? @relation(fields: [aiAgentId], references: [id], onDelete: SetNull)
-
-  attachmentsId String?      @unique
-  attachment    Attachments? @relation("CallAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
-
-  conversation Conversation?
-  messages     CallMessage[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([companyId])
-  @@index([companyId, status])
-  @@index([phoneNumberId])
-  @@index([customerId])
-  @@index([leadId])
-  @@index([aiAgentId])
-  @@index([createdAt])
-}
-
-model CallMessage {
-  id             String      @id @default(cuid())
-  speaker        CallSpeaker
-  content        String
-  sequenceNumber Int
-  startOffsetMs  Int?
-  endOffsetMs    Int?
-  confidence     Float?
-
-  callId String
-  call   Call   @relation(fields: [callId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@unique([callId, sequenceNumber])
-  @@index([callId])
-}
-
-model Conversation {
-  id         String  @id @default(cuid())
-  transcript String?
-  summary    String?
-  sentiment  String?
-  outcome    String?
-  metadata   Json?
-
-  companyId     String
-  company       Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  callId        String       @unique
-  call          Call         @relation(fields: [callId], references: [id], onDelete: Cascade)
-  aiAgentId     String?
-  aiAgent       AIAgent?     @relation(fields: [aiAgentId], references: [id], onDelete: SetNull)
-  attachmentsId String?      @unique
-  attachment    Attachments? @relation("ConversationAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
-  customer      Customer     @relation(fields: [customerId], references: [id])
-  customerId    String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-}
 
 model Plan {
   id          String  @id @default(cuid())
