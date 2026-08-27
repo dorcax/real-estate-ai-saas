@@ -1,0 +1,57 @@
+model User {
+  id         String  @id @default(uuid())
+  fullName   String
+  email      String  @unique
+  password   String
+  phone      String?
+  avatarUrl  String?
+  role       Role    @default(AGENT)
+  isVerified Boolean @default(false)
+  isActive   Boolean @default(true)
+
+  companyId String?   @unique
+  company   Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer  Customer?
+
+  otps                 Otp[]
+  createdProperties    Property[]          @relation("PropertyCreator")
+  assignedLeads        Lead[]              @relation("LeadAssignedAgent")
+  appointments         Appointment[]       @relation("AppointmentAgent")
+  notifications        Notification[]
+  uploads              Upload[]            @relation("UploadedBy")
+  propertyAssignments  PropertyAgent[]     @relation("AssignedPropertyAgent")
+  propertyAgentCreated PropertyAgent[]     @relation("CreatedBy")
+  invitationsSent      CompanyInvitation[] @relation("InvitationsSent")
+
+  invitationsAccepted CompanyInvitation[] @relation("InvitationsAccepted")
+  availabilities      Availability[]
+  blockedTimes        BlockedTime[]
+  followUpsAssigned   FollowUpTask[]      @relation("FollowUpAssignedAgent")
+  followUpsCreated    FollowUpTask[]      @relation("FollowUpCreator")
+  auditLogs           AuditLog[]          @relation("AuditActor")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([role])
+  @@index([isActive])
+}
+
+model Otp {
+  id        String    @id @default(uuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email, code])
+  @@index([userId])
+  @@index([expiresAt])
+}

@@ -1,0 +1,28 @@
+model Customer {
+  id       String  @id @default(uuid())
+  fullName String?
+  email    String?
+  phone    String
+  address  String?
+  city     String?
+  state    String?
+  country  String?
+  notes    String?
+  source   String?
+
+  companyId                  String
+  company                    Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdById                String?              @unique
+  createdBy                  User?                @relation(fields: [createdById], references: [id])
+  customerInvitationAccepted CustomerInvitation[]
+
+  leads        Lead[]
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, phone])
+  @@index([companyId])
+  @@index([companyId, email])
+}

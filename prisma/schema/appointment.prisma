@@ -1,0 +1,44 @@
+model Appointment {
+  id          String            @id @default(uuid())
+  title       String
+  type        AppointmentType
+  status      AppointmentStatus @default(PENDING)
+  description String?
+  notes       String?
+
+  startAt  DateTime
+  endAt    DateTime
+  timezone String   @default("Africa/Lagos")
+
+  location    String?
+  meetingLink String?
+
+  companyId String
+
+  company    Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  customerId String
+  customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  agentId       String
+  agent         User         @relation("AppointmentAgent", fields: [agentId], references: [id])
+  leadId        String?
+  lead          Lead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  attachmentsId String?      @unique
+  attachment    Attachments? @relation("AppointmentAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+  externalCalendarId String?
+  reminderSentAt     DateTime?
+  cancelledAt        DateTime?
+  cancellationReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId, startAt])
+  @@index([agentId, startAt])
+  @@index([customerId])
+  @@index([propertyId])
+  @@index([leadId])
+}

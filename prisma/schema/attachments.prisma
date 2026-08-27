@@ -1,0 +1,15 @@
+model Attachments {
+  id String @id @default(uuid())
+
+  uploads Upload[]
+
+  property    Property?    @relation("PropertyAttachments")
+  lead        Lead?        @relation("LeadAttachments")
+  appointment Appointment? @relation("AppointmentAttachments")
+
+  payment      Payment?      @relation("PaymentAttachments")
+  notification Notification? @relation("NotificationAttachments")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,27 @@
+model Upload {
+  id       String    @id @default(uuid())
+  name     String
+  type     MediaType
+  publicId String    @unique
+  url      String
+  order    Int?      @default(0)
+  size     Int?
+
+  companyId String?
+  company   Company? @relation("CompanyUploads", fields: [companyId], references: [id], onDelete: Cascade)
+
+  uploadedById String?
+  uploadedBy   User?   @relation("UploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  attachmentsId String?
+  attachments   Attachments? @relation(fields: [attachmentsId], references: [id], onDelete: Cascade)
+
+  logoForCompany Company? @relation("CompanyLogo")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([uploadedById])
+  @@index([attachmentsId])
+}

@@ -1,0 +1,170 @@
+enum Role {
+  OWNER
+  AGENT
+  ADMIN
+  CUSTOMER
+}
+
+enum PropertyType {
+  HOUSE
+  LAND
+  APARTMENT
+  OFFICE
+  SHOP
+  WAREHOUSE
+  COMMERCIAL
+}
+
+enum PropertyPurpose {
+  RENT
+  SELL
+  LEASE
+}
+
+enum PropertyStatus {
+  DRAFT
+  AVAILABLE
+  PENDING
+  SOLD
+  RENTED
+  LEASED
+  ARCHIVED
+}
+
+enum AppointmentType {
+  PROPERTY_INSPECTION
+  PHONE_CONSULTATION
+  VIDEO_CONSULTATION
+  OFFICE_MEETING
+  FOLLOW_UP
+}
+
+enum AppointmentStatus {
+  PENDING
+  CANCELLED
+  CONFIRMED
+  COMPLETED
+  RESCHEDULED
+  NO_SHOW
+}
+
+enum LeadIntent {
+  BUY
+  SELL
+  RENT
+  LEASE
+  GENERAL_ENQUIRY
+}
+
+enum LeadStatus {
+  NEW
+  QUALIFIED
+  CONTACTED
+  APPOINTMENT_BOOKED
+  NEGOTIATING
+  CLOSED
+  LOST
+}
+
+enum LeadTemperature {
+  HOT
+  WARM
+  COLD
+}
+
+// enum AIAgentType {
+//   BUY
+//   SELL
+//   RENT
+//   RECEPTIONIST
+//   APPOINTMENT
+//   FOLLOW_UP
+// }
+
+// enum AIAgentStatus {
+//   DRAFT
+//   ACTIVE
+//   PAUSED
+//   DISABLED
+// }
+
+enum InvitationStatus {
+  PENDING
+  CANCELLED
+  DECLINED
+  EXPIRED
+  ACCEPTED
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  GENERAL
+  COMPANY_INVITATION
+  PROPERTY_ASSIGNED
+  LEAD_ASSIGNED
+  APPOINTMENT_BOOKED
+  APPOINTMENT_CANCELLED
+  APPOINTMENT_REMINDER
+  CALL_COMPLETED
+  SUBSCRIPTION
+  PAYMENT
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+}
+
+enum UsageType {
+  AI_CALL
+  AI_CALL_MINUTE
+  PROPERTY
+  USER
+  AI_AGENT
+  APPOINTMENT
+}
+
+enum FollowUpType {
+  CALL
+  EMAIL
+  SMS
+  WHATSAPP
+  MEETING
+}
+
+enum FollowUpStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  OVERDUE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+  FLOOR_PLAN
+}

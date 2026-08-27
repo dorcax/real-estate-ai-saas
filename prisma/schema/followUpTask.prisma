@@ -1,0 +1,29 @@
+model FollowUpTask {
+  id          String         @id @default(cuid())
+  type        FollowUpType
+  status      FollowUpStatus @default(PENDING)
+  title       String
+  description String?
+  dueAt       DateTime
+  completedAt DateTime?
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  assignedAgentId String?
+  assignedAgent   User?   @relation("FollowUpAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+
+  createdById String?
+  createdBy   User?   @relation("FollowUpCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId, status])
+  @@index([leadId])
+  @@index([assignedAgentId, dueAt])
+  @@index([createdById])
+}

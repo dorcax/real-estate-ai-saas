@@ -1,0 +1,57 @@
+model Lead {
+  id          String          @id @default(cuid())
+  intent      LeadIntent      @default(GENERAL_ENQUIRY)
+  status      LeadStatus      @default(NEW)
+  temperature LeadTemperature @default(COLD)
+  score       Int             @default(0)
+
+  budgetMinimum Decimal? @db.Decimal(18, 2)
+  budgetMaximum Decimal? @db.Decimal(18, 2)
+  currency      String   @default("NGN")
+
+  preferredLocation  String?
+  preferredCity      String?
+  preferredState     String?
+  preferredType      PropertyType?
+  preferredPurpose   PropertyPurpose?
+  preferredBedrooms  Int?
+  preferredBathrooms Int?
+
+  financingReady Boolean?
+  decisionMaker  Boolean?
+  urgency        String?
+  notes          String?
+
+  qualificationData Json?
+  lastContactedAt   DateTime?
+  nextFollowUpAt    DateTime?
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  assignedAgentId String?
+  assignedAgent   User?   @relation("LeadAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+
+  attachmentsId String?      @unique
+  attachment    Attachments? @relation("LeadAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+  appointments Appointment[]
+
+  followUps FollowUpTask[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@index([companyId, temperature])
+  @@index([customerId])
+  @@index([propertyId])
+  @@index([assignedAgentId])
+}

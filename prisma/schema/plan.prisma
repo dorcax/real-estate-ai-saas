@@ -1,0 +1,26 @@
+model Plan {
+  id          String  @id @default(cuid())
+  code        String  @unique
+  name        String
+  description String?
+  currency    String  @default("USD")
+
+  monthlyPrice Decimal @db.Decimal(10, 2)
+  yearlyPrice  Decimal @db.Decimal(10, 2)
+
+  maxAgents      Int
+  maxProperties  Int
+  maxCalls       Int
+  maxCallMinutes Int
+  maxAiAgents    Int
+
+  features Json?
+  isActive Boolean @default(true)
+
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}

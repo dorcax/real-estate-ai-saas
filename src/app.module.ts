@@ -13,6 +13,9 @@ import { CompanyModule } from './modules/company/company.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { PropertyModule } from './modules/property/property.module';
 import { CompanyInvitationModule } from './modules/company-invitation/company-invitation.module';
+import { CustomerModule } from './modules/customer/customer.module';
+import { LeadsModule } from './modules/leads/leads.module';
+import { AppointmentModule } from './modules/appointment/appointment.module';
 
 @Module({
   imports: [
@@ -41,6 +44,9 @@ import { CompanyInvitationModule } from './modules/company-invitation/company-in
     UploadModule,
     PropertyModule,
     CompanyInvitationModule,
+    CustomerModule,
+    LeadsModule,
+    AppointmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

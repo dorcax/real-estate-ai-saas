@@ -1,0 +1,32 @@
+model Payment {
+  id          String        @id @default(cuid())
+  amount      Decimal       @db.Decimal(10, 2)
+  currency    String        @default("USD")
+  status      PaymentStatus @default(PENDING)
+  description String?
+
+  stripePaymentIntentId String? @unique
+  stripeInvoiceId       String? @unique
+  invoiceUrl            String?
+
+  failureReason String?
+  paidAt        DateTime?
+  failedAt      DateTime?
+  metadata      Json?
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  attachmentsId String?      @unique
+  attachment    Attachments? @relation("PaymentAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@index([subscriptionId])
+}

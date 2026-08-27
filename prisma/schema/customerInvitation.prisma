@@ -1,0 +1,18 @@
+model CustomerInvitation {
+  id        String           @id @default(uuid())
+  email     String
+  role      Role             @default(CUSTOMER)
+  token     String           @unique
+  status    InvitationStatus @default(PENDING)
+  expireAt  DateTime
+  companyId String
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  acceptedById String?
+
+  acceptedBy Customer? @relation(fields: [acceptedById], references: [id])
+  expiresAt  DateTime
+
+  createdAt DateTime @default(now())
+}

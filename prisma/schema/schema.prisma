@@ -1,0 +1,838 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// enum Role {
+//   OWNER
+//   AGENT
+//   ADMIN
+//   CUSTOMER
+// }
+
+// enum PropertyType {
+//   HOUSE
+//   LAND
+//   APARTMENT
+//   OFFICE
+//   SHOP
+//   WAREHOUSE
+//   COMMERCIAL
+// }
+
+// enum PropertyPurpose {
+//   RENT
+//   SELL
+//   LEASE
+// }
+
+// enum PropertyStatus {
+//   DRAFT
+//   AVAILABLE
+//   PENDING
+//   SOLD
+//   RENTED
+//   LEASED
+//   ARCHIVED
+// }
+
+// enum AppointmentType {
+//   PROPERTY_INSPECTION
+//   PHONE_CONSULTATION
+//   VIDEO_CONSULTATION
+//   OFFICE_MEETING
+//   FOLLOW_UP
+// }
+
+// enum AppointmentStatus {
+//   PENDING
+//   CANCELLED
+//   CONFIRMED
+//   COMPLETED
+//   RESCHEDULED
+//   NO_SHOW
+// }
+
+// enum LeadIntent {
+//   BUY
+//   SELL
+//   RENT
+//   LEASE
+//   GENERAL_ENQUIRY
+// }
+
+// enum LeadStatus {
+//   NEW
+//   QUALIFIED
+//   CONTACTED
+//   APPOINTMENT_BOOKED
+//   NEGOTIATING
+//   CLOSED
+//   LOST
+// }
+
+// enum LeadTemperature {
+//   HOT
+//   WARM
+//   COLD
+// }
+
+// // enum AIAgentType {
+// //   BUY
+// //   SELL
+// //   RENT
+// //   RECEPTIONIST
+// //   APPOINTMENT
+// //   FOLLOW_UP
+// // }
+
+// // enum AIAgentStatus {
+// //   DRAFT
+// //   ACTIVE
+// //   PAUSED
+// //   DISABLED
+// // }
+
+// enum InvitationStatus {
+//   PENDING
+//   CANCELLED
+//   DECLINED
+//   EXPIRED
+//   ACCEPTED
+// }
+
+// enum SubscriptionStatus {
+//   TRIAL
+//   ACTIVE
+//   PAST_DUE
+//   CANCELLED
+//   EXPIRED
+// }
+
+// enum BillingInterval {
+//   MONTHLY
+//   YEARLY
+// }
+
+// enum PaymentStatus {
+//   PENDING
+//   SUCCESSFUL
+//   FAILED
+//   REFUNDED
+// }
+
+// enum NotificationType {
+//   GENERAL
+//   COMPANY_INVITATION
+//   PROPERTY_ASSIGNED
+//   LEAD_ASSIGNED
+//   APPOINTMENT_BOOKED
+//   APPOINTMENT_CANCELLED
+//   APPOINTMENT_REMINDER
+//   CALL_COMPLETED
+//   SUBSCRIPTION
+//   PAYMENT
+// }
+
+// enum NotificationChannel {
+//   IN_APP
+//   EMAIL
+//   SMS
+//   WHATSAPP
+//   PUSH
+// }
+
+// enum UsageType {
+//   AI_CALL
+//   AI_CALL_MINUTE
+//   PROPERTY
+//   USER
+//   AI_AGENT
+//   APPOINTMENT
+// }
+
+// enum FollowUpType {
+//   CALL
+//   EMAIL
+//   SMS
+//   WHATSAPP
+//   MEETING
+// }
+
+// enum FollowUpStatus {
+//   PENDING
+//   COMPLETED
+//   CANCELLED
+//   OVERDUE
+// }
+
+// enum MediaType {
+//   IMAGE
+//   VIDEO
+//   DOCUMENT
+//   AUDIO
+//   FLOOR_PLAN
+// }
+
+// model User {
+//   id         String  @id @default(uuid())
+//   fullName   String
+//   email      String  @unique
+//   password   String
+//   phone      String?
+//   avatarUrl  String?
+//   role       Role    @default(AGENT)
+//   isVerified Boolean @default(false)
+//   isActive   Boolean @default(true)
+
+//   companyId String?   @unique
+//   company   Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+//   customer  Customer?
+
+//   otps                 Otp[]
+//   createdProperties    Property[]          @relation("PropertyCreator")
+//   assignedLeads        Lead[]              @relation("LeadAssignedAgent")
+//   appointments         Appointment[]       @relation("AppointmentAgent")
+//   notifications        Notification[]
+//   uploads              Upload[]            @relation("UploadedBy")
+//   propertyAssignments  PropertyAgent[]     @relation("AssignedPropertyAgent")
+//   propertyAgentCreated PropertyAgent[]     @relation("CreatedBy")
+//   invitationsSent      CompanyInvitation[] @relation("InvitationsSent")
+
+//   invitationsAccepted CompanyInvitation[] @relation("InvitationsAccepted")
+//   availabilities      Availability[]
+//   blockedTimes        BlockedTime[]
+//   followUpsAssigned   FollowUpTask[]      @relation("FollowUpAssignedAgent")
+//   followUpsCreated    FollowUpTask[]      @relation("FollowUpCreator")
+//   auditLogs           AuditLog[]          @relation("AuditActor")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+//   @@index([role])
+//   @@index([isActive])
+// }
+
+// model Otp {
+//   id        String    @id @default(uuid())
+//   email     String
+//   code      String
+//   expiresAt DateTime
+//   usedAt    DateTime?
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([email, code])
+//   @@index([userId])
+//   @@index([expiresAt])
+// }
+
+// model Company {
+//   id          String  @id @default(uuid())
+//   name        String
+//   email       String  @unique
+//   phoneNumber String?
+//   address     String?
+//   city        String?
+//   state       String?
+//   country     String  @default("Nigeria")
+//   website     String?
+//   description String?
+//   timezone    String? @default("Africa/Lagos")
+//   currency    String? @default("NGN")
+//   isActive    Boolean @default(true)
+//   settings    Json?
+
+//   stripeCustomerId String? @unique
+
+//   logoId String? @unique
+//   logo   Upload? @relation("CompanyLogo", fields: [logoId], references: [id], onDelete: SetNull)
+
+//   users      User?
+//   properties Property[]
+//   customers  Customer[]
+//   leads      Lead[]
+
+//   phoneNumbers PhoneNumber[]
+
+//   appointments           Appointment[]
+//   uploads                Upload[]             @relation("CompanyUploads")
+//   customerInvitationSent CustomerInvitation[]
+//   subscriptions          Subscription[]
+//   payments               Payment[]
+//   notifications          Notification[]
+//   companyInvitations     CompanyInvitation[]
+
+//   availabilities Availability[]
+//   blockedTimes   BlockedTime[]
+//   usageRecords   UsageRecord[]
+//   followUps      FollowUpTask[]
+//   auditLogs      AuditLog[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([name])
+//   @@index([isActive])
+// }
+
+// model CompanyInvitation {
+//   id        String           @id @default(uuid())
+//   email     String
+//   role      Role             @default(AGENT)
+//   token     String           @unique
+//   status    InvitationStatus @default(PENDING)
+//   expiresAt DateTime
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   invitedById String
+//   invitedBy   User   @relation("InvitationsSent", fields: [invitedById], references: [id])
+
+//   acceptedById String?
+//   acceptedBy   User?   @relation("InvitationsAccepted", fields: [acceptedById], references: [id], onDelete: SetNull)
+
+//   acceptedAt DateTime?
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+
+//   @@index([companyId, status])
+//   @@index([companyId, email])
+//   @@index([email])
+//   @@index([expiresAt])
+// }
+
+// model CustomerInvitation {
+//   id        String           @id @default(uuid())
+//   email     String
+//   role      Role             @default(CUSTOMER)
+//   token     String           @unique
+//   status    InvitationStatus @default(PENDING)
+//   expireAt  DateTime
+//   companyId String
+
+//   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   acceptedById String?
+
+//   acceptedBy Customer? @relation(fields: [acceptedById], references: [id])
+//   expiresAt  DateTime
+
+//   createdAt DateTime @default(now())
+// }
+
+// model Property {
+//   id          String  @id @default(uuid())
+//   title       String
+//   description String
+//   price       Decimal @db.Decimal(18, 2)
+//   currency    String  @default("NGN")
+
+//   address    String
+//   city       String?
+//   state      String
+//   country    String
+//   postalCode String?
+//   latitude   Decimal? @db.Decimal(10, 7)
+//   longitude  Decimal? @db.Decimal(10, 7)
+
+//   propertyType    PropertyType    @default(APARTMENT)
+//   propertyPurpose PropertyPurpose @default(SELL)
+//   propertyStatus  PropertyStatus  @default(DRAFT)
+
+//   bedrooms     Int?
+//   bathrooms    Int?
+//   toilets      Int?
+//   parkingSpace Int?
+//   landSize     Float?
+//   buildingSize Float?
+//   yearBuilt    Int?
+//   amenities    String[]  @default([])
+//   isFeatured   Boolean   @default(false)
+//   publishedAt  DateTime?
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   createdById String
+//   createdBy   User   @relation("PropertyCreator", fields: [createdById], references: [id])
+
+//   attachmentsId String?      @unique
+//   attachment    Attachments? @relation("PropertyAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+//   leads          Lead[]
+//   appointments   Appointment[]
+//   assignedAgents PropertyAgent[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([id, companyId])
+//   @@index([companyId])
+//   @@index([companyId, propertyStatus])
+//   @@index([companyId, propertyPurpose])
+//   @@index([companyId, propertyType])
+//   @@index([state, city])
+//   @@index([price])
+//   @@index([createdById])
+// }
+
+// model PropertyAgent {
+//   id String @id @default(cuid())
+
+//   propertyId String
+//   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+//   agentId String
+//   agent   User   @relation("AssignedPropertyAgent", fields: [agentId], references: [id], onDelete: Cascade)
+
+//   createdBy   User   @relation("CreatedBy", fields: [createdById], references: [id])
+//   createdById String
+
+//   isPrimary  Boolean   @default(false)
+//   assignedAt DateTime  @default(now())
+//   removedAt  DateTime?
+
+//   @@unique([propertyId, agentId])
+//   @@index([agentId])
+//   @@index([propertyId])
+// }
+
+// model Upload {
+//   id       String    @id @default(uuid())
+//   name     String
+//   type     MediaType
+//   publicId String    @unique
+//   url      String
+//   order    Int?      @default(0)
+//   size     Int?
+
+//   companyId String?
+//   company   Company? @relation("CompanyUploads", fields: [companyId], references: [id], onDelete: Cascade)
+
+//   uploadedById String?
+//   uploadedBy   User?   @relation("UploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+//   attachmentsId String?
+//   attachments   Attachments? @relation(fields: [attachmentsId], references: [id], onDelete: Cascade)
+
+//   logoForCompany Company? @relation("CompanyLogo")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+//   @@index([uploadedById])
+//   @@index([attachmentsId])
+// }
+
+// model Attachments {
+//   id String @id @default(uuid())
+
+//   uploads Upload[]
+
+//   property    Property?    @relation("PropertyAttachments")
+//   lead        Lead?        @relation("LeadAttachments")
+//   appointment Appointment? @relation("AppointmentAttachments")
+
+//   payment      Payment?      @relation("PaymentAttachments")
+//   notification Notification? @relation("NotificationAttachments")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Customer {
+//   id       String  @id @default(uuid())
+//   fullName String?
+//   email    String?
+//   phone    String
+//   address  String?
+//   city     String?
+//   state    String?
+//   country  String?
+//   notes    String?
+//   source   String?
+
+//   companyId                  String
+//   company                    Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+//   createdById                String?              @unique
+//   createdBy                  User?                @relation(fields: [createdById], references: [id])
+//   customerInvitationAccepted CustomerInvitation[]
+
+//   leads        Lead[]
+//   appointments Appointment[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([companyId, phone])
+//   @@index([companyId])
+//   @@index([companyId, email])
+// }
+
+// model FollowUpTask {
+//   id          String         @id @default(cuid())
+//   type        FollowUpType
+//   status      FollowUpStatus @default(PENDING)
+//   title       String
+//   description String?
+//   dueAt       DateTime
+//   completedAt DateTime?
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   leadId String
+//   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+//   assignedAgentId String?
+//   assignedAgent   User?   @relation("FollowUpAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+
+//   createdById String?
+//   createdBy   User?   @relation("FollowUpCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId, status])
+//   @@index([leadId])
+//   @@index([assignedAgentId, dueAt])
+//   @@index([createdById])
+// }
+
+// model Lead {
+//   id          String          @id @default(cuid())
+//   intent      LeadIntent      @default(GENERAL_ENQUIRY)
+//   status      LeadStatus      @default(NEW)
+//   temperature LeadTemperature @default(COLD)
+//   score       Int             @default(0)
+
+//   budgetMinimum Decimal? @db.Decimal(18, 2)
+//   budgetMaximum Decimal? @db.Decimal(18, 2)
+//   currency      String   @default("NGN")
+
+//   preferredLocation  String?
+//   preferredCity      String?
+//   preferredState     String?
+//   preferredType      PropertyType?
+//   preferredPurpose   PropertyPurpose?
+//   preferredBedrooms  Int?
+//   preferredBathrooms Int?
+
+//   financingReady Boolean?
+//   decisionMaker  Boolean?
+//   urgency        String?
+//   notes          String?
+
+//   qualificationData Json?
+//   lastContactedAt   DateTime?
+//   nextFollowUpAt    DateTime?
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   customerId String
+//   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+//   propertyId String?
+//   property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+//   assignedAgentId String?
+//   assignedAgent   User?   @relation("LeadAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+
+//   attachmentsId String?      @unique
+//   attachment    Attachments? @relation("LeadAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+//   appointments Appointment[]
+
+//   followUps FollowUpTask[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+//   @@index([companyId, status])
+//   @@index([companyId, temperature])
+//   @@index([customerId])
+//   @@index([propertyId])
+//   @@index([assignedAgentId])
+// }
+
+// model Appointment {
+//   id          String            @id @default(uuid())
+//   title       String
+//   type        AppointmentType
+//   status      AppointmentStatus @default(PENDING)
+//   description String?
+//   notes       String?
+
+//   startAt  DateTime
+//   endAt    DateTime
+//   timezone String   @default("Africa/Lagos")
+
+//   location    String?
+//   meetingLink String?
+
+//   companyId String
+
+//   company    Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+//   propertyId String?
+//   property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+//   customerId String
+//   customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+//   agentId       String
+//   agent         User         @relation("AppointmentAgent", fields: [agentId], references: [id])
+//   leadId        String?
+//   lead          Lead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+//   attachmentsId String?      @unique
+//   attachment    Attachments? @relation("AppointmentAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+//   externalCalendarId String?
+//   reminderSentAt     DateTime?
+//   cancelledAt        DateTime?
+//   cancellationReason String?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId, startAt])
+//   @@index([agentId, startAt])
+//   @@index([customerId])
+//   @@index([propertyId])
+//   @@index([leadId])
+// }
+
+// model Availability {
+//   id        String  @id @default(cuid())
+//   dayOfWeek Int
+//   startTime String
+//   endTime   String
+//   timezone  String  @default("Africa/Lagos")
+//   isActive  Boolean @default(true)
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([userId, dayOfWeek, startTime, endTime])
+//   @@index([companyId])
+//   @@index([userId, dayOfWeek])
+// }
+
+// model BlockedTime {
+//   id      String   @id @default(cuid())
+//   startAt DateTime
+//   endAt   DateTime
+//   reason  String?
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+//   @@index([userId, startAt])
+// }
+
+// model PhoneNumber {
+//   id               String  @id @default(cuid())
+//   provider         String
+//   providerNumberId String? @unique
+//   phoneNumber      String  @unique
+//   label            String?
+//   countryCode      String?
+//   isActive         Boolean @default(true)
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+// }
+
+// model Plan {
+//   id          String  @id @default(cuid())
+//   code        String  @unique
+//   name        String
+//   description String?
+//   currency    String  @default("USD")
+
+//   monthlyPrice Decimal @db.Decimal(10, 2)
+//   yearlyPrice  Decimal @db.Decimal(10, 2)
+
+//   maxAgents      Int
+//   maxProperties  Int
+//   maxCalls       Int
+//   maxCallMinutes Int
+//   maxAiAgents    Int
+
+//   features Json?
+//   isActive Boolean @default(true)
+
+//   subscriptions Subscription[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([isActive])
+// }
+
+// model Subscription {
+//   id       String             @id @default(cuid())
+//   status   SubscriptionStatus @default(TRIAL)
+//   interval BillingInterval    @default(MONTHLY)
+
+//   stripeSubscriptionId String? @unique
+//   stripePriceId        String?
+
+//   trialEndsAt        DateTime?
+//   currentPeriodStart DateTime?
+//   currentPeriodEnd   DateTime?
+//   expiresAt          DateTime?
+//   cancelledAt        DateTime?
+//   cancelAtPeriodEnd  Boolean   @default(false)
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   planId String
+//   plan   Plan   @relation(fields: [planId], references: [id])
+
+//   payments     Payment[]
+//   usageRecords UsageRecord[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+//   @@index([companyId, status])
+//   @@index([planId])
+// }
+
+// model Payment {
+//   id          String        @id @default(cuid())
+//   amount      Decimal       @db.Decimal(10, 2)
+//   currency    String        @default("USD")
+//   status      PaymentStatus @default(PENDING)
+//   description String?
+
+//   stripePaymentIntentId String? @unique
+//   stripeInvoiceId       String? @unique
+//   invoiceUrl            String?
+
+//   failureReason String?
+//   paidAt        DateTime?
+//   failedAt      DateTime?
+//   metadata      Json?
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   subscriptionId String?
+//   subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+//   attachmentsId String?      @unique
+//   attachment    Attachments? @relation("PaymentAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+//   @@index([companyId, status])
+//   @@index([subscriptionId])
+// }
+
+// model UsageRecord {
+//   id         String    @id @default(cuid())
+//   type       UsageType
+//   quantity   Int       @default(1)
+//   metadata   Json?
+//   occurredAt DateTime  @default(now())
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   subscriptionId String?
+//   subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+//   @@index([companyId, type, occurredAt])
+//   @@index([subscriptionId])
+// }
+
+// model Notification {
+//   id       String              @id @default(cuid())
+//   type     NotificationType    @default(GENERAL)
+//   channel  NotificationChannel @default(IN_APP)
+//   title    String
+//   message  String
+//   data     Json?
+//   isRead   Boolean             @default(false)
+//   readAt   DateTime?
+//   sentAt   DateTime?
+//   failedAt DateTime?
+
+//   companyId String
+//   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   attachmentsId String?      @unique
+//   attachment    Attachments? @relation("NotificationAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([companyId])
+//   @@index([userId, isRead])
+//   @@index([createdAt])
+// }
+
+// model AuditLog {
+//   id         String  @id @default(cuid())
+//   action     String
+//   entityType String
+//   entityId   String?
+
+//   previousData Json?
+//   newData      Json?
+//   metadata     Json?
+
+//   ipAddress String?
+//   userAgent String?
+
+//   companyId String?
+//   company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+//   actorId String?
+//   actor   User?   @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+//   createdAt DateTime @default(now())
+
+//   @@index([companyId])
+//   @@index([companyId, entityType])
+//   @@index([actorId])
+//   @@index([createdAt])
+// }

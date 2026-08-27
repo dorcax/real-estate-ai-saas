@@ -1,0 +1,16 @@
+model UsageRecord {
+  id         String    @id @default(cuid())
+  type       UsageType
+  quantity   Int       @default(1)
+  metadata   Json?
+  occurredAt DateTime  @default(now())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([companyId, type, occurredAt])
+  @@index([subscriptionId])
+}

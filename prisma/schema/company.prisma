@@ -1,0 +1,75 @@
+model Company {
+  id          String  @id @default(uuid())
+  name        String
+  email       String  @unique
+  phoneNumber String?
+  address     String?
+  city        String?
+  state       String?
+  country     String  @default("Nigeria")
+  website     String?
+  description String?
+  timezone    String? @default("Africa/Lagos")
+  currency    String? @default("NGN")
+  isActive    Boolean @default(true)
+  settings    Json?
+
+  stripeCustomerId String? @unique
+
+  logoId String? @unique
+  logo   Upload? @relation("CompanyLogo", fields: [logoId], references: [id], onDelete: SetNull)
+
+  users      User?
+  properties Property[]
+  customers  Customer[]
+  leads      Lead[]
+
+  phoneNumbers PhoneNumber[]
+
+  appointments           Appointment[]
+  uploads                Upload[]             @relation("CompanyUploads")
+  customerInvitationSent CustomerInvitation[]
+  subscriptions          Subscription[]
+  payments               Payment[]
+  notifications          Notification[]
+  companyInvitations     CompanyInvitation[]
+
+  availabilities Availability[]
+  blockedTimes   BlockedTime[]
+  usageRecords   UsageRecord[]
+  followUps      FollowUpTask[]
+  auditLogs      AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([isActive])
+}
+
+model CompanyInvitation {
+  id        String           @id @default(uuid())
+  email     String
+  role      Role             @default(AGENT)
+  token     String           @unique
+  status    InvitationStatus @default(PENDING)
+  expiresAt DateTime
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  invitedById String
+  invitedBy   User   @relation("InvitationsSent", fields: [invitedById], references: [id])
+
+  acceptedById String?
+  acceptedBy   User?   @relation("InvitationsAccepted", fields: [acceptedById], references: [id], onDelete: SetNull)
+
+  acceptedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([companyId, status])
+  @@index([companyId, email])
+  @@index([email])
+  @@index([expiresAt])
+}

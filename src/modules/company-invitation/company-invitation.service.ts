@@ -13,7 +13,7 @@ import { PrismaService } from 'src/services/prisma/prisma.service';
 import { userEntity } from '../auth/dto/create-auth.dto';
 import {
   CompanyInvitationDto,
-  CreateCompanyInvitation
+  CreateCompanyInvitation,
 } from '../company-invitation/dto/create-companyInvitationDto';
 import { GetQueryDto } from './dto/getQuery.dto';
 
@@ -115,25 +115,25 @@ export class CompanyInvitationService {
         `This invitation is already ${invitation.status.toLowerCase()}`,
       );
     }
-    // check if the token have not expired  
-    if(invitation.expiresAt <= new Date()){
+    // check if the token have not expired
+    if (invitation.expiresAt <= new Date()) {
       await this.prismaService.companyInvitation.update({
-        where:{
-          id:invitation.id
+        where: {
+          id: invitation.id,
         },
-        data:{
-          status:InvitationStatus.EXPIRED
-        }
-      })
-      throw new GoneException('this invitation has  expired ')
+        data: {
+          status: InvitationStatus.EXPIRED,
+        },
+      });
+      throw new GoneException('this invitation has  expired ');
     }
 
-    if(invitation.email !==currentUser.email){
-      throw new ForbiddenException('you are not the owner of this invitation')
+    if (invitation.email !== currentUser.email) {
+      throw new ForbiddenException('you are not the owner of this invitation');
     }
 
     // update the user company and company invitation
-    return  await this.prismaService.$transaction(async (prisma) => {
+    return await this.prismaService.$transaction(async (prisma) => {
       const updatedInvitation = await prisma.companyInvitation.update({
         where: {
           id: invitation.id,
@@ -163,17 +163,16 @@ export class CompanyInvitationService {
         },
       });
 
-       return {
-      message: 'invitation accepted ',
-      user:updateUser
-    };
+      return {
+        message: 'invitation accepted ',
+        user: updateUser,
+      };
     });
-   
   }
 
   // reject company invite
   async rejectCompanyInvitationByAgent(
-    dto:CompanyInvitationDto,
+    dto: CompanyInvitationDto,
     currentUser: userEntity,
   ) {
     // find if the token exist
@@ -188,75 +187,76 @@ export class CompanyInvitationService {
       );
     }
 
-    
     await this.validateInvitationNotExpired(invitation);
     // update the company reject
-    const declineInvitation= await this.prismaService.companyInvitation.update({
-      where: {
-        id: invitation.id,
-      },
-      data: {
-        status: InvitationStatus.DECLINED,
-        acceptedBy: {
-          connect: {
-            id: currentUser.id,
+    const declineInvitation = await this.prismaService.companyInvitation.update(
+      {
+        where: {
+          id: invitation.id,
+        },
+        data: {
+          status: InvitationStatus.DECLINED,
+          acceptedBy: {
+            connect: {
+              id: currentUser.id,
+            },
           },
         },
       },
-    });
-    return{
-      message:"Invitation is declined successfully "
-    }
+    );
+    return {
+      message: 'Invitation is declined successfully ',
+      data:declineInvitation
+    };
   }
 
- async getCompanyInvitation(currentUser:userEntity,query:GetQueryDto){
-  const {status,page,limit} =query
-  const skip =(page-1)*limit 
-  const [data,total] = await Promise.all([
-     this.prismaService.companyInvitation.findMany({
-      where:{
-        companyId:currentUser.companyId,
-        ...(status && {
-          status
-        })
+  async getCompanyInvitation(currentUser: userEntity, query: GetQueryDto) {
+    const { status, page, limit } = query;
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prismaService.companyInvitation.findMany({
+        where: {
+          companyId: currentUser.companyId,
+          ...(status && {
+            status,
+          }),
+        },
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prismaService.companyInvitation.count({
+        where: {
+          companyId: currentUser.companyId,
+          ...(status && { status }),
+        },
+      }),
+    ]);
+    return {
+      data,
+      pagination: {
+        skip,
+        limit,
+        total,
+        totalPage: Math.ceil(total / limit),
       },
-      skip,
-      take:limit,
-    orderBy:{
-      createdAt:'desc'
-    }
-    }),
-    this.prismaService.companyInvitation.count({
-      where:{
-        companyId:currentUser.companyId,
-        ...(status && {status})
-      }
-    })
-  ])
-  return {
-    data,
-    pagination:{
-      skip,
-      limit,
-      total ,
-      totalPage:Math.ceil(total/limit)
-    }
+    };
   }
- }
 
-  async getCompanyInvitationById(id:string,currentUser:userEntity){
-    const invitation =await this.prismaService.companyInvitation.findFirst({
-      where:{
+  async getCompanyInvitationById(id: string, currentUser: userEntity) {
+    const invitation = await this.prismaService.companyInvitation.findFirst({
+      where: {
         id,
-        companyId:currentUser.companyId
-      }
-    })
-    if(!invitation){
-      throw new NotFoundException('invitation not found')
+        companyId: currentUser.companyId,
+      },
+    });
+    if (!invitation) {
+      throw new NotFoundException('invitation not found');
     }
-    return invitation
+    return invitation;
   }
-
 
   // generate token
   private generateToken(): string {
@@ -301,9 +301,7 @@ export class CompanyInvitationService {
           status: InvitationStatus.EXPIRED,
         },
       });
-       throw new GoneException('This invitation have expired ');
+      throw new GoneException('This invitation have expired ');
     }
-   
   }
-
 }

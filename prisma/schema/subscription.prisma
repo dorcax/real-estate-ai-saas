@@ -1,0 +1,31 @@
+model Subscription {
+  id       String             @id @default(cuid())
+  status   SubscriptionStatus @default(TRIAL)
+  interval BillingInterval    @default(MONTHLY)
+
+  stripeSubscriptionId String? @unique
+  stripePriceId        String?
+
+  trialEndsAt        DateTime?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  expiresAt          DateTime?
+  cancelledAt        DateTime?
+  cancelAtPeriodEnd  Boolean   @default(false)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
+
+  payments     Payment[]
+  usageRecords UsageRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@index([planId])
+}

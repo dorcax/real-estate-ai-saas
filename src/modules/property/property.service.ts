@@ -317,7 +317,7 @@ export class PropertyService {
       },
     });
   }
-  
+
   // get agents
   async getAgents(currentUser: userEntity, id: string) {
     return await this.PrismaService.propertyAgent.findMany({
@@ -342,3 +342,4 @@ export class PropertyService {
     });
   }
 }
+

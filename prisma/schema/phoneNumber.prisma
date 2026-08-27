@@ -1,0 +1,17 @@
+model PhoneNumber {
+  id               String  @id @default(cuid())
+  provider         String
+  providerNumberId String? @unique
+  phoneNumber      String  @unique
+  label            String?
+  countryCode      String?
+  isActive         Boolean @default(true)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+}
