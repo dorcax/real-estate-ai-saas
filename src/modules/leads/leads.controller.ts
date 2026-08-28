@@ -25,10 +25,10 @@ export class LeadController {
   constructor(private readonly leadService: LeadsService) {}
 
   // Create Lead
-  @Auth(['ADMIN'])
+  // @Auth(['ADMIN'])
   @Post()
-  create(@Body() dto: CreateLeadDto, @AuthUser() currentUser: userEntity) {
-    return this.leadService.create(dto, currentUser);
+  create(@Body() dto: CreateLeadDto) {
+    return this.leadService.create(dto, );
   }
 
   // Get All Leads

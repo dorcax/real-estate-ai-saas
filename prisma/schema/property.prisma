@@ -37,9 +37,10 @@ model Property {
   attachmentsId String?      @unique
   attachment    Attachments? @relation("PropertyAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
 
-  leads          Lead[]
-  appointments   Appointment[]
-  assignedAgents PropertyAgent[]
+  leads               Lead[]
+  appointments        Appointment[]
+  assignedAgents      PropertyAgent[]
+  appointmentRequests AppointmentRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

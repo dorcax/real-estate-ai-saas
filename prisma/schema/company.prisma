@@ -34,11 +34,12 @@ model Company {
   notifications          Notification[]
   companyInvitations     CompanyInvitation[]
 
-  availabilities Availability[]
-  blockedTimes   BlockedTime[]
-  usageRecords   UsageRecord[]
-  followUps      FollowUpTask[]
-  auditLogs      AuditLog[]
+  availabilities      Availability[]
+  blockedTimes        BlockedTime[]
+  usageRecords        UsageRecord[]
+  followUps           FollowUpTask[]
+  auditLogs           AuditLog[]
+  appointmentRequests AppointmentRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

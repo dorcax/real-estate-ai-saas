@@ -19,10 +19,10 @@ import { GetQueryDto } from '../property/dto/get-query.dto';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @Auth(['AGENT'])
+  // @Auth(['AGENT'])
   @Post()
-  create(@Body() dto: CreateCustomerDto, @AuthUser() currentUser: userEntity) {
-    return this.customerService.create(dto, currentUser);
+  create(@Body() dto: CreateCustomerDto) {
+    return this.customerService.create(dto);
   }
 
   @Get()

@@ -18,40 +18,38 @@ export class CreateLeadDto {
   intent: LeadIntent;
   @IsEnum(LeadStatus)
   status: LeadStatus;
-  @IsEnum(LeadTemperature)
-  temperature: LeadTemperature;
-  @IsNumber()
-  @IsNotEmpty()
-  score: number;
+ 
 
   @IsNumber()
   @IsOptional()
   customerId?: string;
   @IsNumber()
-  @IsNotEmpty()
-  budgetMinimum: number;
+  @IsOptional()
+  budgetMinimum?: number;
   @IsNumber()
-  @IsNotEmpty()
-  budgetMaximum: number;
-  @IsNumber()
-  @IsNotEmpty()
-  currency: string;
+  @IsOptional()
+  budgetMaximum?: number;
+  @IsString()
+  @IsOptional()
+  currency?: string;
   @IsString()
   @IsNotEmpty()
-  preferredLocation: string;
+  companyId: string;
   @IsString()
   @IsNotEmpty()
-  preferredState: string;
+  propertyId: string;
+  @IsString()
+  @IsOptional()
+  preferredLocation?: string;
+  @IsString()
+  @IsOptional()
+  preferredState?: string;
   @IsEnum(PropertyType)
   preferredType: PropertyType;
   @IsEnum(PropertyPurpose)
   preferredPurpose: PropertyPurpose;
-  @IsString()
-  @IsNotEmpty()
-  urgency: string;
-  @IsString()
-  @IsNotEmpty()
-  notes: string;
+ 
+ 
 }
 
 

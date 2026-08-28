@@ -1,15 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { AssignLeadDto, CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto, UpdateLeadStatusDto } from './dto/update-lead.dto';
 import { userEntity } from '../auth/dto/create-auth.dto';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { GetQueryDto } from '../property/dto/get-query.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class LeadsService {
   constructor(private readonly PrismaService: PrismaService) {}
-  async create(dto: CreateLeadDto, currentUser: userEntity) {
-    if (!currentUser.companyId) {
+  async create(dto: CreateLeadDto,  tx?: Prisma.TransactionClient,) {
+    if (!dto.companyId) {
       throw new BadRequestException('User is not assigned to a company');
     }
 
@@ -21,19 +22,47 @@ export class LeadsService {
       preferredLocation,
       status,
       preferredState,
-      urgency,
+      companyId,
+      propertyId,
       preferredType,
       preferredPurpose,
-      temperature,
-      notes,
-      score,
+      
     } = dto;
 
+       // Find property
+    const property = await tx.property.findUnique({
+      where: {
+        id: propertyId,
+      },
+
+      include: {
+        company: {
+          select: {
+            id: true,
+          },
+        },
+
+        assignedAgents: {
+          include: {
+            agent: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!property) {
+      throw new NotFoundException('Property not found');
+    }
+
     // Check that customer exists and belongs to this company
-    const customer = await this.PrismaService.customer.findFirst({
+    const customer = await tx ?? this.PrismaService.customer.findFirst({
       where: {
         id: customerId,
-        companyId: currentUser.companyId,
+        companyId
       },
     });
 
@@ -41,7 +70,7 @@ export class LeadsService {
       throw new BadRequestException('Customer not found');
     }
 
-    const lead = await this.PrismaService.lead.create({
+    const lead = await tx ??this.PrismaService.lead.create({
       data: {
         intent,
         budgetMinimum,
@@ -50,15 +79,14 @@ export class LeadsService {
         preferredPurpose,
         preferredType,
         preferredState,
-        urgency,
+     
         status,
-        score,
-        temperature,
-        notes,
+       
+       
 
         company: {
           connect: {
-            id: currentUser.companyId,
+            id: companyId,
           },
         },
 
@@ -68,11 +96,7 @@ export class LeadsService {
           },
         },
 
-        createdBy: {
-          connect: {
-            id: currentUser.id,
-          },
-        },
+       
       },
     });
 

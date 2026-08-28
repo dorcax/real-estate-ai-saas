@@ -1,0 +1,65 @@
+enum AppointmentRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RESCHEDULE_REQUESTED
+  CANCELLED
+  EXPIRED
+}
+
+model AppointmentRequest {
+  id String @id @default(uuid())
+
+  title String?
+
+  type AppointmentType
+
+  status AppointmentRequestStatus @default(PENDING)
+
+  description String?
+  notes       String?
+
+  requestedStartAt DateTime
+  requestedEndAt   DateTime?
+
+  timezone String @default("Africa/Lagos")
+
+  location    String?
+  meetingLink String?
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  agentId String?
+  agent   User?   @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  appointmentId String?      @unique
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+
+  rejectionReason    String?
+  cancellationReason String?
+
+  reviewedAt   DateTime?
+  reviewedById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@index([customerId])
+  @@index([leadId])
+  @@index([propertyId])
+  @@index([agentId])
+  @@index([appointmentId])
+  @@index([requestedStartAt])
+}

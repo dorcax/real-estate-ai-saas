@@ -28,10 +28,11 @@ model Appointment {
   attachmentsId String?      @unique
   attachment    Attachments? @relation("AppointmentAttachments", fields: [attachmentsId], references: [id], onDelete: SetNull)
 
-  externalCalendarId String?
-  reminderSentAt     DateTime?
-  cancelledAt        DateTime?
-  cancellationReason String?
+  externalCalendarId  String?
+  reminderSentAt      DateTime?
+  cancelledAt         DateTime?
+  cancellationReason  String?
+  appointmentRequests AppointmentRequest?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

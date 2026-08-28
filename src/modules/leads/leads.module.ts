@@ -6,5 +6,6 @@ import { PrismaService } from 'src/services/prisma/prisma.service';
 @Module({
   controllers: [LeadController],
   providers: [LeadsService,PrismaService],
+  exports:[LeadsService]
 })
 export class LeadsModule {}

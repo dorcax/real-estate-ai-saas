@@ -9,9 +9,8 @@ model User {
   isVerified Boolean @default(false)
   isActive   Boolean @default(true)
 
-  companyId String?   @unique
-  company   Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer  Customer?
+  companyId String?  @unique
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   otps                 Otp[]
   createdProperties    Property[]          @relation("PropertyCreator")
@@ -23,12 +22,13 @@ model User {
   propertyAgentCreated PropertyAgent[]     @relation("CreatedBy")
   invitationsSent      CompanyInvitation[] @relation("InvitationsSent")
 
-  invitationsAccepted CompanyInvitation[] @relation("InvitationsAccepted")
+  invitationsAccepted CompanyInvitation[]  @relation("InvitationsAccepted")
   availabilities      Availability[]
   blockedTimes        BlockedTime[]
-  followUpsAssigned   FollowUpTask[]      @relation("FollowUpAssignedAgent")
-  followUpsCreated    FollowUpTask[]      @relation("FollowUpCreator")
-  auditLogs           AuditLog[]          @relation("AuditActor")
+  followUpsAssigned   FollowUpTask[]       @relation("FollowUpAssignedAgent")
+  followUpsCreated    FollowUpTask[]       @relation("FollowUpCreator")
+  auditLogs           AuditLog[]           @relation("AuditActor")
+  appointmentRequests AppointmentRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

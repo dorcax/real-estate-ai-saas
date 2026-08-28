@@ -43,7 +43,8 @@ model Lead {
 
   appointments Appointment[]
 
-  followUps FollowUpTask[]
+  followUps           FollowUpTask[]
+  appointmentRequests AppointmentRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

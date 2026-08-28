@@ -16,6 +16,11 @@ import { CompanyInvitationModule } from './modules/company-invitation/company-in
 import { CustomerModule } from './modules/customer/customer.module';
 import { LeadsModule } from './modules/leads/leads.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
+import { AppointmentRequestModule } from './modules/appointment-request/appointment-request.module';
+import { AvailabilityModule } from './modules/availability/availability.module';
+import { BlockedTimeModule } from './modules/blocked-time/blocked-time.module';
+import { FollowUpModule } from './modules/follow-up/follow-up.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -47,6 +52,11 @@ import { AppointmentModule } from './modules/appointment/appointment.module';
     CustomerModule,
     LeadsModule,
     AppointmentModule,
+    AppointmentRequestModule,
+    AvailabilityModule,
+    BlockedTimeModule,
+    FollowUpModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
