@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -41,6 +42,8 @@ export class PropertyService {
     });
 
     if (!existingCompany) throw new NotFoundException('company not found ');
+
+    await this.checkPropertyLimit(existingCompany.id);
     // create property
     const property = await this.PrismaService.property.create({
       data: {
@@ -341,5 +344,39 @@ export class PropertyService {
       },
     });
   }
-}
 
+  // plan limit
+  async checkPropertyLimit(companyId: string) {
+    // find the company subcription
+    await this.PrismaService.$transaction(async (tx) => {
+      const subscription = await tx.subscription.findFirst({
+        where: {
+          companyId,
+        },
+        include: {
+          plan: {
+            select: {
+              maxProperties: true,
+              name: true,
+            },
+          },
+        },
+      });
+      if (!subscription) {
+        throw new ForbiddenException('No  active subscription ');
+      }
+
+      const propertyCount = await tx.property.count({
+        where: {
+          companyId,
+        },
+      });
+
+      if (propertyCount >= subscription.plan.maxProperties) {
+        throw new ForbiddenException(
+          `Your ${subscription.plan.name} plan allows a maximum of ${subscription.plan.maxProperties} properties`,
+        );
+      }
+    });
+  }
+}

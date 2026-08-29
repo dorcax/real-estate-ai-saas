@@ -10,10 +10,10 @@ export declare class CompanyController {
         data: {
             phoneNumber: string | null;
             email: string;
+            name: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             isActive: boolean;
             address: string | null;
             city: string | null;

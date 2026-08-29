@@ -27,6 +27,7 @@ let PropertyService = class PropertyService {
         });
         if (!existingCompany)
             throw new common_1.NotFoundException('company not found ');
+        await this.checkPropertyLimit(existingCompany.id);
         const property = await this.PrismaService.property.create({
             data: {
                 title,
@@ -274,6 +275,34 @@ let PropertyService = class PropertyService {
                     propertyId: id,
                 },
             },
+        });
+    }
+    async checkPropertyLimit(companyId) {
+        await this.PrismaService.$transaction(async (tx) => {
+            const subscription = await tx.subscription.findFirst({
+                where: {
+                    companyId,
+                },
+                include: {
+                    plan: {
+                        select: {
+                            maxProperties: true,
+                            name: true,
+                        },
+                    },
+                },
+            });
+            if (!subscription) {
+                throw new common_1.ForbiddenException('No  active subscription ');
+            }
+            const propertyCount = await tx.property.count({
+                where: {
+                    companyId,
+                },
+            });
+            if (propertyCount >= subscription.plan.maxProperties) {
+                throw new common_1.ForbiddenException(`Your ${subscription.plan.name} plan allows a maximum of ${subscription.plan.maxProperties} properties`);
+            }
         });
     }
 };

@@ -57,7 +57,8 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, auth_decorator_1.AuthUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_property_dto_1.CreatePropertyDto, create_auth_dto_1.userEntity]),
+    __metadata("design:paramtypes", [create_property_dto_1.CreatePropertyDto,
+        create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], PropertyController.prototype, "create", null);
 __decorate([

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AssignLeadDto, CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto, UpdateLeadStatusDto } from './dto/update-lead.dto';
 import { userEntity } from '../auth/dto/create-auth.dto';
@@ -9,7 +13,7 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class LeadsService {
   constructor(private readonly PrismaService: PrismaService) {}
-  async create(dto: CreateLeadDto,  tx?: Prisma.TransactionClient,) {
+  async create(dto: CreateLeadDto, tx?: Prisma.TransactionClient) {
     if (!dto.companyId) {
       throw new BadRequestException('User is not assigned to a company');
     }
@@ -21,48 +25,19 @@ export class LeadsService {
       budgetMaximum,
       preferredLocation,
       status,
-      preferredState,
       companyId,
       propertyId,
       preferredType,
       preferredPurpose,
-      
     } = dto;
 
-       // Find property
-    const property = await tx.property.findUnique({
-      where: {
-        id: propertyId,
-      },
-
-      include: {
-        company: {
-          select: {
-            id: true,
-          },
-        },
-
-        assignedAgents: {
-          include: {
-            agent: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!property) {
-      throw new NotFoundException('Property not found');
-    }
+    const prisma = tx ?? this.PrismaService;
 
     // Check that customer exists and belongs to this company
-    const customer = await tx ?? this.PrismaService.customer.findFirst({
+    const customer = await prisma.customer.findFirst({
       where: {
         id: customerId,
-        companyId
+        companyId,
       },
     });
 
@@ -70,7 +45,7 @@ export class LeadsService {
       throw new BadRequestException('Customer not found');
     }
 
-    const lead = await tx ??this.PrismaService.lead.create({
+    const lead = await prisma.lead.create({
       data: {
         intent,
         budgetMinimum,
@@ -78,11 +53,13 @@ export class LeadsService {
         preferredLocation,
         preferredPurpose,
         preferredType,
-        preferredState,
-     
+
         status,
-       
-       
+        property: {
+          connect: {
+            id: propertyId,
+          },
+        },
 
         company: {
           connect: {
@@ -95,8 +72,6 @@ export class LeadsService {
             id: customer.id,
           },
         },
-
-       
       },
     });
 
@@ -121,8 +96,8 @@ export class LeadsService {
 
         include: {
           customer: true,
-          createdBy: true,
-          assignedTo: true,
+          // createdBy: true,
+          // assignedTo: true,
         },
 
         orderBy: {
@@ -157,8 +132,8 @@ export class LeadsService {
 
       include: {
         customer: true,
-        createdBy: true,
-        assignedTo: true,
+        // createdBy: true,
+        // assignedTo: true,
       },
     });
 

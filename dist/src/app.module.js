@@ -22,6 +22,16 @@ const company_module_1 = require("./modules/company/company.module");
 const upload_module_1 = require("./modules/upload/upload.module");
 const property_module_1 = require("./modules/property/property.module");
 const company_invitation_module_1 = require("./modules/company-invitation/company-invitation.module");
+const customer_module_1 = require("./modules/customer/customer.module");
+const leads_module_1 = require("./modules/leads/leads.module");
+const appointment_module_1 = require("./modules/appointment/appointment.module");
+const appointment_request_module_1 = require("./modules/appointment-request/appointment-request.module");
+const availability_module_1 = require("./modules/availability/availability.module");
+const blocked_time_module_1 = require("./modules/blocked-time/blocked-time.module");
+const follow_up_module_1 = require("./modules/follow-up/follow-up.module");
+const notification_module_1 = require("./modules/notification/notification.module");
+const plan_module_1 = require("./modules/plan/plan.module");
+const subscription_module_1 = require("./modules/subscription/subscription.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -53,6 +63,16 @@ exports.AppModule = AppModule = __decorate([
             upload_module_1.UploadModule,
             property_module_1.PropertyModule,
             company_invitation_module_1.CompanyInvitationModule,
+            customer_module_1.CustomerModule,
+            leads_module_1.LeadsModule,
+            appointment_module_1.AppointmentModule,
+            appointment_request_module_1.AppointmentRequestModule,
+            availability_module_1.AvailabilityModule,
+            blocked_time_module_1.BlockedTimeModule,
+            follow_up_module_1.FollowUpModule,
+            notification_module_1.NotificationModule,
+            plan_module_1.PlanModule,
+            subscription_module_1.SubscriptionModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

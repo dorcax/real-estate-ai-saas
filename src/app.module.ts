@@ -21,6 +21,9 @@ import { AvailabilityModule } from './modules/availability/availability.module';
 import { BlockedTimeModule } from './modules/blocked-time/blocked-time.module';
 import { FollowUpModule } from './modules/follow-up/follow-up.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { PlanModule } from './modules/plan/plan.module';
+import { SubscriptionModule } from './modules/subscription/subscription.module';
+import { FlutterwaveModule } from './modules/flutterwave/flutterwave.module';
 
 @Module({
   imports: [
@@ -57,6 +60,9 @@ import { NotificationModule } from './modules/notification/notification.module';
     BlockedTimeModule,
     FollowUpModule,
     NotificationModule,
+    PlanModule,
+    SubscriptionModule,
+    FlutterwaveModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,14 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { BlockedTimeService } from './blocked-time.service';
 import { CreateBlockedTimeDto } from './dto/create-blocked-time.dto';
 import { UpdateBlockedTimeDto } from './dto/update-blocked-time.dto';
+import { Auth, AuthUser } from '../auth/decorator/auth.decorator';
+import { userEntity } from '../auth/dto/create-auth.dto';
 
 @Controller('blocked-time')
 export class BlockedTimeController {
   constructor(private readonly blockedTimeService: BlockedTimeService) {}
 
+  @Auth(['AGENT'])
   @Post()
-  create(@Body() createBlockedTimeDto: CreateBlockedTimeDto) {
-    return this.blockedTimeService.create(createBlockedTimeDto);
+  create(@Body() createBlockedTimeDto: CreateBlockedTimeDto,@AuthUser() currentUser:userEntity) {
+    return this.blockedTimeService.createBlockedTime(createBlockedTimeDto,currentUser);
   }
 
   @Get()

@@ -68,6 +68,8 @@ export class AppointmentRequestService {
       // Get agent
       const agent = property.assignedAgents[0]?.agent;
 
+
+      //  create customer
       const customer = await this.customerService.create(
         {
           fullName,
@@ -94,7 +96,7 @@ export class AppointmentRequestService {
         );
       }
 
-      //  create customer
+      
 
       // create lead
 
@@ -130,7 +132,7 @@ export class AppointmentRequestService {
 
           timezone: timezone ?? 'Africa/Lagos',
 
-          message,
+          notes:message,
 
           company: {
             connect: {
@@ -550,7 +552,7 @@ export class AppointmentRequestService {
 
           requestedEndAt: newEndAt,
 
-          message: dto.message ?? request.notes,
+        notes: dto.message ?? request.notes,
         },
 
         include: {
@@ -569,4 +571,7 @@ export class AppointmentRequestService {
       };
     });
   }
+
+  // implement notification , follow-up later 
+  
 }

@@ -99,6 +99,7 @@ enum InvitationStatus {
 enum SubscriptionStatus {
   TRIAL
   ACTIVE
+  PENDING
   PAST_DUE
   CANCELLED
   EXPIRED

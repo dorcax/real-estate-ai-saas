@@ -1,10 +1,10 @@
 model Subscription {
   id       String             @id @default(cuid())
-  status   SubscriptionStatus @default(TRIAL)
+  status   SubscriptionStatus @default(PENDING)
   interval BillingInterval    @default(MONTHLY)
 
-  stripeSubscriptionId String? @unique
-  stripePriceId        String?
+  flutterwaveSubscriptionId String? @unique
+  flutterwavePriceId        String?
 
   trialEndsAt        DateTime?
   currentPeriodStart DateTime?

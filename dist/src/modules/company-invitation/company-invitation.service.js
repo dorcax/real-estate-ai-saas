@@ -84,11 +84,11 @@ let CompanyInvitationService = class CompanyInvitationService {
         if (invitation.expiresAt <= new Date()) {
             await this.prismaService.companyInvitation.update({
                 where: {
-                    id: invitation.id
+                    id: invitation.id,
                 },
                 data: {
-                    status: client_1.InvitationStatus.EXPIRED
-                }
+                    status: client_1.InvitationStatus.EXPIRED,
+                },
             });
             throw new common_1.GoneException('this invitation has  expired ');
         }
@@ -125,7 +125,7 @@ let CompanyInvitationService = class CompanyInvitationService {
             });
             return {
                 message: 'invitation accepted ',
-                user: updateUser
+                user: updateUser,
             };
         });
     }
@@ -150,7 +150,8 @@ let CompanyInvitationService = class CompanyInvitationService {
             },
         });
         return {
-            message: "Invitation is declined successfully "
+            message: 'Invitation is declined successfully ',
+            data: declineInvitation
         };
     }
     async getCompanyInvitation(currentUser, query) {
@@ -161,21 +162,21 @@ let CompanyInvitationService = class CompanyInvitationService {
                 where: {
                     companyId: currentUser.companyId,
                     ...(status && {
-                        status
-                    })
+                        status,
+                    }),
                 },
                 skip,
                 take: limit,
                 orderBy: {
-                    createdAt: 'desc'
-                }
+                    createdAt: 'desc',
+                },
             }),
             this.prismaService.companyInvitation.count({
                 where: {
                     companyId: currentUser.companyId,
-                    ...(status && { status })
-                }
-            })
+                    ...(status && { status }),
+                },
+            }),
         ]);
         return {
             data,
@@ -183,16 +184,16 @@ let CompanyInvitationService = class CompanyInvitationService {
                 skip,
                 limit,
                 total,
-                totalPage: Math.ceil(total / limit)
-            }
+                totalPage: Math.ceil(total / limit),
+            },
         };
     }
     async getCompanyInvitationById(id, currentUser) {
         const invitation = await this.prismaService.companyInvitation.findFirst({
             where: {
                 id,
-                companyId: currentUser.companyId
-            }
+                companyId: currentUser.companyId,
+            },
         });
         if (!invitation) {
             throw new common_1.NotFoundException('invitation not found');
