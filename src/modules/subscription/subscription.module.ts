@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
-import { SubscriptionService } from './subscription.service';
+import { FlutterwaveModule } from '../flutterwave/flutterwave.module';
 import { SubscriptionController } from './subscription.controller';
+import { SubscriptionService } from './subscription.service';
 
 @Module({
+  imports:[FlutterwaveModule],
+
   controllers: [SubscriptionController],
   providers: [SubscriptionService],
 })

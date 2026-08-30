@@ -24,6 +24,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { PlanModule } from './modules/plan/plan.module';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { FlutterwaveModule } from './modules/flutterwave/flutterwave.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { FlutterwaveModule } from './modules/flutterwave/flutterwave.module';
     PlanModule,
     SubscriptionModule,
     FlutterwaveModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

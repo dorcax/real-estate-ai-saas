@@ -1,17 +1,22 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { userEntity } from '../auth/dto/create-auth.dto';
+import { FlutterwaveService } from '../flutterwave/flutterwave.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
-import { userEntity } from '../auth/dto/create-auth.dto';
-import { PrismaService } from 'src/services/prisma/prisma.service';
-import { Subscription } from 'rxjs';
 
 @Injectable()
 export class SubscriptionService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly flutterwaveService: FlutterwaveService,
+    private readonly logger: Logger,
+  ) {}
   async create(dto: CreateSubscriptionDto, currentUser: userEntity) {
     if (!currentUser.companyId) {
       throw new BadRequestException();
@@ -64,8 +69,6 @@ export class SubscriptionService {
       data: subscription,
     };
   }
-
- 
 
   async findAll(companyId: string) {
     return await this.prismaService.subscription.findMany({
@@ -122,5 +125,97 @@ export class SubscriptionService {
       message: 'Subscription cancelled successfully',
       data: cancelledSubscription,
     };
+  }
+
+  // checkout
+  async subscriptionCheckout(subscriptionId: string, currentUser: userEntity) {
+    // get subscription
+    const subscription = await this.prismaService.subscription.findUnique({
+      where: {
+        id: subscriptionId,
+        companyId: currentUser.companyId,
+      },
+      include: {
+        plan: true,
+
+        company: true,
+      },
+    });
+
+    if (!subscription) {
+      throw new NotFoundException('subscription not found ');
+    }
+    // make sure the subscription is pending
+    if (subscription.status !== 'PENDING') {
+      throw new BadRequestException(
+        'This subscription is not awaiting payment',
+      );
+    }
+    // get plan
+    if (subscription.plan) {
+      throw new NotFoundException('plan not found');
+    }
+    // get amount
+    const amount =
+      subscription.interval == 'MONTHLY'
+        ? Number(subscription.plan.monthlyPrice)
+        : Number(subscription.plan.yearlyPrice);
+
+    if (!amount || amount <= 0) {
+      throw new BadRequestException('Invalid plan price');
+    }
+    // generate transation reference code
+    const txRef = `SUB-${subscription.id}-${Date.now()}`;
+    // create payment
+    const data = await this.prismaService.$transaction(async (tx) => {
+      const payment = await tx.payment.create({
+        data: {
+          amount,
+
+          currency: 'NGN',
+
+          status: 'PENDING',
+
+          description: `Payment for ${subscription.plan.name} subscription`,
+
+          flutterwaveReference: txRef,
+
+          companyId: currentUser.companyId,
+
+          subscriptionId: subscription.id,
+        },
+      });
+
+      try {
+        const flutterwaveResponse =
+          await this.flutterwaveService.initiatePayment({
+            tx_ref: txRef,
+            amount,
+            currency: 'NGN',
+            email: currentUser.email,
+            name: currentUser.id || currentUser.email, // use actual name
+            redirect_url: `${process.env.FRONTENDURL}/payment/callback`,
+          });
+
+        return {
+          message: 'Payment initialized successfully',
+          data: {
+            paymentId: payment.id,
+            subscriptionId: subscription.id,
+            checkoutUrl: flutterwaveResponse.data.link,
+          },
+        };
+      } catch (error) {
+        
+        await tx.payment.update({
+          where: { id: payment.id },
+          data: { status: 'FAILED' },
+        });
+        this.logger.error(`Flutterwave initiation failed: ${error}`);
+        throw new BadRequestException(
+          'Payment initialization failed. Please try again.',
+        );
+      }
+    });
   }
 }
