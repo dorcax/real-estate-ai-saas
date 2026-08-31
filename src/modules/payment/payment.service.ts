@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { sign } from 'crypto';
 
 @Injectable()
 export class PaymentService {
@@ -8,6 +9,18 @@ export class PaymentService {
     return 'This action adds a new payment';
   }
 
+
+
+  async handleWebhook(req:Request,res){
+    const secretHash =process.env.FLW_SECRET_HASH
+    const signature =req.headers["verif-hash"]
+    if(!secretHash || secretHash !==signature){
+      res.status(401).end
+    }
+
+    const payload=req.body
+
+  }
   findAll() {
     return `This action returns all payment`;
   }

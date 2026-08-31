@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsString } from 'class-validator';
 
 import { BillingInterval } from '@prisma/client';
 
@@ -8,4 +8,7 @@ export class CreateSubscriptionDto {
 
   @IsEnum(BillingInterval)
   interval: BillingInterval;
+  
+  @IsDate()
+  trial:Date
 }

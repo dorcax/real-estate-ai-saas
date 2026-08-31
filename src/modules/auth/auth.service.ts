@@ -86,6 +86,7 @@ export class AuthService {
     };
   }
 
+  
   async forgotPassword(dto: ForgotPasswordDto) {
     const { email } = dto;
     const user = await this.findUser({ email });

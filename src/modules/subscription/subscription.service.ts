@@ -9,6 +9,7 @@ import { userEntity } from '../auth/dto/create-auth.dto';
 import { FlutterwaveService } from '../flutterwave/flutterwave.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
+import { calculatePeriodEnd } from 'src/utils/calculatePeriodEnd';
 
 @Injectable()
 export class SubscriptionService {
@@ -51,6 +52,11 @@ export class SubscriptionService {
     const subscription = await this.prismaService.subscription.create({
       data: {
         interval: dto.interval,
+        trialEndsAt: dto.trial
+          ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          : null,
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: calculatePeriodEnd(dto.interval),
         plan: {
           connect: {
             id: dto.planId,
@@ -109,6 +115,8 @@ export class SubscriptionService {
     if (subscription.status === 'CANCELLED') {
       throw new BadRequestException('Subscription is already cancelled');
     }
+    if (subscription.flutterwaveSubscriptionId) {
+    }
 
     const cancelledSubscription = await this.prismaService.subscription.update({
       where: {
@@ -152,7 +160,7 @@ export class SubscriptionService {
       );
     }
     // get plan
-    if (subscription.plan) {
+    if (!subscription.plan) {
       throw new NotFoundException('plan not found');
     }
     // get amount
@@ -206,7 +214,6 @@ export class SubscriptionService {
           },
         };
       } catch (error) {
-        
         await tx.payment.update({
           where: { id: payment.id },
           data: { status: 'FAILED' },
@@ -217,5 +224,6 @@ export class SubscriptionService {
         );
       }
     });
+    return data;
   }
 }
