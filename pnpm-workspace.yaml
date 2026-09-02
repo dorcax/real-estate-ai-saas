@@ -1,3 +1,17 @@
+# allowBuilds:
+#   '@prisma/engines': set this to true or false
+#   argon2: set this to true or false
+#   msgpackr-extract: set this to true or false
+#   prisma: set this to true or false
+#   unrs-resolver: set this to true or false
+# onlyBuiltDependencies:
+#   - "@prisma/engines"
+#   - "argon2"
+#   - "msgpackr-extract"
+#   - "prisma"
+#   - "unrs-resolver"
+
+
 onlyBuiltDependencies:
   - "@prisma/engines"
   - "argon2"
