@@ -2,38 +2,46 @@ FROM node:24 AS builder
 
 WORKDIR /app
 
-COPY pnpm-lock.yaml package.json ./
-# COPY ./src .
+# Enable pnpm
+RUN corepack enable && corepack prepare pnpm@11.15.1 --activate
+RUN pnpm --version
 
-RUN corepack enable 
+# Copy package files first (for better caching)
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
 
+# Install dependencies - you need to handle the build scripts error
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
-RUN pnpm install 
-
+# Copy the rest of the source code
 COPY . .
 
+# Generate Prisma client (this runs after dependencies are installed)
 RUN pnpm prisma generate
 
+# Build the application
 RUN pnpm run build
 
+# Clean up source files (optional)
 RUN rm -rf ./src
 
 EXPOSE 3000
 
-CMD ["pnpm", "run", "start:prod"]
-
-
-# production runtime  
+# Production runtime stage
 FROM node:24 AS runner
 
-WORKDIR /app 
-ENV NODE_ENV=production 
+WORKDIR /app
+ENV NODE_ENV=production
 
-COPY --from=builder /app/dist ./dist 
+# Copy built files from builder
+COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 
+# Install only production dependencies (optional but recommended)
+# This reduces image size
+# RUN pnpm install --prod --ignore-scripts
+
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
