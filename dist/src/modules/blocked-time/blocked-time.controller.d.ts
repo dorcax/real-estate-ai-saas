@@ -8,14 +8,14 @@ export declare class BlockedTimeController {
     create(createBlockedTimeDto: CreateBlockedTimeDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
+            userId: string;
             id: string;
-            startAt: Date;
-            endAt: Date;
-            reason: string | null;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            userId: string;
+            startAt: Date;
+            endAt: Date;
+            reason: string | null;
         };
     }>;
     findAll(): string;

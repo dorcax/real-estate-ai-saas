@@ -8,8 +8,8 @@ export class FlutterwaveController {
   constructor(private readonly flutterwaveService: FlutterwaveService) {}
 
   @Post()
-  create(@Body() createFlutterwaveDto: CreateFlutterwaveDto) {
-    return this.flutterwaveService.create(createFlutterwaveDto);
+  initiatePayment(@Body() createFlutterwaveDto: CreateFlutterwaveDto) {
+    return this.flutterwaveService.initiatePayment(createFlutterwaveDto);
   }
 
   @Get()

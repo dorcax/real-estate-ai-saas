@@ -39,6 +39,9 @@ let SubscriptionController = class SubscriptionController {
     remove(id, currentUser) {
         return this.subscriptionService.remove(id, currentUser);
     }
+    checkout(id, currentUser) {
+        return this.subscriptionService.subscriptionCheckout(id, currentUser);
+    }
 };
 exports.SubscriptionController = SubscriptionController;
 __decorate([
@@ -47,7 +50,8 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, auth_decorator_1.AuthUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_subscription_dto_1.CreateSubscriptionDto, create_auth_dto_1.userEntity]),
+    __metadata("design:paramtypes", [create_subscription_dto_1.CreateSubscriptionDto,
+        create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], SubscriptionController.prototype, "create", null);
 __decorate([
@@ -80,6 +84,14 @@ __decorate([
     __metadata("design:paramtypes", [String, create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], SubscriptionController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Post)(':id/checkout'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, auth_decorator_1.AuthUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, create_auth_dto_1.userEntity]),
+    __metadata("design:returntype", void 0)
+], SubscriptionController.prototype, "checkout", null);
 exports.SubscriptionController = SubscriptionController = __decorate([
     (0, common_1.Controller)('subscription'),
     __metadata("design:paramtypes", [subscription_service_1.SubscriptionService])

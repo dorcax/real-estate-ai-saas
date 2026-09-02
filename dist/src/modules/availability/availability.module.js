@@ -10,13 +10,14 @@ exports.AvailabilityModule = void 0;
 const common_1 = require("@nestjs/common");
 const availability_service_1 = require("./availability.service");
 const availability_controller_1 = require("./availability.controller");
+const prisma_service_1 = require("../../services/prisma/prisma.service");
 let AvailabilityModule = class AvailabilityModule {
 };
 exports.AvailabilityModule = AvailabilityModule;
 exports.AvailabilityModule = AvailabilityModule = __decorate([
     (0, common_1.Module)({
         controllers: [availability_controller_1.AvailabilityController],
-        providers: [availability_service_1.AvailabilityService],
+        providers: [availability_service_1.AvailabilityService, prisma_service_1.PrismaService],
     })
 ], AvailabilityModule);
 //# sourceMappingURL=availability.module.js.map

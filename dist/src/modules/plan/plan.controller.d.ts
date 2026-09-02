@@ -7,86 +7,86 @@ export declare class PlanController {
     create(dto: CreatePlanDto): Promise<{
         message: string;
         data: {
-            id: string;
-            code: string;
             name: string;
+            code: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            isActive: boolean;
             description: string | null;
             currency: string;
             monthlyPrice: import("@prisma/client/runtime/client").Decimal;
             yearlyPrice: import("@prisma/client/runtime/client").Decimal;
             maxProperties: number;
             features: import("@prisma/client/runtime/client").JsonValue | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
         };
     }>;
     findAll(): Promise<{
         message: string;
         data: {
-            id: string;
-            code: string;
             name: string;
+            code: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            isActive: boolean;
             description: string | null;
             currency: string;
             monthlyPrice: import("@prisma/client/runtime/client").Decimal;
             yearlyPrice: import("@prisma/client/runtime/client").Decimal;
             maxProperties: number;
             features: import("@prisma/client/runtime/client").JsonValue | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
         }[];
     }>;
     findOne(id: string): Promise<{
         message: string;
         data: {
-            id: string;
-            code: string;
             name: string;
+            code: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            isActive: boolean;
             description: string | null;
             currency: string;
             monthlyPrice: import("@prisma/client/runtime/client").Decimal;
             yearlyPrice: import("@prisma/client/runtime/client").Decimal;
             maxProperties: number;
             features: import("@prisma/client/runtime/client").JsonValue | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
         };
     }>;
     update(id: string, dto: UpdatePlanDto): Promise<{
         message: string;
         data: {
-            id: string;
-            code: string;
             name: string;
+            code: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            isActive: boolean;
             description: string | null;
             currency: string;
             monthlyPrice: import("@prisma/client/runtime/client").Decimal;
             yearlyPrice: import("@prisma/client/runtime/client").Decimal;
             maxProperties: number;
             features: import("@prisma/client/runtime/client").JsonValue | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
         };
     }>;
     remove(id: string): Promise<{
         message: string;
         data: {
-            id: string;
-            code: string;
             name: string;
+            code: string;
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            isActive: boolean;
             description: string | null;
             currency: string;
             monthlyPrice: import("@prisma/client/runtime/client").Decimal;
             yearlyPrice: import("@prisma/client/runtime/client").Decimal;
             maxProperties: number;
             features: import("@prisma/client/runtime/client").JsonValue | null;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
         };
     }>;
 }

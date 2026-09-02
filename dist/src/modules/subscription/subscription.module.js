@@ -8,15 +8,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubscriptionModule = void 0;
 const common_1 = require("@nestjs/common");
-const subscription_service_1 = require("./subscription.service");
+const flutterwave_module_1 = require("../flutterwave/flutterwave.module");
 const subscription_controller_1 = require("./subscription.controller");
+const subscription_service_1 = require("./subscription.service");
+const prisma_service_1 = require("../../services/prisma/prisma.service");
 let SubscriptionModule = class SubscriptionModule {
 };
 exports.SubscriptionModule = SubscriptionModule;
 exports.SubscriptionModule = SubscriptionModule = __decorate([
     (0, common_1.Module)({
+        imports: [flutterwave_module_1.FlutterwaveModule],
         controllers: [subscription_controller_1.SubscriptionController],
-        providers: [subscription_service_1.SubscriptionService],
+        providers: [subscription_service_1.SubscriptionService, prisma_service_1.PrismaService],
     })
 ], SubscriptionModule);
 //# sourceMappingURL=subscription.module.js.map

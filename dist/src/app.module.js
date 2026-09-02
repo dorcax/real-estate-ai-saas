@@ -32,6 +32,8 @@ const follow_up_module_1 = require("./modules/follow-up/follow-up.module");
 const notification_module_1 = require("./modules/notification/notification.module");
 const plan_module_1 = require("./modules/plan/plan.module");
 const subscription_module_1 = require("./modules/subscription/subscription.module");
+const flutterwave_module_1 = require("./modules/flutterwave/flutterwave.module");
+const payment_module_1 = require("./modules/payment/payment.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -73,6 +75,8 @@ exports.AppModule = AppModule = __decorate([
             notification_module_1.NotificationModule,
             plan_module_1.PlanModule,
             subscription_module_1.SubscriptionModule,
+            flutterwave_module_1.FlutterwaveModule,
+            payment_module_1.PaymentModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

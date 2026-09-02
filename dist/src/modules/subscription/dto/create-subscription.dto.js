@@ -15,6 +15,7 @@ const client_1 = require("@prisma/client");
 class CreateSubscriptionDto {
     planId;
     interval;
+    trial;
 }
 exports.CreateSubscriptionDto = CreateSubscriptionDto;
 __decorate([
@@ -25,4 +26,8 @@ __decorate([
     (0, class_validator_1.IsEnum)(client_1.BillingInterval),
     __metadata("design:type", String)
 ], CreateSubscriptionDto.prototype, "interval", void 0);
+__decorate([
+    (0, class_validator_1.IsDate)(),
+    __metadata("design:type", Date)
+], CreateSubscriptionDto.prototype, "trial", void 0);
 //# sourceMappingURL=create-subscription.dto.js.map

@@ -86,7 +86,7 @@ export class AuthService {
     };
   }
 
-  
+
   async forgotPassword(dto: ForgotPasswordDto) {
     const { email } = dto;
     const user = await this.findUser({ email });
@@ -141,9 +141,11 @@ export class AuthService {
     const user = await this.findUser({ email });
     if (!user) throw new BadRequestException('User not found');
 
+
     // call the verify otp
-    const verifyOtp = await this.authOtpTokenService.verifyOtp({ email, code });
+    const verifyOtp = await this.authOtpTokenService.verifyOtp({email, code });
     if (!verifyOtp) throw new BadRequestException('Invalid OTP');
+
 
 
     // update the user password
@@ -169,6 +171,8 @@ export class AuthService {
         company:{
           select:{
             id:true
+
+            
           }
         }
       }

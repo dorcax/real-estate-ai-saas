@@ -10,13 +10,14 @@ exports.BlockedTimeModule = void 0;
 const common_1 = require("@nestjs/common");
 const blocked_time_service_1 = require("./blocked-time.service");
 const blocked_time_controller_1 = require("./blocked-time.controller");
+const prisma_service_1 = require("../../services/prisma/prisma.service");
 let BlockedTimeModule = class BlockedTimeModule {
 };
 exports.BlockedTimeModule = BlockedTimeModule;
 exports.BlockedTimeModule = BlockedTimeModule = __decorate([
     (0, common_1.Module)({
         controllers: [blocked_time_controller_1.BlockedTimeController],
-        providers: [blocked_time_service_1.BlockedTimeService],
+        providers: [blocked_time_service_1.BlockedTimeService, prisma_service_1.PrismaService],
     })
 ], BlockedTimeModule);
 //# sourceMappingURL=blocked-time.module.js.map

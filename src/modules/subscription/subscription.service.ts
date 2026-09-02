@@ -13,10 +13,11 @@ import { calculatePeriodEnd } from 'src/utils/calculatePeriodEnd';
 
 @Injectable()
 export class SubscriptionService {
+  private readonly logger = new Logger( SubscriptionService.name);
   constructor(
     private readonly prismaService: PrismaService,
     private readonly flutterwaveService: FlutterwaveService,
-    private readonly logger: Logger,
+    // private readonly logger: Logger,
   ) {}
   async create(dto: CreateSubscriptionDto, currentUser: userEntity) {
     if (!currentUser.companyId) {

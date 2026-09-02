@@ -85,15 +85,17 @@ let AuthOtpTokenService = class AuthOtpTokenService {
             code: otpData.code
         });
     }
-    findOtpByEmail(email) {
-        return this.prisma.otp.findFirst({
+    async findOtpByEmail(email) {
+        const res = await this.prisma.otp.findFirst({
             where: {
                 email,
             },
             orderBy: {
-                createdAt: "desc"
+                createdAt: 'desc'
             }
         });
+        console.log('find by email', res);
+        return res;
     }
     async verifyOtp(verifyOtpDto) {
         const { email, code } = verifyOtpDto;
@@ -104,6 +106,7 @@ let AuthOtpTokenService = class AuthOtpTokenService {
         if (isExpired)
             throw new common_1.BadRequestException('otp has expired');
         const isOtpValid = await argon2.verify(otp.code, code);
+        console.log('isotpvalid', isOtpValid);
         if (!isOtpValid)
             throw new common_1.BadRequestException('invalid otp');
         await this.prisma.user.update({
@@ -115,7 +118,9 @@ let AuthOtpTokenService = class AuthOtpTokenService {
             },
         });
         await this.deleteOtp(otp.id);
-        return 'OTP verified successfully';
+        return {
+            message: "OTP verified successfully",
+        };
     }
     deleteOtp(id) {
         return this.prisma.otp.delete({
@@ -150,7 +155,7 @@ let AuthOtpTokenService = class AuthOtpTokenService {
             name,
             userId,
             code: otp,
-            ExpiresInMinute
+            ExpiresInMinute,
         };
     }
 };

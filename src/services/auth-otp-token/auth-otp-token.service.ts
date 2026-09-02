@@ -46,21 +46,26 @@ async sendForgotPasswordEmail(dto:CreateAuthOtpTokenDto) {
   });
 }
 
-  findOtpByEmail(email: string) {
-    return this.prisma.otp.findFirst({
+ async findOtpByEmail(email: string) {
+    const res = await this.prisma.otp.findFirst({
       where: {
         email,
       },
       orderBy:{
-        createdAt:"desc"
+        createdAt:'desc'
       }
+
+     
     });
+    console.log('find by email',res)
+    // console.log('email',res.email)
+    return res
   }
 
   // verify the otp code
 
   async verifyOtp(verifyOtpDto:VerifyOtpDto) {
-    const { email, code } = verifyOtpDto;
+    const { email,code } = verifyOtpDto;
     // find the code
     const otp = await this.findOtpByEmail(email);
     if (!otp) throw new BadRequestException('invalid otp');
@@ -71,7 +76,9 @@ async sendForgotPasswordEmail(dto:CreateAuthOtpTokenDto) {
     
     // verify the hashed code
     const isOtpValid = await argon2.verify(otp.code, code);
+     console.log('isotpvalid',isOtpValid)
     if (!isOtpValid) throw new BadRequestException('invalid otp');
+   
     // update the user status
     await this.prisma.user.update({
       where: {
@@ -82,7 +89,9 @@ async sendForgotPasswordEmail(dto:CreateAuthOtpTokenDto) {
       },
     });
     await this.deleteOtp(otp.id);
-    return 'OTP verified successfully';
+return {
+  message: "OTP verified successfully",
+};
   }
 
   deleteOtp(id: string) {
@@ -125,7 +134,9 @@ async sendForgotPasswordEmail(dto:CreateAuthOtpTokenDto) {
       name,
       userId,
       code: otp ,
-      ExpiresInMinute
+      ExpiresInMinute,
+     
+      
     };
 
   }
