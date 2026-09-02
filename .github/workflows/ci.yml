@@ -1,0 +1,38 @@
+# name of the workflow 
+
+name: Aura AI CI
+
+# run this workflow whenever code is pushed to the main branch note git push origin main trigger the workflow
+on:
+  push:
+    branches:
+      - main
+
+
+# a job is a group of task that github runs
+jobs:
+  build:
+  # runs-on: ubuntu-latest mean github gives your workflow a temporary linux machine
+    runs-on: ubuntu-latest
+
+# download my repository code onto the temporary macchine 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+# give me node version 24
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+# enable pnpm 
+      - name: Enable Corepack
+        run: corepack enable
+
+# install dependencies using the lock file
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm run build
