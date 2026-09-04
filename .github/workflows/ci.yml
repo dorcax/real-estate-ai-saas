@@ -33,6 +33,20 @@ jobs:
           corepack enable
           corepack prepare pnpm@11.15.1 --activate
 
+      - name: Check pnpm configuration
+        run: |
+           pnpm --version
+           echo "Current directory:"
+           pwd
+           echo "Files:"
+           ls -la
+           echo "pnpm-workspace.yaml:"
+           cat pnpm-workspace.yaml
+           echo "onlyBuiltDependencies:"
+           pnpm config get onlyBuiltDependencies
+
+   
+
       # Install dependencies using the lock file.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
