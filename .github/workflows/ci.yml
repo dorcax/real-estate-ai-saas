@@ -1,60 +1,61 @@
-# name of the workflow 
+# Name of the workflow
+name: Aura AI CI/CD
 
-name: Aura AI CI
-
-# run this workflow whenever code is pushed to the main branch note git push origin main trigger the workflow
+# Run this workflow whenever code is pushed to the main branch.
+# "git push origin main" will trigger the workflow.
 on:
   push:
     branches:
       - main
 
-
-# a job is a group of task that github runs
+# A job is a group of tasks that GitHub runs.
 jobs:
   build:
-  # runs-on: ubuntu-latest mean github gives your workflow a temporary linux machine
+
+    # GitHub gives your workflow a temporary Linux machine.
     runs-on: ubuntu-latest
 
-# download my repository code onto the temporary macchine 
     steps:
+
+      # Download my repository code onto the temporary machine.
       - name: Checkout code
         uses: actions/checkout@v4
 
-# give me node version 24
+      # Give me Node.js version 24.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-# enable pnpm 
+      # Enable pnpm.
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.15.1 --activate
 
-      # - name: Allow build scripts
-      #   run: pnpm config set allow-scripts true 
-
-# install dependencies using the lock file
+      # Install dependencies using the lock file.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Generate Prisma Client.
       - name: Generate Prisma Client
         run: pnpm prisma generate
 
+      # Build the application.
       - name: Build application
         run: pnpm run build
 
-          Login to Docker Hub
+      # Log in to Docker Hub.
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-          # run docker application
-
+      # Build the Docker image.
       - name: Build Docker image
         run: docker build -f Dockerfile.prod -t ${{ secrets.DOCKERHUB_USERNAME }}/aura-api:latest .
 
-        # Push Docker image
+      # Push the Docker image to Docker Hub.
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aura-api:latest
