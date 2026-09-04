@@ -34,10 +34,9 @@ jobs:
           corepack prepare pnpm@11.15.1 --activate
 
       # Install dependencies using the lock file.
-      # - name: Install dependencies
-      #   run: pnpm install --frozen-lockfile
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --config.only-built-dependencies="@prisma/engines,argon2,msgpackr-extract,prisma,unrs-resolver"
+        run: pnpm install --frozen-lockfile
+   
 
       # Generate Prisma Client.
       - name: Generate Prisma Client
