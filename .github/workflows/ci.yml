@@ -21,44 +21,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Give me Node.js version 24.
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
+      # # Give me Node.js version 24.
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 24
 
-      # Enable pnpm.
-      - name: Enable Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.15.1 --activate
+      # # Enable pnpm.
+      # - name: Enable Corepack
+      #   run: |
+      #     corepack enable
+      #     corepack prepare pnpm@11.15.1 --activate
 
-      - name: Check pnpm configuration
-        run: |
-           pnpm --version
-           echo "Current directory:"
-           pwd
-           echo "Files:"
-           ls -la
-           echo "pnpm-workspace.yaml:"
-           cat pnpm-workspace.yaml
-           echo "onlyBuiltDependencies:"
-           pnpm config get onlyBuiltDependencies
+      # - name: Check pnpm configuration
+      #   run: |
+      #      pnpm --version
+      #      echo "Current directory:"
+      #      pwd
+      #      echo "Files:"
+      #      ls -la
+      #      echo "pnpm-workspace.yaml:"
+      #      cat pnpm-workspace.yaml
+      #      echo "onlyBuiltDependencies:"
+      #      pnpm config get onlyBuiltDependencies
 
    
 
-      # Install dependencies using the lock file.
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      # # Install dependencies using the lock file.
+      # - name: Install dependencies
+      #   run: pnpm install --frozen-lockfile
    
 
-      # Generate Prisma Client.
-      - name: Generate Prisma Client
-        run: pnpm prisma generate
+      # # Generate Prisma Client.
+      # - name: Generate Prisma Client
+      #   run: pnpm prisma generate
 
-      # Build the application.
-      - name: Build application
-        run: pnpm run build
+      # # Build the application.
+      # - name: Build application
+      #   run: pnpm run build
 
       # Log in to Docker Hub.
       - name: Login to Docker Hub
