@@ -5,12 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreatePropertyDto } from './dto/create-property.dto';
-import { UpdatePropertyDto } from './dto/update-property.dto';
+import { Prisma, PropertyStatus } from '@prisma/client';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { userEntity } from '../auth/dto/create-auth.dto';
 import { GetQueryDto } from '../property/dto/get-query.dto';
-import { PropertyStatus } from '@prisma/client';
+import { CreatePropertyDto } from './dto/create-property.dto';
+import { UpdatePropertyDto } from './dto/update-property.dto';
 
 @Injectable()
 export class PropertyService {
@@ -21,15 +21,15 @@ export class PropertyService {
       description,
       price,
       address,
-      country,
+
       state,
-      currency,
+
       city,
       attachmentsId,
       amenities,
       propertyPurpose,
       propertyType,
-      propertyStatus,
+      isFeatured,
       bedrooms,
       parkingSpace,
       bathrooms,
@@ -43,46 +43,83 @@ export class PropertyService {
 
     if (!existingCompany) throw new NotFoundException('company not found ');
 
-    await this.checkPropertyLimit(existingCompany.id);
+    // await this.checkPropertyLimit(existingCompany.id);
     // create property
-    const property = await this.PrismaService.property.create({
-      data: {
-        title,
-        description,
-        price,
-        address,
-        country,
-        currency,
-        city,
-        state,
-        propertyStatus,
-        propertyType,
-        propertyPurpose,
-        bedrooms,
-        bathrooms,
-        amenities,
-        parkingSpace,
-        company: {
-          connect: {
-            id: existingCompany.id,
-          },
-        },
-        createdBy: {
-          connect: {
-            id: currentUser.id,
-          },
-        },
-        ...(attachmentsId && {
-          attachment: {
-            create: {
-              uploads: {
-                connect: attachmentsId.map((id) => ({ id })),
-              },
+    const property = await this.PrismaService.$transaction(async (tx) => {
+      // create new property
+
+      const newProperty = await tx.property.create({
+        data: {
+          title,
+          description,
+          price,
+          address,
+
+          city,
+          state,
+          isFeatured,
+          propertyType,
+          propertyPurpose,
+          bedrooms,
+          bathrooms,
+          amenities,
+          parkingSpace,
+          company: {
+            connect: {
+              id: existingCompany.id,
             },
           },
-        }),
-      },
+          createdBy: {
+            connect: {
+              id: currentUser.id,
+            },
+          },
+          ...(attachmentsId && {
+            attachment: {
+              create: {
+                uploads: {
+                  connect: attachmentsId.map((id) => ({ id })),
+                },
+              },
+            },
+          }),
+        },
+        include: {
+          attachment: true,
+        },
+      });
+      // check the upload is not more than 5
+      if (attachmentsId?.length > 5) {
+        throw new BadRequestException(
+          'A property can have a maximum of 5 images',
+        );
+      }
+      // ensure each upload id appear once
+      const uniqueId = [...new Set(attachmentsId)];
+      if (uniqueId.length !== attachmentsId.length) {
+        throw new BadRequestException('Duplicate upload IDs are not allowed');
+      }
+
+      if (attachmentsId?.length && newProperty.attachment) {
+        const attachmentId = newProperty.attachment.id;
+
+        await Promise.all(
+          attachmentsId.map((uploadId, index) =>
+            tx.upload.update({
+              where: {
+                id: uploadId,
+              },
+              data: {
+                attachmentsId: attachmentId,
+                order: index + 1,
+              },
+            }),
+          ),
+        );
+      }
+      return newProperty;
     });
+
     return {
       message: 'Property created successfully',
       property,
@@ -90,24 +127,54 @@ export class PropertyService {
   }
 
   async findAll(currentUser: userEntity, query: GetQueryDto) {
-    const { status, page, limit } = query;
+    const { status, limit, page, search } = query;
     const skip = (page - 1) * limit;
+    const where: Prisma.PropertyWhereInput = {
+      companyId: currentUser.companyId,
+      ...(status && { propertyStatus: status }),
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+          { address: { contains: search, mode: 'insensitive' } },
+          { price: { equals: Number(search) } },
+          { city: { contains: search, mode: 'insensitive' } },
+          { state: { contains: search, mode: 'insensitive' } },
+        ],
+      }),
+    };
     const [data, total] = await Promise.all([
       this.PrismaService.property.findMany({
-        where: {
-          companyId: currentUser.companyId,
-          ...(status && { status }),
-        },
+        where,
         skip,
         take: limit,
-      }),
-      this.PrismaService.property.count({
-        where: {
-          companyId: currentUser.companyId,
-          ...(status && { status }),
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          attachment: {
+            select: {
+              uploads: {
+                orderBy: {
+                  order: 'asc',
+                },
+              },
+            },
+          },
         },
       }),
+      this.PrismaService.property.count({
+        where,
+      }),
     ]);
+    console.log({
+      page,
+      limit,
+      skip,
+      total,
+      totalPage: Math.ceil(total / limit),
+      returned: data.length,
+    });
     return {
       data,
       pagination: {
@@ -150,20 +217,20 @@ export class PropertyService {
       description,
       price,
       address,
-      country,
+
       state,
-      currency,
+
       city,
       attachmentsId,
       amenities,
       propertyPurpose,
       propertyType,
-      propertyStatus,
+
       bedrooms,
       parkingSpace,
       bathrooms,
     } = dto;
-    // First check that property belongs to this company
+
     const property = await this.PrismaService.property.findFirst({
       where: {
         id,
@@ -174,52 +241,78 @@ export class PropertyService {
     if (!property) {
       throw new NotFoundException('Property not found');
     }
-    const updatedProperty = await this.PrismaService.property.update({
-      where: {
-        id,
-      },
-      data: {
-        title,
-        description,
-        price,
-        address,
-        country,
-        currency,
-        city,
-        state,
-        propertyStatus,
-        propertyType,
-        propertyPurpose,
-        bedrooms,
-        bathrooms,
-        amenities,
-        parkingSpace,
-        company: {
-          connect: {
-            id: property.companyId,
+
+    const updatedProperty = await this.PrismaService.$transaction(
+      async (tx) => {
+        let attachmentId = property.attachmentsId;
+
+        // 1. Create an attachment record only if needed.
+        if (attachmentsId !== undefined && !attachmentId) {
+          const attachment = await tx.attachments.create({
+            data: {},
+          });
+
+          attachmentId = attachment.id;
+
+          // 2. Link the new attachment to the property.
+          await tx.property.update({
+            where: { id },
+            data: {
+              attachmentsId: attachmentId,
+            },
+          });
+        }
+
+        await tx.property.update({
+          where: { id },
+          data: {
+            title,
+            description,
+            price,
+            address,
+
+            state,
+
+            city,
+
+            amenities,
+            propertyPurpose,
+            propertyType,
+
+            bedrooms,
+            parkingSpace,
+            bathrooms,
           },
-        },
-        createdBy: {
-          connect: {
-            id: currentUser.id,
-          },
-        },
-        ...(attachmentsId && {
-          attachment: {
-            create: {
+        });
+
+        if (attachmentsId !== undefined && attachmentId) {
+          await tx.attachments.update({
+            where: { id: attachmentId },
+            data: {
               uploads: {
-                connect: attachmentsId.map((id) => ({ id })),
+                set: attachmentsId.map((uploadId) => ({
+                  id: uploadId,
+                })),
+              },
+            },
+          });
+        }
+
+        // 5. Return the latest property with its images.
+        return tx.property.findUnique({
+          where: { id },
+          include: {
+            attachment: {
+              include: {
+                uploads: {
+                  orderBy: { order: 'asc' },
+                },
               },
             },
           },
-        }),
+        });
       },
-    });
-
-    return {
-      message: 'Property updated successfully',
-      property: updatedProperty,
-    };
+    );
   }
 
   // update status
@@ -343,6 +436,45 @@ export class PropertyService {
         },
       },
     });
+  }
+
+  // get stats for total property
+
+  async getPropertyStats(currentUser: userEntity) {
+    const [total, rented, sold, pending] = await Promise.all([
+      this.PrismaService.property.count({
+        where: {
+          companyId: currentUser.companyId,
+        },
+      }),
+
+      this.PrismaService.property.count({
+        where: {
+          companyId: currentUser.companyId,
+          propertyStatus: 'RENTED',
+        },
+      }),
+      this.PrismaService.property.count({
+        where: {
+          companyId: currentUser.companyId,
+          propertyStatus: 'SOLD',
+        },
+      }),
+      this.PrismaService.property.count({
+        where: {
+          companyId: currentUser.companyId,
+          propertyStatus: 'PENDING',
+        },
+      }),
+    ]);
+
+    console.log('rendter', total);
+    return {
+      total,
+      rented,
+      sold,
+      pending,
+    };
   }
 
   // plan limit

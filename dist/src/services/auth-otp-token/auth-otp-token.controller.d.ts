@@ -10,9 +10,9 @@ export declare class AuthOtpTokenController {
         message: string;
     }>;
     remove(id: string): import("@prisma/client").Prisma.Prisma__OtpClient<{
-        id: string;
         email: string;
         code: string;
+        id: string;
         expiresAt: Date;
         usedAt: Date | null;
         userId: string;

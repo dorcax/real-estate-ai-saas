@@ -79,7 +79,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CompanyController.prototype, "remove", null);
 exports.CompanyController = CompanyController = __decorate([
-    (0, common_1.Controller)('company'),
+    (0, common_1.Controller)('onboarding'),
     __metadata("design:paramtypes", [company_service_1.CompanyService])
 ], CompanyController);
 //# sourceMappingURL=company.controller.js.map

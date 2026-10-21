@@ -8,8 +8,8 @@ export declare class AvailabilityService {
     createAvailability(dto: CreateAvailabilityDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
-            userId: string;
             id: string;
+            userId: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;

@@ -28,25 +28,26 @@ let AuthGuard = class AuthGuard {
         }
         try {
             const decode = await this.jwtService.verifyAsync(token, {
-                secret: process.env.JWT_SECRET
+                secret: process.env.JWT_SECRET,
             });
             const user = await this.prismaService.user.findUnique({
                 where: {
-                    id: decode.id
+                    id: decode.id,
                 },
                 include: {
                     company: {
                         select: {
-                            id: true
-                        }
-                    }
-                }
+                            id: true,
+                        },
+                    },
+                },
             });
             if (!user) {
                 throw new common_1.UnauthorizedException();
             }
+            console.log('JWT DECODED:', decode);
             request.user = decode;
-            console.log("Request user set:", request.user);
+            console.log('REQUEST USER SET:', request.user);
         }
         catch (error) {
             throw error;
@@ -55,8 +56,8 @@ let AuthGuard = class AuthGuard {
     }
     ExtractFromHeader(request) {
         const authHeader = request.headers.authorization;
-        if (authHeader && authHeader.startsWith("Bearer")) {
-            return authHeader.split(" ")[1];
+        if (authHeader && authHeader.startsWith('Bearer')) {
+            return authHeader.split(' ')[1];
         }
     }
 };

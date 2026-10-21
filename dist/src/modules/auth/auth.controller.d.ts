@@ -11,6 +11,7 @@ export declare class AuthController {
     login(loginDto: LoginUserDto): Promise<{
         message: string;
         token: string;
+        role: import("@prisma/client").$Enums.Role;
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<void>;
     resendOtp(dto: ResendOtpDto): Promise<{
@@ -18,5 +19,23 @@ export declare class AuthController {
     }>;
     resetPassword(dto: ResetPasswordDto): Promise<{
         message: string;
+    }>;
+    getMe(req: any): Promise<{
+        company: {
+            id: string;
+        };
+    } & {
+        fullName: string;
+        password: string;
+        email: string;
+        role: import("@prisma/client").$Enums.Role;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        companyId: string | null;
+        phone: string | null;
+        avatarUrl: string | null;
+        isVerified: boolean;
+        isActive: boolean;
     }>;
 }

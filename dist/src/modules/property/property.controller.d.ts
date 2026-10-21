@@ -9,71 +9,92 @@ export declare class PropertyController {
     create(createPropertyDto: CreatePropertyDto, currentUser: userEntity): Promise<{
         message: string;
         property: {
+            attachment: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            companyId: string;
+            title: string;
+            description: string;
+            price: import("@prisma/client/runtime/client").Decimal;
+            currency: string;
             address: string;
             city: string | null;
             state: string;
-            country: string;
-            description: string;
-            currency: string;
-            attachmentsId: string | null;
-            title: string;
-            price: import("@prisma/client/runtime/client").Decimal;
-            amenities: string[];
+            postalCode: string | null;
+            latitude: import("@prisma/client/runtime/client").Decimal | null;
+            longitude: import("@prisma/client/runtime/client").Decimal | null;
             propertyType: import("@prisma/client").$Enums.PropertyType;
             propertyPurpose: import("@prisma/client").$Enums.PropertyPurpose;
             propertyStatus: import("@prisma/client").$Enums.PropertyStatus;
             bedrooms: number | null;
             bathrooms: number | null;
-            parkingSpace: number | null;
-            postalCode: string | null;
-            latitude: import("@prisma/client/runtime/client").Decimal | null;
-            longitude: import("@prisma/client/runtime/client").Decimal | null;
             toilets: number | null;
+            parkingSpace: number | null;
             landSize: number | null;
             buildingSize: number | null;
             yearBuilt: number | null;
+            amenities: string[];
             isFeatured: boolean;
             publishedAt: Date | null;
+            createdAt: Date;
+            updatedAt: Date;
+            companyId: string;
             createdById: string;
+            attachmentsId: string | null;
         };
     }>;
     findAll(currentUser: userEntity, query: GetQueryDto): Promise<{
-        data: {
+        data: ({
+            attachment: {
+                uploads: {
+                    id: string;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    companyId: string | null;
+                    attachmentsId: string | null;
+                    name: string;
+                    type: import("@prisma/client").$Enums.MediaType;
+                    publicId: string;
+                    url: string;
+                    order: number | null;
+                    size: number | null;
+                    uploadedById: string | null;
+                }[];
+            };
+        } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            companyId: string;
+            title: string;
+            description: string;
+            price: import("@prisma/client/runtime/client").Decimal;
+            currency: string;
             address: string;
             city: string | null;
             state: string;
-            country: string;
-            description: string;
-            currency: string;
-            attachmentsId: string | null;
-            title: string;
-            price: import("@prisma/client/runtime/client").Decimal;
-            amenities: string[];
+            postalCode: string | null;
+            latitude: import("@prisma/client/runtime/client").Decimal | null;
+            longitude: import("@prisma/client/runtime/client").Decimal | null;
             propertyType: import("@prisma/client").$Enums.PropertyType;
             propertyPurpose: import("@prisma/client").$Enums.PropertyPurpose;
             propertyStatus: import("@prisma/client").$Enums.PropertyStatus;
             bedrooms: number | null;
             bathrooms: number | null;
-            parkingSpace: number | null;
-            postalCode: string | null;
-            latitude: import("@prisma/client/runtime/client").Decimal | null;
-            longitude: import("@prisma/client/runtime/client").Decimal | null;
             toilets: number | null;
+            parkingSpace: number | null;
             landSize: number | null;
             buildingSize: number | null;
             yearBuilt: number | null;
+            amenities: string[];
             isFeatured: boolean;
             publishedAt: Date | null;
+            createdAt: Date;
+            updatedAt: Date;
+            companyId: string;
             createdById: string;
-        }[];
+            attachmentsId: string | null;
+        })[];
         pagination: {
             skip: number;
             limit: number;
@@ -81,22 +102,28 @@ export declare class PropertyController {
             totalPage: number;
         };
     }>;
+    getPropertyStats(currentUser: userEntity): Promise<{
+        total: number;
+        rented: number;
+        sold: number;
+        pending: number;
+    }>;
     findOne(id: string, currentUser: userEntity): Promise<{
         property: {
             attachment: {
                 uploads: {
-                    url: string;
-                    name: string;
                     id: string;
                     createdAt: Date;
                     updatedAt: Date;
                     companyId: string | null;
-                    publicId: string;
+                    attachmentsId: string | null;
+                    name: string;
                     type: import("@prisma/client").$Enums.MediaType;
+                    publicId: string;
+                    url: string;
                     order: number | null;
                     size: number | null;
                     uploadedById: string | null;
-                    attachmentsId: string | null;
                 }[];
             } & {
                 id: string;
@@ -105,72 +132,37 @@ export declare class PropertyController {
             };
         } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            companyId: string;
+            title: string;
+            description: string;
+            price: import("@prisma/client/runtime/client").Decimal;
+            currency: string;
             address: string;
             city: string | null;
             state: string;
-            country: string;
-            description: string;
-            currency: string;
-            attachmentsId: string | null;
-            title: string;
-            price: import("@prisma/client/runtime/client").Decimal;
-            amenities: string[];
+            postalCode: string | null;
+            latitude: import("@prisma/client/runtime/client").Decimal | null;
+            longitude: import("@prisma/client/runtime/client").Decimal | null;
             propertyType: import("@prisma/client").$Enums.PropertyType;
             propertyPurpose: import("@prisma/client").$Enums.PropertyPurpose;
             propertyStatus: import("@prisma/client").$Enums.PropertyStatus;
             bedrooms: number | null;
             bathrooms: number | null;
-            parkingSpace: number | null;
-            postalCode: string | null;
-            latitude: import("@prisma/client/runtime/client").Decimal | null;
-            longitude: import("@prisma/client/runtime/client").Decimal | null;
             toilets: number | null;
+            parkingSpace: number | null;
             landSize: number | null;
             buildingSize: number | null;
             yearBuilt: number | null;
+            amenities: string[];
             isFeatured: boolean;
             publishedAt: Date | null;
-            createdById: string;
-        };
-    }>;
-    update(id: string, dto: UpdatePropertyDto, currentUser: userEntity): Promise<{
-        message: string;
-        property: {
-            id: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            address: string;
-            city: string | null;
-            state: string;
-            country: string;
-            description: string;
-            currency: string;
-            attachmentsId: string | null;
-            title: string;
-            price: import("@prisma/client/runtime/client").Decimal;
-            amenities: string[];
-            propertyType: import("@prisma/client").$Enums.PropertyType;
-            propertyPurpose: import("@prisma/client").$Enums.PropertyPurpose;
-            propertyStatus: import("@prisma/client").$Enums.PropertyStatus;
-            bedrooms: number | null;
-            bathrooms: number | null;
-            parkingSpace: number | null;
-            postalCode: string | null;
-            latitude: import("@prisma/client/runtime/client").Decimal | null;
-            longitude: import("@prisma/client/runtime/client").Decimal | null;
-            toilets: number | null;
-            landSize: number | null;
-            buildingSize: number | null;
-            yearBuilt: number | null;
-            isFeatured: boolean;
-            publishedAt: Date | null;
             createdById: string;
+            attachmentsId: string | null;
         };
     }>;
+    update(id: string, dto: UpdatePropertyDto, currentUser: userEntity): Promise<void>;
     remove(id: string, currentUser: userEntity): Promise<{
         message: string;
     }>;

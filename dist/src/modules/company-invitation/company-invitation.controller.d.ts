@@ -25,9 +25,9 @@ export declare class CompanyInvitationController {
     acceptCompanyInvitation(acceptCompanyInvitationDto: CompanyInvitationDto, currentUser: userEntity): Promise<{
         message: string;
         user: {
-            email: string;
             fullName: string;
             password: string;
+            email: string;
             role: import("@prisma/client").$Enums.Role;
             id: string;
             createdAt: Date;

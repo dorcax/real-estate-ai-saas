@@ -1,12 +1,5 @@
-import { PropertyPurpose, PropertyStatus, PropertyType } from '@prisma/client';
-import {
-  IsArray,
-  IsEnum,
-  isEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { PropertyPurpose, PropertyStatus, PropertyType } from "@prisma/client";
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreatePropertyDto {
   @IsNotEmpty()
@@ -25,17 +18,13 @@ export class CreatePropertyDto {
   @IsString()
   address: string;
 
-  @IsNotEmpty()
-  @IsString()
-  country: string;
+  
 
   @IsNotEmpty()
   @IsString()
   state: string;
 
-  @IsNotEmpty()
-  @IsString()
-  currency: string;
+  
 
   @IsNotEmpty()
   @IsString()
@@ -43,9 +32,9 @@ export class CreatePropertyDto {
 
   @IsArray()
   attachmentsId: string[];
-  
+
   @IsArray()
-  amenities : string[];
+  amenities: string[];
 
   @IsNotEmpty()
   @IsEnum(PropertyType)
@@ -55,9 +44,6 @@ export class CreatePropertyDto {
   @IsEnum(PropertyPurpose)
   propertyPurpose: PropertyPurpose;
 
-  @IsNotEmpty()
-  @IsEnum(PropertyStatus)
-  propertyStatus: PropertyStatus;
 
   @IsNotEmpty()
   @IsNumber()
@@ -70,4 +56,16 @@ export class CreatePropertyDto {
   @IsNotEmpty()
   @IsNumber()
   parkingSpace: number;
+
+  @IsNumber()
+  toilets?: number;
+
+  @IsNumber()
+  buildingSize?: number;
+
+  @IsString()
+  postalCode?: string;
+
+  @IsBoolean()
+  isFeatured?: boolean;
 }

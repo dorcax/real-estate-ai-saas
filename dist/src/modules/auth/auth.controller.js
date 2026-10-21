@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
+const auth_decorator_1 = require("../auth/decorator/auth.decorator");
 const create_auth_dto_1 = require("./dto/create-auth.dto");
 let AuthController = class AuthController {
     authService;
@@ -36,43 +37,55 @@ let AuthController = class AuthController {
     async resetPassword(dto) {
         return this.authService.resetPassword(dto);
     }
+    async getMe(req) {
+        console.log('AUTH-ME USER:', req.user);
+        return this.authService.findUserById(req.user.id);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Post)("register"),
+    (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
 __decorate([
-    (0, common_1.Post)("login"),
+    (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_auth_dto_1.LoginUserDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
-    (0, common_1.Post)("forgot-password"),
+    (0, common_1.Post)('forgot-password'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_auth_dto_1.ForgotPasswordDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "forgotPassword", null);
 __decorate([
-    (0, common_1.Post)("resend-otp"),
+    (0, common_1.Post)('resend-otp'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_auth_dto_1.ResendOtpDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "resendOtp", null);
 __decorate([
-    (0, common_1.Post)("reset-password"),
+    (0, common_1.Post)('reset-password'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_auth_dto_1.ResetPasswordDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "resetPassword", null);
+__decorate([
+    (0, auth_decorator_1.Auth)(),
+    (0, common_1.Get)('auth-me'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getMe", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

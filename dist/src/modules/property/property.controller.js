@@ -31,6 +31,9 @@ let PropertyController = class PropertyController {
     findAll(currentUser, query) {
         return this.propertyService.findAll(currentUser, query);
     }
+    getPropertyStats(currentUser) {
+        return this.propertyService.getPropertyStats(currentUser);
+    }
     findOne(id, currentUser) {
         return this.propertyService.findOne(id, currentUser);
     }
@@ -70,6 +73,14 @@ __decorate([
     __metadata("design:paramtypes", [create_auth_dto_1.userEntity, get_query_dto_1.GetQueryDto]),
     __metadata("design:returntype", void 0)
 ], PropertyController.prototype, "findAll", null);
+__decorate([
+    (0, auth_decorator_1.Auth)(['OWNER']),
+    (0, common_1.Get)('stats'),
+    __param(0, (0, auth_decorator_1.AuthUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_auth_dto_1.userEntity]),
+    __metadata("design:returntype", void 0)
+], PropertyController.prototype, "getPropertyStats", null);
 __decorate([
     (0, auth_decorator_1.Auth)(['ADMIN', 'OWNER']),
     (0, common_1.Get)(':id'),

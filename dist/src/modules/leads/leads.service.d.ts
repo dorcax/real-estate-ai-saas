@@ -10,25 +10,25 @@ export declare class LeadsService {
     create(dto: CreateLeadDto, tx?: Prisma.TransactionClient): Promise<{
         message: string;
         data: {
+            status: import("@prisma/client").$Enums.LeadStatus;
+            attachmentsId: string | null;
             id: string;
+            currency: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            currency: string;
-            attachmentsId: string | null;
-            status: import("@prisma/client").$Enums.LeadStatus;
             propertyId: string | null;
-            intent: import("@prisma/client").$Enums.LeadIntent;
             customerId: string;
+            intent: import("@prisma/client").$Enums.LeadIntent;
             budgetMinimum: Prisma.Decimal | null;
             budgetMaximum: Prisma.Decimal | null;
             preferredLocation: string | null;
-            preferredState: string | null;
             preferredType: import("@prisma/client").$Enums.PropertyType | null;
             preferredPurpose: import("@prisma/client").$Enums.PropertyPurpose | null;
             temperature: import("@prisma/client").$Enums.LeadTemperature;
             score: number;
             preferredCity: string | null;
+            preferredState: string | null;
             preferredBedrooms: number | null;
             preferredBathrooms: number | null;
             financingReady: boolean | null;
@@ -44,34 +44,34 @@ export declare class LeadsService {
     findAll(currentUser: userEntity, query: GetQueryDto): Promise<{
         data: ({
             customer: {
-                email: string | null;
-                fullName: string | null;
                 id: string;
+                email: string | null;
                 createdAt: Date;
                 updatedAt: Date;
                 companyId: string;
+                fullName: string | null;
                 phone: string;
             };
         } & {
+            status: import("@prisma/client").$Enums.LeadStatus;
+            attachmentsId: string | null;
             id: string;
+            currency: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            currency: string;
-            attachmentsId: string | null;
-            status: import("@prisma/client").$Enums.LeadStatus;
             propertyId: string | null;
-            intent: import("@prisma/client").$Enums.LeadIntent;
             customerId: string;
+            intent: import("@prisma/client").$Enums.LeadIntent;
             budgetMinimum: Prisma.Decimal | null;
             budgetMaximum: Prisma.Decimal | null;
             preferredLocation: string | null;
-            preferredState: string | null;
             preferredType: import("@prisma/client").$Enums.PropertyType | null;
             preferredPurpose: import("@prisma/client").$Enums.PropertyPurpose | null;
             temperature: import("@prisma/client").$Enums.LeadTemperature;
             score: number;
             preferredCity: string | null;
+            preferredState: string | null;
             preferredBedrooms: number | null;
             preferredBathrooms: number | null;
             financingReady: boolean | null;
@@ -94,34 +94,34 @@ export declare class LeadsService {
         message: string;
         data: {
             customer: {
-                email: string | null;
-                fullName: string | null;
                 id: string;
+                email: string | null;
                 createdAt: Date;
                 updatedAt: Date;
                 companyId: string;
+                fullName: string | null;
                 phone: string;
             };
         } & {
+            status: import("@prisma/client").$Enums.LeadStatus;
+            attachmentsId: string | null;
             id: string;
+            currency: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            currency: string;
-            attachmentsId: string | null;
-            status: import("@prisma/client").$Enums.LeadStatus;
             propertyId: string | null;
-            intent: import("@prisma/client").$Enums.LeadIntent;
             customerId: string;
+            intent: import("@prisma/client").$Enums.LeadIntent;
             budgetMinimum: Prisma.Decimal | null;
             budgetMaximum: Prisma.Decimal | null;
             preferredLocation: string | null;
-            preferredState: string | null;
             preferredType: import("@prisma/client").$Enums.PropertyType | null;
             preferredPurpose: import("@prisma/client").$Enums.PropertyPurpose | null;
             temperature: import("@prisma/client").$Enums.LeadTemperature;
             score: number;
             preferredCity: string | null;
+            preferredState: string | null;
             preferredBedrooms: number | null;
             preferredBathrooms: number | null;
             financingReady: boolean | null;
@@ -137,25 +137,25 @@ export declare class LeadsService {
     update(id: string, dto: UpdateLeadDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
+            status: import("@prisma/client").$Enums.LeadStatus;
+            attachmentsId: string | null;
             id: string;
+            currency: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            currency: string;
-            attachmentsId: string | null;
-            status: import("@prisma/client").$Enums.LeadStatus;
             propertyId: string | null;
-            intent: import("@prisma/client").$Enums.LeadIntent;
             customerId: string;
+            intent: import("@prisma/client").$Enums.LeadIntent;
             budgetMinimum: Prisma.Decimal | null;
             budgetMaximum: Prisma.Decimal | null;
             preferredLocation: string | null;
-            preferredState: string | null;
             preferredType: import("@prisma/client").$Enums.PropertyType | null;
             preferredPurpose: import("@prisma/client").$Enums.PropertyPurpose | null;
             temperature: import("@prisma/client").$Enums.LeadTemperature;
             score: number;
             preferredCity: string | null;
+            preferredState: string | null;
             preferredBedrooms: number | null;
             preferredBathrooms: number | null;
             financingReady: boolean | null;
@@ -171,25 +171,25 @@ export declare class LeadsService {
     updateStatus(id: string, dto: UpdateLeadStatusDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
+            status: import("@prisma/client").$Enums.LeadStatus;
+            attachmentsId: string | null;
             id: string;
+            currency: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            currency: string;
-            attachmentsId: string | null;
-            status: import("@prisma/client").$Enums.LeadStatus;
             propertyId: string | null;
-            intent: import("@prisma/client").$Enums.LeadIntent;
             customerId: string;
+            intent: import("@prisma/client").$Enums.LeadIntent;
             budgetMinimum: Prisma.Decimal | null;
             budgetMaximum: Prisma.Decimal | null;
             preferredLocation: string | null;
-            preferredState: string | null;
             preferredType: import("@prisma/client").$Enums.PropertyType | null;
             preferredPurpose: import("@prisma/client").$Enums.PropertyPurpose | null;
             temperature: import("@prisma/client").$Enums.LeadTemperature;
             score: number;
             preferredCity: string | null;
+            preferredState: string | null;
             preferredBedrooms: number | null;
             preferredBathrooms: number | null;
             financingReady: boolean | null;
@@ -206,39 +206,39 @@ export declare class LeadsService {
         message: string;
         data: {
             assignedAgent: {
-                email: string;
-                fullName: string;
-                password: string;
-                role: import("@prisma/client").$Enums.Role;
                 id: string;
+                email: string;
+                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
                 companyId: string | null;
+                fullName: string;
+                password: string;
                 phone: string | null;
                 avatarUrl: string | null;
+                role: import("@prisma/client").$Enums.Role;
                 isVerified: boolean;
-                isActive: boolean;
             };
         } & {
+            status: import("@prisma/client").$Enums.LeadStatus;
+            attachmentsId: string | null;
             id: string;
+            currency: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            currency: string;
-            attachmentsId: string | null;
-            status: import("@prisma/client").$Enums.LeadStatus;
             propertyId: string | null;
-            intent: import("@prisma/client").$Enums.LeadIntent;
             customerId: string;
+            intent: import("@prisma/client").$Enums.LeadIntent;
             budgetMinimum: Prisma.Decimal | null;
             budgetMaximum: Prisma.Decimal | null;
             preferredLocation: string | null;
-            preferredState: string | null;
             preferredType: import("@prisma/client").$Enums.PropertyType | null;
             preferredPurpose: import("@prisma/client").$Enums.PropertyPurpose | null;
             temperature: import("@prisma/client").$Enums.LeadTemperature;
             score: number;
             preferredCity: string | null;
+            preferredState: string | null;
             preferredBedrooms: number | null;
             preferredBathrooms: number | null;
             financingReady: boolean | null;
@@ -254,25 +254,25 @@ export declare class LeadsService {
     unassignAgent(id: string, currentUser: userEntity): Promise<{
         message: string;
         data: {
+            status: import("@prisma/client").$Enums.LeadStatus;
+            attachmentsId: string | null;
             id: string;
+            currency: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            currency: string;
-            attachmentsId: string | null;
-            status: import("@prisma/client").$Enums.LeadStatus;
             propertyId: string | null;
-            intent: import("@prisma/client").$Enums.LeadIntent;
             customerId: string;
+            intent: import("@prisma/client").$Enums.LeadIntent;
             budgetMinimum: Prisma.Decimal | null;
             budgetMaximum: Prisma.Decimal | null;
             preferredLocation: string | null;
-            preferredState: string | null;
             preferredType: import("@prisma/client").$Enums.PropertyType | null;
             preferredPurpose: import("@prisma/client").$Enums.PropertyPurpose | null;
             temperature: import("@prisma/client").$Enums.LeadTemperature;
             score: number;
             preferredCity: string | null;
+            preferredState: string | null;
             preferredBedrooms: number | null;
             preferredBathrooms: number | null;
             financingReady: boolean | null;

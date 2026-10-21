@@ -1,61 +1,64 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
-import { PrismaService } from "src/services/prisma/prisma.service";
-
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { PrismaService } from 'src/services/prisma/prisma.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate{
-    constructor(private readonly jwtService:JwtService,
-        private readonly prismaService:PrismaService
-    ){}
+export class AuthGuard implements CanActivate {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
-   async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest()
-        const token =this.ExtractFromHeader(request)
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const token = this.ExtractFromHeader(request);
 
-        if(!token){
-            throw new UnauthorizedException()
-        }
-
-        try {
-            const decode= await this.jwtService.verifyAsync(token,{
-                secret:process.env.JWT_SECRET
-            })
-            // user 
-            const user =await this.prismaService.user.findUnique({
-                where:{
-                    id:decode.id
-                },
-                include:{
-                    
-                    company:{
-                        select:{
-                            id:true
-                        }
-                    }
-                }
-            })
-            if(!user){
-                throw new UnauthorizedException()
-            }
-        request.user =decode
-        console.log("Request user set:", request.user);
-        } catch (error) {
-        throw error
-        }
-        
-        
-         return true 
+    if (!token) {
+      throw new UnauthorizedException();
     }
-   
 
-   
-    private ExtractFromHeader(request:Request):string | undefined {
-        const authHeader =request.headers.authorization
-        if(authHeader && authHeader.startsWith("Bearer")){
-            return authHeader.split(" ")[1]
-        }
+    try {
+      const decode = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      // user
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: decode.id,
+        },
+        include: {
+          company: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+      console.log('JWT DECODED:', decode);
 
+      request.user = decode;
+
+      console.log('REQUEST USER SET:', request.user);
+    } catch (error) {
+      throw error;
     }
+
+    return true;
+  }
+
+  private ExtractFromHeader(request: Request): string | undefined {
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer')) {
+      return authHeader.split(' ')[1];
+    }
+  }
 }

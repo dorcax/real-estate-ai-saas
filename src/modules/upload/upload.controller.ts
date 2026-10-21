@@ -17,5 +17,15 @@ export class UploadController {
     return this.uploadService.create(file,currentUser);
   }
 
+
+  @Auth()
+@Delete(":id")
+delete( @Param("id") id: string,@AuthUser() currentUser: userEntity) {
+  return this.uploadService.delete(id, currentUser);
+}
+
+
+
  
 }
+

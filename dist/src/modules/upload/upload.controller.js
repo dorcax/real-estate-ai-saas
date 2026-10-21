@@ -26,6 +26,9 @@ let UploadController = class UploadController {
     create(file, currentUser) {
         return this.uploadService.create(file, currentUser);
     }
+    delete(id, currentUser) {
+        return this.uploadService.delete(id, currentUser);
+    }
 };
 exports.UploadController = UploadController;
 __decorate([
@@ -38,6 +41,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], UploadController.prototype, "create", null);
+__decorate([
+    (0, auth_decorator_1.Auth)(),
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, auth_decorator_1.AuthUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, create_auth_dto_1.userEntity]),
+    __metadata("design:returntype", void 0)
+], UploadController.prototype, "delete", null);
 exports.UploadController = UploadController = __decorate([
     (0, common_1.Controller)('upload'),
     __metadata("design:paramtypes", [upload_service_1.UploadService])

@@ -8,14 +8,14 @@ model Property {
   address    String
   city       String?
   state      String
-  country    String
+ 
   postalCode String?
   latitude   Decimal? @db.Decimal(10, 7)
   longitude  Decimal? @db.Decimal(10, 7)
 
   propertyType    PropertyType    @default(APARTMENT)
   propertyPurpose PropertyPurpose @default(SELL)
-  propertyStatus  PropertyStatus  @default(DRAFT)
+  propertyStatus  PropertyStatus  @default(AVAILABLE)
 
   bedrooms     Int?
   bathrooms    Int?

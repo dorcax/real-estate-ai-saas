@@ -15,11 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FlutterwaveController = void 0;
 const common_1 = require("@nestjs/common");
 const flutterwave_service_1 = require("./flutterwave.service");
+const create_flutterwave_dto_1 = require("./dto/create-flutterwave.dto");
 const update_flutterwave_dto_1 = require("./dto/update-flutterwave.dto");
 let FlutterwaveController = class FlutterwaveController {
     flutterwaveService;
     constructor(flutterwaveService) {
         this.flutterwaveService = flutterwaveService;
+    }
+    initiatePayment(createFlutterwaveDto) {
+        return this.flutterwaveService.initiatePayment(createFlutterwaveDto);
     }
     findAll() {
         return this.flutterwaveService.findAll();
@@ -35,6 +39,13 @@ let FlutterwaveController = class FlutterwaveController {
     }
 };
 exports.FlutterwaveController = FlutterwaveController;
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_flutterwave_dto_1.CreateFlutterwaveDto]),
+    __metadata("design:returntype", void 0)
+], FlutterwaveController.prototype, "initiatePayment", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

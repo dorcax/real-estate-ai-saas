@@ -17,10 +17,12 @@ class GetQueryDto {
     status;
     page = 1;
     limit = 10;
+    search;
 }
 exports.GetQueryDto = GetQueryDto;
 __decorate([
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(client_1.PropertyStatus),
     __metadata("design:type", String)
 ], GetQueryDto.prototype, "status", void 0);
 __decorate([
@@ -33,4 +35,9 @@ __decorate([
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
 ], GetQueryDto.prototype, "limit", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], GetQueryDto.prototype, "search", void 0);
 //# sourceMappingURL=get-query.dto.js.map

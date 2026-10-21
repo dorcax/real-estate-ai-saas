@@ -5,5 +5,11 @@ export declare class UploadController {
     constructor(uploadService: UploadService);
     create(file: Express.Multer.File, currentUser: userEntity): Promise<{
         message: string;
+        id: string;
+        url: string;
+        publicId: string;
+    }>;
+    delete(id: string, currentUser: userEntity): Promise<{
+        message: string;
     }>;
 }

@@ -68,7 +68,7 @@ let AuthService = class AuthService {
                 fullName,
                 email,
                 password: await argon2.hash(password),
-                role
+                role,
             },
         });
         await this.authOtpTokenService.verificationOtpEmail({
@@ -98,12 +98,13 @@ let AuthService = class AuthService {
             id: existingUser.id,
             email: existingUser.email,
             role: existingUser.role,
-            companyId: existingUser.companyId
+            companyId: existingUser.companyId,
         };
         const token = await this.jwtService.signAsync(payload);
         return {
             message: 'user logged in successfully',
             token,
+            role: existingUser.role,
         };
     }
     async forgotPassword(dto) {
@@ -167,10 +168,25 @@ let AuthService = class AuthService {
             include: {
                 company: {
                     select: {
-                        id: true
-                    }
-                }
-            }
+                        id: true,
+                    },
+                },
+            },
+        });
+    }
+    async findUserById(userId) {
+        console.log('FINDING USER:', userId);
+        return this.prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            include: {
+                company: {
+                    select: {
+                        id: true,
+                    },
+                },
+            },
         });
     }
 };

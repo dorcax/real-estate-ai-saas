@@ -4,5 +4,10 @@ export declare class CreateCompanyDto {
     phoneNumber: string;
     description: string;
     address: string;
-    logoId: string;
+    logoId?: string;
+    city: string;
+    state: string;
+    country: string;
+    timezone: string;
+    currency: string;
 }

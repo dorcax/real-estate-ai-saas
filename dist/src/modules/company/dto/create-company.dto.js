@@ -18,6 +18,11 @@ class CreateCompanyDto {
     description;
     address;
     logoId;
+    city;
+    state;
+    country;
+    timezone;
+    currency;
 }
 exports.CreateCompanyDto = CreateCompanyDto;
 __decorate([
@@ -46,8 +51,33 @@ __decorate([
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "address", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "logoId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "city", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "state", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "country", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "timezone", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "currency", void 0);
 //# sourceMappingURL=create-company.dto.js.map

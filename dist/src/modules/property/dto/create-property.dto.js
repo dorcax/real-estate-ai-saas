@@ -17,18 +17,19 @@ class CreatePropertyDto {
     description;
     price;
     address;
-    country;
     state;
-    currency;
     city;
     attachmentsId;
     amenities;
     propertyType;
     propertyPurpose;
-    propertyStatus;
     bedrooms;
     bathrooms;
     parkingSpace;
+    toilets;
+    buildingSize;
+    postalCode;
+    isFeatured;
 }
 exports.CreatePropertyDto = CreatePropertyDto;
 __decorate([
@@ -55,17 +56,7 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePropertyDto.prototype, "country", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
 ], CreatePropertyDto.prototype, "state", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreatePropertyDto.prototype, "currency", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
@@ -91,11 +82,6 @@ __decorate([
 ], CreatePropertyDto.prototype, "propertyPurpose", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsEnum)(client_1.PropertyStatus),
-    __metadata("design:type", String)
-], CreatePropertyDto.prototype, "propertyStatus", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreatePropertyDto.prototype, "bedrooms", void 0);
@@ -109,4 +95,20 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreatePropertyDto.prototype, "parkingSpace", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreatePropertyDto.prototype, "toilets", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreatePropertyDto.prototype, "buildingSize", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreatePropertyDto.prototype, "postalCode", void 0);
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreatePropertyDto.prototype, "isFeatured", void 0);
 //# sourceMappingURL=create-property.dto.js.map

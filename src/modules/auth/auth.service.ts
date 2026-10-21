@@ -4,7 +4,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { AuthOtpTokenService } from 'src/services/auth-otp-token/auth-otp-token.service';
 import { PrismaService } from 'src/services/prisma/prisma.service';
@@ -15,6 +14,7 @@ import {
   ResendOtpDto,
   ResetPasswordDto,
 } from './dto/create-auth.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,7 @@ export class AuthService {
     private readonly authOtpTokenService: AuthOtpTokenService,
   ) {}
   async create(createAuthDto: CreateAuthDto) {
-    const { fullName, email, password,role } = createAuthDto;
+    const { fullName, email, password, role } = createAuthDto;
     // find if user exist
     const existingUser = await this.findUser({ email });
 
@@ -36,7 +36,7 @@ export class AuthService {
         fullName,
         email,
         password: await argon2.hash(password),
-        role
+        role,
       },
     });
     await this.authOtpTokenService.verificationOtpEmail({
@@ -50,7 +50,6 @@ export class AuthService {
       email: user.email,
     };
   }
-
 
   async login(LoginDto: LoginUserDto) {
     const { email, password } = LoginDto;
@@ -77,15 +76,15 @@ export class AuthService {
       id: existingUser.id,
       email: existingUser.email,
       role: existingUser.role,
-      companyId:existingUser.companyId
+      companyId: existingUser.companyId,
     };
     const token = await this.jwtService.signAsync(payload);
     return {
       message: 'user logged in successfully',
       token,
+      role: existingUser.role,
     };
   }
-
 
   async forgotPassword(dto: ForgotPasswordDto) {
     const { email } = dto;
@@ -141,12 +140,9 @@ export class AuthService {
     const user = await this.findUser({ email });
     if (!user) throw new BadRequestException('User not found');
 
-
     // call the verify otp
-    const verifyOtp = await this.authOtpTokenService.verifyOtp({email, code });
+    const verifyOtp = await this.authOtpTokenService.verifyOtp({ email, code });
     if (!verifyOtp) throw new BadRequestException('Invalid OTP');
-
-
 
     // update the user password
     await this.prisma.user.update({
@@ -162,20 +158,40 @@ export class AuthService {
     };
   }
 
+  
 
-
-  private async findUser(where: Prisma.UserWhereUniqueInput) {
-    return this.prisma.user.findUnique({
-      where,
-      include:{
-        company:{
-          select:{
-            id:true
-
-            
-          }
-        }
-      }
-    });
-  }
+ async findUser(where: Prisma.UserWhereUniqueInput) {
+  return this.prisma.user.findUnique({
+    where,
+    include: {
+      company: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
 }
+
+
+
+async findUserById(userId: string) {
+  console.log('FINDING USER:', userId);
+
+  return this.prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      company: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+}
+}
+
+
+

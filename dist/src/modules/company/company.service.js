@@ -18,7 +18,7 @@ let CompanyService = class CompanyService {
         this.prismaService = prismaService;
     }
     async create(createCompanyDto, currentUser) {
-        const { name, description, address, email, phoneNumber, logoId } = createCompanyDto;
+        const { name, description, address, email, phoneNumber, logoId, city, state, timezone, currency } = createCompanyDto;
         console.log('current user', currentUser);
         const existingCompany = await this.prismaService.company.findUnique({
             where: {
@@ -35,6 +35,10 @@ let CompanyService = class CompanyService {
                 address,
                 email,
                 phoneNumber,
+                state,
+                city,
+                currency,
+                timezone,
                 ...(logoId && {
                     logo: {
                         connect: {

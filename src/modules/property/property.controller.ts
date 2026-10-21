@@ -28,10 +28,18 @@ export class PropertyController {
     return this.propertyService.create(createPropertyDto, currentUser);
   }
 
+
   @Auth(['ADMIN', 'OWNER'])
   @Get()
   findAll(@AuthUser() currentUser: userEntity, @Query() query: GetQueryDto) {
     return this.propertyService.findAll(currentUser, query);
+  }
+  
+
+  @Auth(['OWNER'])
+  @Get('stats')
+  getPropertyStats(@AuthUser() currentUser: userEntity) {
+    return this.propertyService.getPropertyStats(currentUser);
   }
 
   // Get single property

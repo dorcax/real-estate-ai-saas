@@ -14,7 +14,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 export class CompanyService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createCompanyDto: CreateCompanyDto, currentUser: userEntity) {
-    const { name, description, address, email, phoneNumber, logoId } =
+    const { name, description, address, email, phoneNumber, logoId,city,state,timezone,currency } =
    
       createCompanyDto;
        console.log('current user' ,currentUser)
@@ -38,6 +38,10 @@ export class CompanyService {
         address,
         email,
         phoneNumber,
+        state,
+        city,
+        currency,
+        timezone,
         ...(logoId && {
           logo: {
             connect: {
@@ -65,9 +69,6 @@ export class CompanyService {
   }
 
 
-  
-  
-
   findAll() {
     return `This action returns all company`;
   }
@@ -84,3 +85,4 @@ export class CompanyService {
     return `This action removes a #${id} company`;
   }
 }
+

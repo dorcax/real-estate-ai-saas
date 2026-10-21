@@ -5,7 +5,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Auth, AuthUser } from '../auth/decorator/auth.decorator';
 import { userEntity } from '../auth/dto/create-auth.dto';
 
-@Controller('company')
+@Controller('onboarding')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 

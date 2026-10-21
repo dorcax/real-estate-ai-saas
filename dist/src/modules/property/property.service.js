@@ -11,15 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PropertyService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../../services/prisma/prisma.service");
 const client_1 = require("@prisma/client");
+const prisma_service_1 = require("../../services/prisma/prisma.service");
 let PropertyService = class PropertyService {
     PrismaService;
     constructor(PrismaService) {
         this.PrismaService = PrismaService;
     }
     async create(dto, currentUser) {
-        const { title, description, price, address, country, state, currency, city, attachmentsId, amenities, propertyPurpose, propertyType, propertyStatus, bedrooms, parkingSpace, bathrooms, } = dto;
+        const { title, description, price, address, state, city, attachmentsId, amenities, propertyPurpose, propertyType, isFeatured, bedrooms, parkingSpace, bathrooms, } = dto;
         const existingCompany = await this.PrismaService.company.findFirst({
             where: {
                 id: currentUser.companyId,
@@ -27,44 +27,66 @@ let PropertyService = class PropertyService {
         });
         if (!existingCompany)
             throw new common_1.NotFoundException('company not found ');
-        await this.checkPropertyLimit(existingCompany.id);
-        const property = await this.PrismaService.property.create({
-            data: {
-                title,
-                description,
-                price,
-                address,
-                country,
-                currency,
-                city,
-                state,
-                propertyStatus,
-                propertyType,
-                propertyPurpose,
-                bedrooms,
-                bathrooms,
-                amenities,
-                parkingSpace,
-                company: {
-                    connect: {
-                        id: existingCompany.id,
-                    },
-                },
-                createdBy: {
-                    connect: {
-                        id: currentUser.id,
-                    },
-                },
-                ...(attachmentsId && {
-                    attachment: {
-                        create: {
-                            uploads: {
-                                connect: attachmentsId.map((id) => ({ id })),
-                            },
+        const property = await this.PrismaService.$transaction(async (tx) => {
+            const newProperty = await tx.property.create({
+                data: {
+                    title,
+                    description,
+                    price,
+                    address,
+                    city,
+                    state,
+                    isFeatured,
+                    propertyType,
+                    propertyPurpose,
+                    bedrooms,
+                    bathrooms,
+                    amenities,
+                    parkingSpace,
+                    company: {
+                        connect: {
+                            id: existingCompany.id,
                         },
                     },
-                }),
-            },
+                    createdBy: {
+                        connect: {
+                            id: currentUser.id,
+                        },
+                    },
+                    ...(attachmentsId && {
+                        attachment: {
+                            create: {
+                                uploads: {
+                                    connect: attachmentsId.map((id) => ({ id })),
+                                },
+                            },
+                        },
+                    }),
+                },
+                include: {
+                    attachment: true,
+                },
+            });
+            if (attachmentsId?.length > 5) {
+                throw new common_1.BadRequestException('A property can have a maximum of 5 images');
+            }
+            const uniqueId = [...new Set(attachmentsId)];
+            if (uniqueId.length !== attachmentsId.length) {
+                throw new common_1.BadRequestException('Duplicate upload IDs are not allowed');
+            }
+            if (attachmentsId?.length && newProperty.attachment) {
+                const attachmentId = newProperty.attachment.id;
+                await Promise.all(attachmentsId.map((uploadId, index) => tx.upload.update({
+                    where: {
+                        id: uploadId,
+                    },
+                    data: {
+                        attachmentsId: attachmentId,
+                        order: index + 1,
+                    },
+                })));
+            }
+            return newProperty;
         });
         return {
             message: 'Property created successfully',
@@ -72,24 +94,54 @@ let PropertyService = class PropertyService {
         };
     }
     async findAll(currentUser, query) {
-        const { status, page, limit } = query;
+        const { status, limit, page, search } = query;
         const skip = (page - 1) * limit;
+        const where = {
+            companyId: currentUser.companyId,
+            ...(status && { propertyStatus: status }),
+            ...(search && {
+                OR: [
+                    { title: { contains: search, mode: 'insensitive' } },
+                    { description: { contains: search, mode: 'insensitive' } },
+                    { address: { contains: search, mode: 'insensitive' } },
+                    { price: { equals: Number(search) } },
+                    { city: { contains: search, mode: 'insensitive' } },
+                    { state: { contains: search, mode: 'insensitive' } },
+                ],
+            }),
+        };
         const [data, total] = await Promise.all([
             this.PrismaService.property.findMany({
-                where: {
-                    companyId: currentUser.companyId,
-                    ...(status && { status }),
-                },
+                where,
                 skip,
                 take: limit,
-            }),
-            this.PrismaService.property.count({
-                where: {
-                    companyId: currentUser.companyId,
-                    ...(status && { status }),
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                include: {
+                    attachment: {
+                        select: {
+                            uploads: {
+                                orderBy: {
+                                    order: 'asc',
+                                },
+                            },
+                        },
+                    },
                 },
             }),
+            this.PrismaService.property.count({
+                where,
+            }),
         ]);
+        console.log({
+            page,
+            limit,
+            skip,
+            total,
+            totalPage: Math.ceil(total / limit),
+            returned: data.length,
+        });
         return {
             data,
             pagination: {
@@ -122,7 +174,7 @@ let PropertyService = class PropertyService {
         };
     }
     async update(id, dto, currentUser) {
-        const { title, description, price, address, country, state, currency, city, attachmentsId, amenities, propertyPurpose, propertyType, propertyStatus, bedrooms, parkingSpace, bathrooms, } = dto;
+        const { title, description, price, address, state, city, attachmentsId, amenities, propertyPurpose, propertyType, bedrooms, parkingSpace, bathrooms, } = dto;
         const property = await this.PrismaService.property.findFirst({
             where: {
                 id,
@@ -132,51 +184,62 @@ let PropertyService = class PropertyService {
         if (!property) {
             throw new common_1.NotFoundException('Property not found');
         }
-        const updatedProperty = await this.PrismaService.property.update({
-            where: {
-                id,
-            },
-            data: {
-                title,
-                description,
-                price,
-                address,
-                country,
-                currency,
-                city,
-                state,
-                propertyStatus,
-                propertyType,
-                propertyPurpose,
-                bedrooms,
-                bathrooms,
-                amenities,
-                parkingSpace,
-                company: {
-                    connect: {
-                        id: property.companyId,
+        const updatedProperty = await this.PrismaService.$transaction(async (tx) => {
+            let attachmentId = property.attachmentsId;
+            if (attachmentsId !== undefined && !attachmentId) {
+                const attachment = await tx.attachments.create({
+                    data: {},
+                });
+                attachmentId = attachment.id;
+                await tx.property.update({
+                    where: { id },
+                    data: {
+                        attachmentsId: attachmentId,
                     },
+                });
+            }
+            await tx.property.update({
+                where: { id },
+                data: {
+                    title,
+                    description,
+                    price,
+                    address,
+                    state,
+                    city,
+                    amenities,
+                    propertyPurpose,
+                    propertyType,
+                    bedrooms,
+                    parkingSpace,
+                    bathrooms,
                 },
-                createdBy: {
-                    connect: {
-                        id: currentUser.id,
+            });
+            if (attachmentsId !== undefined && attachmentId) {
+                await tx.attachments.update({
+                    where: { id: attachmentId },
+                    data: {
+                        uploads: {
+                            set: attachmentsId.map((uploadId) => ({
+                                id: uploadId,
+                            })),
+                        },
                     },
-                },
-                ...(attachmentsId && {
+                });
+            }
+            return tx.property.findUnique({
+                where: { id },
+                include: {
                     attachment: {
-                        create: {
+                        include: {
                             uploads: {
-                                connect: attachmentsId.map((id) => ({ id })),
+                                orderBy: { order: 'asc' },
                             },
                         },
                     },
-                }),
-            },
+                },
+            });
         });
-        return {
-            message: 'Property updated successfully',
-            property: updatedProperty,
-        };
     }
     async updatePropertyStatus(currentUser, propertyId, status) {
         const property = await this.PrismaService.property.findFirst({
@@ -276,6 +339,40 @@ let PropertyService = class PropertyService {
                 },
             },
         });
+    }
+    async getPropertyStats(currentUser) {
+        const [total, rented, sold, pending] = await Promise.all([
+            this.PrismaService.property.count({
+                where: {
+                    companyId: currentUser.companyId,
+                },
+            }),
+            this.PrismaService.property.count({
+                where: {
+                    companyId: currentUser.companyId,
+                    propertyStatus: 'RENTED',
+                },
+            }),
+            this.PrismaService.property.count({
+                where: {
+                    companyId: currentUser.companyId,
+                    propertyStatus: 'SOLD',
+                },
+            }),
+            this.PrismaService.property.count({
+                where: {
+                    companyId: currentUser.companyId,
+                    propertyStatus: 'PENDING',
+                },
+            }),
+        ]);
+        console.log('rendter', total);
+        return {
+            total,
+            rented,
+            sold,
+            pending,
+        };
     }
     async checkPropertyLimit(companyId) {
         await this.PrismaService.$transaction(async (tx) => {
