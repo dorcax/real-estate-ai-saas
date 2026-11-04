@@ -26,7 +26,6 @@ export class CompanyInvitationController {
     );
   }
 
-
   @Auth(['AGENT'])
   @Patch('accept-invitation')
   acceptCompanyInvitation(
@@ -39,13 +38,13 @@ export class CompanyInvitationController {
     );
   }
 
-
-  // reject company invite  
+  // reject company invite
 
   @Auth(['AGENT'])
   @Patch('reject-invititation')
   rejectCompanyInvitation(
-    @AuthUser() currentUser: userEntity, @Body() rejectCompanyInvitationDto: CompanyInvitationDto,
+    @AuthUser() currentUser: userEntity,
+    @Body() rejectCompanyInvitationDto: CompanyInvitationDto,
   ) {
     return this.companyInvitationService.rejectCompanyInvitationByAgent(
       rejectCompanyInvitationDto,
@@ -53,12 +52,28 @@ export class CompanyInvitationController {
     );
   }
 
-  // get company invitation 
-  @Auth(['ADMIN'])
-  @Get()
-  getCompanyInvitation(@Query() query:GetQueryDto,@AuthUser() currentUser:userEntity){
-    return this.companyInvitationService.getCompanyInvitation(currentUser,query)
+  @Get('stats')
+  @Auth(['OWNER'])
+  getStats(@AuthUser() currentUser: userEntity) {
+    return this.companyInvitationService.getStats(currentUser);
   }
 
+  @Get('members')
+  @Auth(['ADMIN', 'OWNER'])
+  getTeamMembers(@AuthUser() currentUser: userEntity) {
+    return this.companyInvitationService.getTeamMembers(currentUser);
+  }
 
+  // get company invitation
+  @Auth(['ADMIN'])
+  @Get()
+  getCompanyInvitation(
+    @Query() query: GetQueryDto,
+    @AuthUser() currentUser: userEntity,
+  ) {
+    return this.companyInvitationService.getCompanyInvitation(
+      currentUser,
+      query,
+    );
+  }
 }

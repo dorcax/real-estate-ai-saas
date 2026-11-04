@@ -1,20 +1,20 @@
-import { InvitationStatus } from "@prisma/client";
-import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { InvitationStatus } from '@prisma/client';
+import { Type } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 
 export class GetQueryDto {
-
   @IsOptional()
   status?: InvitationStatus;
 
+  @IsOptional()
+  @Type(() => Number)
+  page: number = 1;
 
   @IsOptional()
-  @Type(()=>Number)
-  page:number = 1;
+  @Type(() => Number)
+  limit: number = 10;
 
-
+  @IsString()
   @IsOptional()
-  @Type(()=>Number)
-  limit:number = 10;
-
+  search?:string;
 }

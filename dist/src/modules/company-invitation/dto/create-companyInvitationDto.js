@@ -10,9 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyInvitationDto = exports.CreateCompanyInvitation = void 0;
+const client_1 = require("@prisma/client");
 const class_validator_1 = require("class-validator");
 class CreateCompanyInvitation {
     email;
+    role;
 }
 exports.CreateCompanyInvitation = CreateCompanyInvitation;
 __decorate([
@@ -20,6 +22,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCompanyInvitation.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(client_1.Role),
+    __metadata("design:type", String)
+], CreateCompanyInvitation.prototype, "role", void 0);
 class CompanyInvitationDto {
     token;
 }

@@ -25,9 +25,9 @@ export declare class CompanyInvitationController {
     acceptCompanyInvitation(acceptCompanyInvitationDto: CompanyInvitationDto, currentUser: userEntity): Promise<{
         message: string;
         user: {
+            email: string;
             fullName: string;
             password: string;
-            email: string;
             role: import("@prisma/client").$Enums.Role;
             id: string;
             createdAt: Date;
@@ -56,6 +56,25 @@ export declare class CompanyInvitationController {
             acceptedAt: Date | null;
         };
     }>;
+    getStats(currentUser: userEntity): Promise<{
+        totalMember: number;
+        totalAdmin: number;
+        totalAgent: number;
+        totalPendingInvitation: number;
+    }>;
+    getTeamMembers(currentUser: userEntity): Promise<{
+        email: string;
+        fullName: string;
+        role: import("@prisma/client").$Enums.Role;
+        id: string;
+        createdAt: Date;
+        avatarUrl: string;
+        isActive: boolean;
+        _count: {
+            assignedLeads: number;
+            propertyAssignments: number;
+        };
+    }[]>;
     getCompanyInvitation(query: GetQueryDto, currentUser: userEntity): Promise<{
         data: {
             email: string;

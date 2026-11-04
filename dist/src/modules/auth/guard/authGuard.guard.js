@@ -45,14 +45,21 @@ let AuthGuard = class AuthGuard {
             if (!user) {
                 throw new common_1.UnauthorizedException();
             }
-            console.log('JWT DECODED:', decode);
-            request.user = decode;
-            console.log('REQUEST USER SET:', request.user);
+            request.user = {
+                ...decode,
+                companyId: user.company?.id,
+            };
+            return true;
         }
         catch (error) {
-            throw error;
+            if (error instanceof jwt_1.TokenExpiredError) {
+                throw new common_1.UnauthorizedException('Your session has expired. Please log in again.');
+            }
+            if (error instanceof common_1.UnauthorizedException) {
+                throw error;
+            }
+            throw new common_1.UnauthorizedException('Invalid or expired authentication token.');
         }
-        return true;
     }
     ExtractFromHeader(request) {
         const authHeader = request.headers.authorization;

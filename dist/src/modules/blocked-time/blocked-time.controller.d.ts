@@ -8,8 +8,8 @@ export declare class BlockedTimeController {
     create(createBlockedTimeDto: CreateBlockedTimeDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
-            id: string;
             userId: string;
+            id: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;

@@ -13,9 +13,9 @@ export declare class UserController {
     findOne(id: string): string;
     update(id: string, updateUserDto: UpdateUserDto): string;
     remove(id: string): Promise<{
+        email: string;
         fullName: string;
         password: string;
-        email: string;
         role: import("@prisma/client").$Enums.Role;
         id: string;
         createdAt: Date;

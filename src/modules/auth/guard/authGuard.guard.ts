@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { Request } from 'express';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 
@@ -43,16 +43,27 @@ export class AuthGuard implements CanActivate {
       if (!user) {
         throw new UnauthorizedException();
       }
-      console.log('JWT DECODED:', decode);
+      request.user = {
+        ...decode,
+        companyId: user.company?.id,
+      };
 
-      request.user = decode;
-
-      console.log('REQUEST USER SET:', request.user);
+      return true;
     } catch (error) {
-      throw error;
-    }
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException(
+          'Your session has expired. Please log in again.',
+        );
+      }
 
-    return true;
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      throw new UnauthorizedException(
+        'Invalid or expired authentication token.',
+      );
+    }
   }
 
   private ExtractFromHeader(request: Request): string | undefined {

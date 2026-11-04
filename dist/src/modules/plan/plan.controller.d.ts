@@ -7,11 +7,11 @@ export declare class PlanController {
     create(dto: CreatePlanDto): Promise<{
         message: string;
         data: {
+            name: string;
             code: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             isActive: boolean;
             description: string | null;
             currency: string;
@@ -24,11 +24,11 @@ export declare class PlanController {
     findAll(): Promise<{
         message: string;
         data: {
+            name: string;
             code: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             isActive: boolean;
             description: string | null;
             currency: string;
@@ -41,11 +41,11 @@ export declare class PlanController {
     findOne(id: string): Promise<{
         message: string;
         data: {
+            name: string;
             code: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             isActive: boolean;
             description: string | null;
             currency: string;
@@ -58,11 +58,11 @@ export declare class PlanController {
     update(id: string, dto: UpdatePlanDto): Promise<{
         message: string;
         data: {
+            name: string;
             code: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             isActive: boolean;
             description: string | null;
             currency: string;
@@ -75,11 +75,11 @@ export declare class PlanController {
     remove(id: string): Promise<{
         message: string;
         data: {
+            name: string;
             code: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
             isActive: boolean;
             description: string | null;
             currency: string;

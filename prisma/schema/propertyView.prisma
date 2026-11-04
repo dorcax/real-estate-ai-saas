@@ -1,0 +1,9 @@
+model PropertyView {
+  id         String   @id @default(uuid())
+  propertyId String
+  createdAt  DateTime @default(now())
+
+  property Property @relation(fields: [propertyId],references: [id],onDelete: Cascade)
+
+  @@index([propertyId, createdAt])
+}

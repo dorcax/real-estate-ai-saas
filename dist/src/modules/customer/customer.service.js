@@ -19,14 +19,15 @@ let CustomerService = class CustomerService {
     }
     async create(dto, tx) {
         const { fullName, email, phone, companyId } = dto;
-        const existingCustomer = await tx ?? this.PrismaService.customer.findUnique({
-            where: {
-                companyId_phone: {
-                    companyId: companyId,
-                    phone,
+        const existingCustomer = (await tx) ??
+            this.PrismaService.customer.findUnique({
+                where: {
+                    companyId_phone: {
+                        companyId: companyId,
+                        phone,
+                    },
                 },
-            },
-        });
+            });
         if (existingCustomer) {
             throw new common_1.BadRequestException('Customer with this phone number already exists');
         }
@@ -72,6 +73,30 @@ let CustomerService = class CustomerService {
                 total,
                 totalPage: Math.ceil(total / limit),
             },
+        };
+    }
+    async getStats(currentUser) {
+        const [totalActiveLead, totalActiveAgent, totalAppointment] = await Promise.all([
+            this.PrismaService.lead.count({
+                where: {
+                    companyId: currentUser.companyId,
+                },
+            }),
+            this.PrismaService.appointment.count({
+                where: {
+                    companyId: currentUser.companyId,
+                },
+            }),
+            this.PrismaService.appointment.count({
+                where: {
+                    companyId: currentUser.companyId,
+                },
+            }),
+        ]);
+        return {
+            totalActiveAgent,
+            totalActiveLead,
+            totalAppointment,
         };
     }
     async findOne(id, currentUser) {

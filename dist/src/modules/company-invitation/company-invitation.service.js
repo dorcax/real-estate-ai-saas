@@ -21,13 +21,14 @@ let CompanyInvitationService = class CompanyInvitationService {
         this.prismaService = prismaService;
     }
     async createCompanyInvitation(dto, currentUser) {
-        const { email } = dto;
+        const { email, role } = dto;
         if (!currentUser.companyId) {
             throw new common_1.BadRequestException('you must belong to a company before you can invite an agent ');
         }
         const existingInvitation = await this.prismaService.companyInvitation.findFirst({
             where: {
                 email,
+                role,
                 status: client_1.InvitationStatus.PENDING,
                 companyId: currentUser.companyId,
                 expiresAt: {
@@ -41,6 +42,7 @@ let CompanyInvitationService = class CompanyInvitationService {
         const invitation = await this.prismaService.companyInvitation.create({
             data: {
                 email,
+                role,
                 token: this.generateToken(),
                 expiresAt: this.getExpiryDate(),
                 company: {
@@ -151,20 +153,34 @@ let CompanyInvitationService = class CompanyInvitationService {
         });
         return {
             message: 'Invitation is declined successfully ',
-            data: declineInvitation
+            data: declineInvitation,
         };
     }
     async getCompanyInvitation(currentUser, query) {
-        const { status, page, limit } = query;
+        const { status, page, limit, search } = query;
         const skip = (page - 1) * limit;
+        const searchTerm = search?.trim() ?? '';
+        const where = {
+            companyId: currentUser.companyId,
+            ...(status && { status: status }),
+            ...(search && {
+                OR: [
+                    { email: { contains: search, mode: 'insensitive' } },
+                    ...(Object.values(client_1.InvitationStatus).some((value) => value.toLowerCase() === searchTerm.toLowerCase())
+                        ? [
+                            {
+                                status: {
+                                    equals: Object.values(client_1.InvitationStatus).find((value) => value.toLowerCase() === searchTerm.toLowerCase()),
+                                },
+                            },
+                        ]
+                        : []),
+                ],
+            }),
+        };
         const [data, total] = await Promise.all([
             this.prismaService.companyInvitation.findMany({
-                where: {
-                    companyId: currentUser.companyId,
-                    ...(status && {
-                        status,
-                    }),
-                },
+                where,
                 skip,
                 take: limit,
                 orderBy: {
@@ -172,10 +188,7 @@ let CompanyInvitationService = class CompanyInvitationService {
                 },
             }),
             this.prismaService.companyInvitation.count({
-                where: {
-                    companyId: currentUser.companyId,
-                    ...(status && { status }),
-                },
+                where
             }),
         ]);
         return {
@@ -187,6 +200,87 @@ let CompanyInvitationService = class CompanyInvitationService {
                 totalPage: Math.ceil(total / limit),
             },
         };
+    }
+    async getStats(currentUser) {
+        const existingCompany = await this.prismaService.company.findUnique({
+            where: {
+                id: currentUser.companyId,
+            },
+        });
+        if (!existingCompany) {
+            throw new common_1.NotFoundException('not found ');
+        }
+        const [totalMember, totalAdmin, totalAgent, totalPendingInvitation] = await Promise.all([
+            this.prismaService.user.count({
+                where: {
+                    companyId: currentUser.id,
+                    role: {
+                        in: ['ADMIN', 'AGENT'],
+                    },
+                },
+            }),
+            this.prismaService.companyInvitation.count({
+                where: {
+                    companyId: currentUser.id,
+                    role: 'AGENT',
+                },
+            }),
+            this.prismaService.companyInvitation.count({
+                where: {
+                    companyId: currentUser.id,
+                    role: 'ADMIN',
+                },
+            }),
+            this.prismaService.companyInvitation.count({
+                where: {
+                    companyId: currentUser.id,
+                    status: client_1.InvitationStatus.PENDING,
+                    expiresAt: {
+                        gt: new Date(),
+                    },
+                },
+            }),
+        ]);
+        console.log(totalMember, totalAdmin, totalAgent, totalPendingInvitation);
+        return {
+            totalMember,
+            totalAdmin,
+            totalAgent,
+            totalPendingInvitation,
+        };
+    }
+    async getTeamMembers(currentUser) {
+        const companyId = currentUser.companyId;
+        if (!companyId) {
+            throw new common_1.BadRequestException("You must belong to a company");
+        }
+        const members = await this.prismaService.user.findMany({
+            where: {
+                companyId,
+                role: {
+                    in: ["ADMIN", "AGENT"],
+                },
+            },
+            select: {
+                id: true,
+                fullName: true,
+                email: true,
+                avatarUrl: true,
+                role: true,
+                isActive: true,
+                createdAt: true,
+                _count: {
+                    select: {
+                        propertyAssignments: true,
+                        assignedLeads: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        return members;
     }
     async getCompanyInvitationById(id, currentUser) {
         const invitation = await this.prismaService.companyInvitation.findFirst({

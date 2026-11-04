@@ -11,6 +11,7 @@ import { userEntity } from '../auth/dto/create-auth.dto';
 import { GetQueryDto } from '../property/dto/get-query.dto';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { tryCatch } from 'bullmq';
 
 @Injectable()
 export class PropertyService {
@@ -129,6 +130,9 @@ export class PropertyService {
   async findAll(currentUser: userEntity, query: GetQueryDto) {
     const { status, limit, page, search } = query;
     const skip = (page - 1) * limit;
+    const searchTerm =search?.trim() ??''
+    const searchPrice = Number(searchTerm);
+    const isValidPrice = searchPrice  && Number.isFinite(searchPrice);
     const where: Prisma.PropertyWhereInput = {
       companyId: currentUser.companyId,
       ...(status && { propertyStatus: status }),
@@ -137,7 +141,15 @@ export class PropertyService {
           { title: { contains: search, mode: 'insensitive' } },
           { description: { contains: search, mode: 'insensitive' } },
           { address: { contains: search, mode: 'insensitive' } },
-          { price: { equals: Number(search) } },
+          ...(isValidPrice
+            ? [
+                {
+                  price: {
+                    equals: searchPrice,
+                  },
+                },
+              ]
+            : []),
           { city: { contains: search, mode: 'insensitive' } },
           { state: { contains: search, mode: 'insensitive' } },
         ],
@@ -170,11 +182,13 @@ export class PropertyService {
     console.log({
       page,
       limit,
+      search,
       skip,
       total,
       totalPage: Math.ceil(total / limit),
       returned: data.length,
     });
+    
     return {
       data,
       pagination: {
@@ -187,11 +201,18 @@ export class PropertyService {
   }
 
   // Find one property
-  async findOne(id: string, currentUser: userEntity) {
+  async findOne(
+    id: string,
+    currentUser: userEntity,
+    source: 'dashboard' | 'marketplace' = 'dashboard',
+  ) {
     const property = await this.PrismaService.property.findFirst({
       where: {
         id,
-        companyId: currentUser.companyId,
+
+        ...(source === 'dashboard'
+          ? { companyId: currentUser.companyId }
+          : { PropertyStatus: 'Available' }),
       },
       include: {
         attachment: {
@@ -203,6 +224,19 @@ export class PropertyService {
     });
     if (!property) {
       throw new NotFoundException('Property not found');
+    }
+
+    // create product view when customer open property
+    if (source === 'marketplace') {
+      try {
+        await this.PrismaService.propertyView.create({
+          data: {
+            propertyId: property.id,
+          },
+        });
+      } catch (error) {
+        console.error('Failed to record property view:', error);
+      }
     }
 
     return {
@@ -467,13 +501,66 @@ export class PropertyService {
         },
       }),
     ]);
-
-    console.log('rendter', total);
     return {
       total,
       rented,
       sold,
       pending,
+    };
+  }
+
+  async getPropertyPerformanceStats(currentUser: userEntity) {
+    const companyId = currentUser.companyId;
+
+    const [views, enquiries, reservations, totalProperties, totalAmount] =
+      await Promise.all([
+        this.PrismaService.propertyView.count({
+          where: {
+            property: {
+              companyId,
+            },
+          },
+        }),
+
+        this.PrismaService.enquiry.count({
+          where: {
+            property: {
+              companyId,
+            },
+          },
+        }),
+
+        this.PrismaService.appointment.count({
+          where: {
+            property: {
+              companyId,
+            },
+          },
+        }),
+
+        this.PrismaService.property.count({
+          where: {
+            companyId,
+          },
+        }),
+        this.PrismaService.payment.aggregate({
+          where: {
+            companyId: currentUser.companyId,
+            status: 'SUCCESSFUL',
+          },
+
+          _sum: {
+            amount: true,
+          },
+        }),
+      ]);
+
+    return {
+      views,
+      enquiries,
+      reservations,
+      totalProperties,
+      totalAmount: totalAmount._sum.amount ?? 0,
     };
   }
 

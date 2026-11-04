@@ -34,7 +34,7 @@ export class PropertyController {
   findAll(@AuthUser() currentUser: userEntity, @Query() query: GetQueryDto) {
     return this.propertyService.findAll(currentUser, query);
   }
-  
+
 
   @Auth(['OWNER'])
   @Get('stats')
@@ -43,11 +43,22 @@ export class PropertyController {
   }
 
   // Get single property
-  @Auth(['ADMIN', 'OWNER'])
+  @Auth(['ADMIN', 'OWNER','CUSTOMER'])
   @Get(':id')
-  findOne(@Param('id') id: string, @AuthUser() currentUser: userEntity) {
-    return this.propertyService.findOne(id, currentUser);
+  findOne(@Param('id') id: string, @AuthUser() currentUser: userEntity ,@Query('source') source:'dashboard' |'marketplace') {
+    return this.propertyService.findOne(id, currentUser,source);
   }
+
+  
+  // Get property performace stats
+  @Auth(['ADMIN', 'OWNER'])
+  @Get('stats/performance')
+  getPropertyPerformanceStats(@Param('id') id: string, @AuthUser() currentUser: userEntity) {
+    return this.propertyService.getPropertyPerformanceStats(currentUser);
+  }
+
+
+
 
   // Update property
   @Auth(['ADMIN', 'OWNER'])

@@ -29,6 +29,7 @@ model User {
   followUpsCreated    FollowUpTask[]       @relation("FollowUpCreator")
   auditLogs           AuditLog[]           @relation("AuditActor")
   appointmentRequests AppointmentRequest[]
+  enquries           Enquiry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

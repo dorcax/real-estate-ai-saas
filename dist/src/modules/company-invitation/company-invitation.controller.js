@@ -33,6 +33,12 @@ let CompanyInvitationController = class CompanyInvitationController {
     rejectCompanyInvitation(currentUser, rejectCompanyInvitationDto) {
         return this.companyInvitationService.rejectCompanyInvitationByAgent(rejectCompanyInvitationDto, currentUser);
     }
+    getStats(currentUser) {
+        return this.companyInvitationService.getStats(currentUser);
+    }
+    getTeamMembers(currentUser) {
+        return this.companyInvitationService.getTeamMembers(currentUser);
+    }
     getCompanyInvitation(query, currentUser) {
         return this.companyInvitationService.getCompanyInvitation(currentUser, query);
     }
@@ -64,16 +70,34 @@ __decorate([
     __param(0, (0, auth_decorator_1.AuthUser)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_auth_dto_1.userEntity, create_companyInvitationDto_1.CompanyInvitationDto]),
+    __metadata("design:paramtypes", [create_auth_dto_1.userEntity,
+        create_companyInvitationDto_1.CompanyInvitationDto]),
     __metadata("design:returntype", void 0)
 ], CompanyInvitationController.prototype, "rejectCompanyInvitation", null);
+__decorate([
+    (0, common_1.Get)('stats'),
+    (0, auth_decorator_1.Auth)(['OWNER']),
+    __param(0, (0, auth_decorator_1.AuthUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_auth_dto_1.userEntity]),
+    __metadata("design:returntype", void 0)
+], CompanyInvitationController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Get)('members'),
+    (0, auth_decorator_1.Auth)(['ADMIN', 'OWNER']),
+    __param(0, (0, auth_decorator_1.AuthUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_auth_dto_1.userEntity]),
+    __metadata("design:returntype", void 0)
+], CompanyInvitationController.prototype, "getTeamMembers", null);
 __decorate([
     (0, auth_decorator_1.Auth)(['ADMIN']),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
     __param(1, (0, auth_decorator_1.AuthUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [getQuery_dto_1.GetQueryDto, create_auth_dto_1.userEntity]),
+    __metadata("design:paramtypes", [getQuery_dto_1.GetQueryDto,
+        create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
 ], CompanyInvitationController.prototype, "getCompanyInvitation", null);
 exports.CompanyInvitationController = CompanyInvitationController = __decorate([

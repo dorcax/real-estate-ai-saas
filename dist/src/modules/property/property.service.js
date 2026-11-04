@@ -96,6 +96,9 @@ let PropertyService = class PropertyService {
     async findAll(currentUser, query) {
         const { status, limit, page, search } = query;
         const skip = (page - 1) * limit;
+        const searchTerm = search?.trim() ?? '';
+        const searchPrice = Number(searchTerm);
+        const isValidPrice = searchPrice && Number.isFinite(searchPrice);
         const where = {
             companyId: currentUser.companyId,
             ...(status && { propertyStatus: status }),
@@ -104,7 +107,15 @@ let PropertyService = class PropertyService {
                     { title: { contains: search, mode: 'insensitive' } },
                     { description: { contains: search, mode: 'insensitive' } },
                     { address: { contains: search, mode: 'insensitive' } },
-                    { price: { equals: Number(search) } },
+                    ...(isValidPrice
+                        ? [
+                            {
+                                price: {
+                                    equals: searchPrice,
+                                },
+                            },
+                        ]
+                        : []),
                     { city: { contains: search, mode: 'insensitive' } },
                     { state: { contains: search, mode: 'insensitive' } },
                 ],
@@ -137,6 +148,7 @@ let PropertyService = class PropertyService {
         console.log({
             page,
             limit,
+            search,
             skip,
             total,
             totalPage: Math.ceil(total / limit),
@@ -152,11 +164,13 @@ let PropertyService = class PropertyService {
             },
         };
     }
-    async findOne(id, currentUser) {
+    async findOne(id, currentUser, source = 'dashboard') {
         const property = await this.PrismaService.property.findFirst({
             where: {
                 id,
-                companyId: currentUser.companyId,
+                ...(source === 'dashboard'
+                    ? { companyId: currentUser.companyId }
+                    : { PropertyStatus: 'Available' }),
             },
             include: {
                 attachment: {
@@ -168,6 +182,18 @@ let PropertyService = class PropertyService {
         });
         if (!property) {
             throw new common_1.NotFoundException('Property not found');
+        }
+        if (source === 'marketplace') {
+            try {
+                await this.PrismaService.propertyView.create({
+                    data: {
+                        propertyId: property.id,
+                    },
+                });
+            }
+            catch (error) {
+                console.error('Failed to record property view:', error);
+            }
         }
         return {
             property,
@@ -366,12 +392,58 @@ let PropertyService = class PropertyService {
                 },
             }),
         ]);
-        console.log('rendter', total);
         return {
             total,
             rented,
             sold,
             pending,
+        };
+    }
+    async getPropertyPerformanceStats(currentUser) {
+        const companyId = currentUser.companyId;
+        const [views, enquiries, reservations, totalProperties, totalAmount] = await Promise.all([
+            this.PrismaService.propertyView.count({
+                where: {
+                    property: {
+                        companyId,
+                    },
+                },
+            }),
+            this.PrismaService.enquiry.count({
+                where: {
+                    property: {
+                        companyId,
+                    },
+                },
+            }),
+            this.PrismaService.appointment.count({
+                where: {
+                    property: {
+                        companyId,
+                    },
+                },
+            }),
+            this.PrismaService.property.count({
+                where: {
+                    companyId,
+                },
+            }),
+            this.PrismaService.payment.aggregate({
+                where: {
+                    companyId: currentUser.companyId,
+                    status: 'SUCCESSFUL',
+                },
+                _sum: {
+                    amount: true,
+                },
+            }),
+        ]);
+        return {
+            views,
+            enquiries,
+            reservations,
+            totalProperties,
+            totalAmount: totalAmount._sum.amount ?? 0,
         };
     }
     async checkPropertyLimit(companyId) {

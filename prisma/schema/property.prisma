@@ -41,6 +41,8 @@ model Property {
   appointments        Appointment[]
   assignedAgents      PropertyAgent[]
   appointmentRequests AppointmentRequest[]
+  views PropertyView[]
+  enquries Enquiry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -30,9 +30,9 @@ export declare class AuthService {
             id: string;
         };
     } & {
+        email: string;
         fullName: string;
         password: string;
-        email: string;
         role: import("@prisma/client").$Enums.Role;
         id: string;
         createdAt: Date;
@@ -48,9 +48,9 @@ export declare class AuthService {
             id: string;
         };
     } & {
+        email: string;
         fullName: string;
         password: string;
-        email: string;
         role: import("@prisma/client").$Enums.Role;
         id: string;
         createdAt: Date;

@@ -9,18 +9,20 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class CustomerService {
   constructor(private readonly PrismaService: PrismaService) {}
-  async create(dto: CreateCustomerDto,  tx?: Prisma.TransactionClient,) {
-    const { fullName, email, phone ,companyId} = dto;
+  async create(dto: CreateCustomerDto, tx?: Prisma.TransactionClient) {
+    const { fullName, email, phone, companyId } = dto;
 
     // Check if customer already exists in this company
-    const existingCustomer = await tx ?? this.PrismaService.customer.findUnique({
-      where: {
-        companyId_phone: {
-          companyId: companyId,
-          phone,
+    const existingCustomer =
+      (await tx) ??
+      this.PrismaService.customer.findUnique({
+        where: {
+          companyId_phone: {
+            companyId: companyId,
+            phone,
+          },
         },
-      },
-    });
+      });
 
     if (existingCustomer) {
       throw new BadRequestException(
@@ -77,6 +79,33 @@ export class CustomerService {
         total,
         totalPage: Math.ceil(total / limit),
       },
+    };
+  }
+
+  // get stats
+  async getStats(currentUser) {
+    const [totalActiveLead, totalActiveAgent, totalAppointment] =
+      await Promise.all([
+        this.PrismaService.lead.count({
+          where: {
+            companyId: currentUser.companyId,
+          },
+        }),
+        this.PrismaService.appointment.count({
+          where: {
+            companyId: currentUser.companyId,
+          },
+        }),
+        this.PrismaService.appointment.count({
+          where: {
+            companyId: currentUser.companyId,
+          },
+        }),
+      ]);
+    return {
+      totalActiveAgent,
+      totalActiveLead,
+      totalAppointment,
     };
   }
 

@@ -13,11 +13,11 @@ export declare class AuthOtpTokenService {
     sendForgotPasswordEmail(dto: CreateAuthOtpTokenDto): Promise<void>;
     findOtpByEmail(email: string): Promise<{
         email: string;
+        userId: string;
         code: string;
         id: string;
         expiresAt: Date;
         usedAt: Date | null;
-        userId: string;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -26,11 +26,11 @@ export declare class AuthOtpTokenService {
     }>;
     deleteOtp(id: string): import("@prisma/client").Prisma.Prisma__OtpClient<{
         email: string;
+        userId: string;
         code: string;
         id: string;
         expiresAt: Date;
         usedAt: Date | null;
-        userId: string;
         createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;

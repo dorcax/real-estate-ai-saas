@@ -34,8 +34,11 @@ let PropertyController = class PropertyController {
     getPropertyStats(currentUser) {
         return this.propertyService.getPropertyStats(currentUser);
     }
-    findOne(id, currentUser) {
-        return this.propertyService.findOne(id, currentUser);
+    findOne(id, currentUser, source) {
+        return this.propertyService.findOne(id, currentUser, source);
+    }
+    getPropertyPerformanceStats(id, currentUser) {
+        return this.propertyService.getPropertyPerformanceStats(currentUser);
     }
     update(id, dto, currentUser) {
         return this.propertyService.update(id, dto, currentUser);
@@ -82,14 +85,24 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PropertyController.prototype, "getPropertyStats", null);
 __decorate([
-    (0, auth_decorator_1.Auth)(['ADMIN', 'OWNER']),
+    (0, auth_decorator_1.Auth)(['ADMIN', 'OWNER', 'CUSTOMER']),
     (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, auth_decorator_1.AuthUser)()),
+    __param(2, (0, common_1.Query)('source')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, create_auth_dto_1.userEntity, String]),
+    __metadata("design:returntype", void 0)
+], PropertyController.prototype, "findOne", null);
+__decorate([
+    (0, auth_decorator_1.Auth)(['ADMIN', 'OWNER']),
+    (0, common_1.Get)('stats/performance'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, auth_decorator_1.AuthUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, create_auth_dto_1.userEntity]),
     __metadata("design:returntype", void 0)
-], PropertyController.prototype, "findOne", null);
+], PropertyController.prototype, "getPropertyPerformanceStats", null);
 __decorate([
     (0, auth_decorator_1.Auth)(['ADMIN', 'OWNER']),
     (0, common_1.Patch)(':id'),
