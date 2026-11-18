@@ -189,6 +189,7 @@ export class PropertyService {
       returned: data.length,
     });
     
+    
     return {
       data,
       pagination: {

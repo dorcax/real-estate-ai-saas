@@ -364,6 +364,7 @@ async getTeamMembers(currentUser: userEntity) {
   // }));
 }
 
+
   async getCompanyInvitationById(id: string, currentUser: userEntity) {
     const invitation = await this.prismaService.companyInvitation.findFirst({
       where: {

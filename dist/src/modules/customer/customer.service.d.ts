@@ -10,24 +10,24 @@ export declare class CustomerService {
     create(dto: CreateCustomerDto, tx?: Prisma.TransactionClient): Promise<{
         message: string;
         data: {
-            email: string | null;
-            fullName: string | null;
             id: string;
+            fullName: string | null;
+            email: string | null;
+            phone: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            phone: string;
         };
     }>;
     findAll(currentUser: userEntity, query: GetQueryDto): Promise<{
         data: {
-            email: string | null;
-            fullName: string | null;
             id: string;
+            fullName: string | null;
+            email: string | null;
+            phone: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            phone: string;
         }[];
         pagination: {
             skip: number;
@@ -44,43 +44,14 @@ export declare class CustomerService {
     findOne(id: string, currentUser: userEntity): Promise<{
         message: string;
         data: {
-            appointments: {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                companyId: string;
-                description: string | null;
-                timezone: string;
-                type: import("@prisma/client").$Enums.AppointmentType;
-                attachmentsId: string | null;
-                status: import("@prisma/client").$Enums.AppointmentStatus;
-                title: string;
-                propertyId: string | null;
-                agentId: string;
-                cancelledAt: Date | null;
-                notes: string | null;
-                startAt: Date;
-                endAt: Date;
-                location: string | null;
-                meetingLink: string | null;
-                customerId: string;
-                leadId: string | null;
-                externalCalendarId: string | null;
-                reminderSentAt: Date | null;
-                cancellationReason: string | null;
-            }[];
             leads: {
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
                 companyId: string;
                 currency: string;
-                attachmentsId: string | null;
-                status: import("@prisma/client").$Enums.LeadStatus;
-                propertyId: string | null;
-                notes: string | null;
-                customerId: string;
                 intent: import("@prisma/client").$Enums.LeadIntent;
+                status: import("@prisma/client").$Enums.LeadStatus;
                 temperature: import("@prisma/client").$Enums.LeadTemperature;
                 score: number;
                 budgetMinimum: Prisma.Decimal | null;
@@ -95,31 +66,60 @@ export declare class CustomerService {
                 financingReady: boolean | null;
                 decisionMaker: boolean | null;
                 urgency: string | null;
+                notes: string | null;
                 qualificationData: Prisma.JsonValue | null;
                 lastContactedAt: Date | null;
                 nextFollowUpAt: Date | null;
+                customerId: string;
+                propertyId: string | null;
                 assignedAgentId: string | null;
+                attachmentsId: string | null;
+            }[];
+            appointments: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                companyId: string;
+                description: string | null;
+                timezone: string;
+                status: import("@prisma/client").$Enums.AppointmentStatus;
+                notes: string | null;
+                customerId: string;
+                propertyId: string | null;
+                attachmentsId: string | null;
+                title: string;
+                type: import("@prisma/client").$Enums.AppointmentType;
+                startAt: Date;
+                endAt: Date;
+                location: string | null;
+                meetingLink: string | null;
+                agentId: string;
+                leadId: string | null;
+                externalCalendarId: string | null;
+                reminderSentAt: Date | null;
+                cancelledAt: Date | null;
+                cancellationReason: string | null;
             }[];
         } & {
-            email: string | null;
-            fullName: string | null;
             id: string;
+            fullName: string | null;
+            email: string | null;
+            phone: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            phone: string;
         };
     }>;
     update(id: string, dto: UpdateCustomerDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
-            email: string | null;
-            fullName: string | null;
             id: string;
+            fullName: string | null;
+            email: string | null;
+            phone: string;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            phone: string;
         };
     }>;
     remove(id: string, currentUser: userEntity): Promise<{

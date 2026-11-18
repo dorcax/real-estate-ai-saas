@@ -52,7 +52,9 @@ export class CustomerService {
       message: 'customer created successfully',
       data: customer,
     };
+
   }
+  
 
   async findAll(currentUser: userEntity, query: GetQueryDto) {
     const { page, limit } = query;
@@ -121,6 +123,7 @@ export class CustomerService {
       },
     });
 
+    
     if (!customer) {
       throw new BadRequestException('Customer not found');
     }

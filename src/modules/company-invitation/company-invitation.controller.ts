@@ -64,6 +64,7 @@ export class CompanyInvitationController {
     return this.companyInvitationService.getTeamMembers(currentUser);
   }
 
+  
   // get company invitation
   @Auth(['ADMIN'])
   @Get()

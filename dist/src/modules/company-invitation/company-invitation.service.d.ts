@@ -8,68 +8,68 @@ export declare class CompanyInvitationService {
     createCompanyInvitation(dto: CreateCompanyInvitation, currentUser: userEntity): Promise<{
         message: string;
         invitation: {
+            id: string;
             email: string;
             role: import("@prisma/client").$Enums.Role;
-            id: string;
+            token: string;
+            status: import("@prisma/client").$Enums.InvitationStatus;
             expiresAt: Date;
+            acceptedAt: Date | null;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            status: import("@prisma/client").$Enums.InvitationStatus;
-            token: string;
             invitedById: string;
             acceptedById: string | null;
-            acceptedAt: Date | null;
         };
     }>;
     acceptCompanyInvitation(dto: CompanyInvitationDto, currentUser: userEntity): Promise<{
         message: string;
         user: {
-            email: string;
-            fullName: string;
-            password: string;
-            role: import("@prisma/client").$Enums.Role;
             id: string;
+            email: string;
+            role: import("@prisma/client").$Enums.Role;
             createdAt: Date;
             updatedAt: Date;
             companyId: string | null;
+            isActive: boolean;
+            fullName: string;
+            password: string;
             phone: string | null;
             avatarUrl: string | null;
             isVerified: boolean;
-            isActive: boolean;
         };
     }>;
     rejectCompanyInvitationByAgent(dto: CompanyInvitationDto, currentUser: userEntity): Promise<{
         message: string;
         data: {
+            id: string;
             email: string;
             role: import("@prisma/client").$Enums.Role;
-            id: string;
+            token: string;
+            status: import("@prisma/client").$Enums.InvitationStatus;
             expiresAt: Date;
+            acceptedAt: Date | null;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            status: import("@prisma/client").$Enums.InvitationStatus;
-            token: string;
             invitedById: string;
             acceptedById: string | null;
-            acceptedAt: Date | null;
         };
     }>;
     getCompanyInvitation(currentUser: userEntity, query: GetQueryDto): Promise<{
         data: {
+            id: string;
             email: string;
             role: import("@prisma/client").$Enums.Role;
-            id: string;
+            token: string;
+            status: import("@prisma/client").$Enums.InvitationStatus;
             expiresAt: Date;
+            acceptedAt: Date | null;
             createdAt: Date;
             updatedAt: Date;
             companyId: string;
-            status: import("@prisma/client").$Enums.InvitationStatus;
-            token: string;
             invitedById: string;
             acceptedById: string | null;
-            acceptedAt: Date | null;
         }[];
         pagination: {
             skip: number;
@@ -85,31 +85,31 @@ export declare class CompanyInvitationService {
         totalPendingInvitation: number;
     }>;
     getTeamMembers(currentUser: userEntity): Promise<{
-        email: string;
-        fullName: string;
-        role: import("@prisma/client").$Enums.Role;
         id: string;
+        email: string;
+        role: import("@prisma/client").$Enums.Role;
         createdAt: Date;
-        avatarUrl: string;
         isActive: boolean;
+        fullName: string;
+        avatarUrl: string;
         _count: {
             assignedLeads: number;
             propertyAssignments: number;
         };
     }[]>;
     getCompanyInvitationById(id: string, currentUser: userEntity): Promise<{
+        id: string;
         email: string;
         role: import("@prisma/client").$Enums.Role;
-        id: string;
+        token: string;
+        status: import("@prisma/client").$Enums.InvitationStatus;
         expiresAt: Date;
+        acceptedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
         companyId: string;
-        status: import("@prisma/client").$Enums.InvitationStatus;
-        token: string;
         invitedById: string;
         acceptedById: string | null;
-        acceptedAt: Date | null;
     }>;
     private generateToken;
     private getExpiryDate;
