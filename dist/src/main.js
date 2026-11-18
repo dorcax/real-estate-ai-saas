@@ -11,10 +11,12 @@ async function bootstrap() {
         transform: true
     }));
     app.enableCors({
-        origin: 'http://localhost:5173',
+        origin: ['http://localhost:5173'],
         Credentials: true
     });
-    await app.listen(process.env.PORT ?? 3000);
+    const port = process.env.PORT || 3000;
+    await app.listen(port, '0.0.0.0');
+    console.log(`Aura API running on port ${port}`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
