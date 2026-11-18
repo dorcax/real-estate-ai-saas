@@ -42,6 +42,6 @@ COPY --from=builder /app/prisma ./prisma
 # This reduces image size
 # RUN pnpm install --prod --ignore-scripts
 
-EXPOSE 3001
+EXPOSE 3000
 
 CMD ["node", "dist/src/main.js"]
